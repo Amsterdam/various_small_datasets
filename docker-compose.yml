@@ -1,0 +1,12 @@
+version: "3.0"
+services:
+  database:
+    image: amsterdam/postgres
+    ports:
+      - "5408:5432"
+    environment:
+      POSTGRES_DB: various_small_datasets
+      POSTGRES_USER: various_small_datasets
+      POSTGRES_PASSWORD: insecure
+    volumes:
+      - "~/.ssh/datapunt.key:/root/.ssh/datapunt.key"
