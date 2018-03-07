@@ -94,18 +94,19 @@ class BIZFilter(FilterSet):
     id = filters.CharFilter()
 
     locatie = filters.CharFilter(method="locatie_filter")
-
-    # verblijfs object filter
+    naam = filters.CharFilter(method="naam_filter")
+    id = filters.CharFilter(method="id_filter")
 
     class Meta(object):
         model = BIZData
         fields = (
-            'id',
             'naam',
-            'locatie'
+            'locatie',
+            'id',
         )
 
-    def locatie_filter(self, queryset, _filter_name, value):
+    @staticmethod
+    def locatie_filter(queryset, _filter_name, value):
         """
         Filter based on the geolocation. This filter actually
         expect 2 numerical values: x and y
@@ -121,8 +122,20 @@ class BIZFilter(FilterSet):
 
         # Creating one big queryset
         biz_results = queryset.filter(
-            wkb_geometry__dcontains=(point))
+            wkb_geometry__contains=(point))
         return biz_results
+
+    @staticmethod
+    def naam_filter(queryset, _filter_name, value):
+        return queryset.filter(
+            naam__icontains=(value)
+        )
+
+    @staticmethod
+    def id_filter(queryset, _filter_name, value):
+        return queryset.filter(
+            biz_id__iexact=(value)
+        )
 
 
 class BIZViewSet(various_small_datasets.api.rest.DatapuntViewSet):

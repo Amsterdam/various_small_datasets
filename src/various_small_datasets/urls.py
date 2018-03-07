@@ -23,7 +23,7 @@ grouped_url_patterns = {
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer, CoreJSONRenderer])
 def biz_schema_view(request):
     generator = schemas.SchemaGenerator(
-        title='Bedrijfsinvesteringszones lists',
+        title='BedrijfsInvesteringsZones',
         patterns=grouped_url_patterns['biz_patterns']
     )
     return response.Response(generator.get_schema(request=request))
