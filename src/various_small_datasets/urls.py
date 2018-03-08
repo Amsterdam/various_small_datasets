@@ -9,11 +9,12 @@ from rest_framework_swagger.renderers import OpenAPIRenderer
 from rest_framework_swagger.renderers import SwaggerUIRenderer
 
 from biz.api import urls as api_urls
+from various_small_datasets.health import urls as health_urls
 
 grouped_url_patterns = {
-#    'base_patterns': [
-#        url(r'^status/', include('health.urls')),
-#    ],
+    'base_patterns': [
+        url(r'^status/', include(health_urls)),
+    ],
     'biz_patterns': [
         url(r'^vsd/', include(api_urls.urls)),
     ],

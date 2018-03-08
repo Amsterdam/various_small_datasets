@@ -117,4 +117,4 @@ SWAGGER_SETTINGS = {
     'doc_expansion': 'list',
 }
 
-HEALTH_MODEL = 'various_small_datasets.biz_data'
+HEALTH_MODEL = 'dataset.bizdata'
