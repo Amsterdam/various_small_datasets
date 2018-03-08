@@ -15,7 +15,7 @@ grouped_url_patterns = {
 #        url(r'^status/', include('health.urls')),
 #    ],
     'biz_patterns': [
-        url(r'^biz/', include(api_urls.urls)),
+        url(r'^vsd/', include(api_urls.urls)),
     ],
 }
 
@@ -29,7 +29,7 @@ def biz_schema_view(request):
     return response.Response(generator.get_schema(request=request))
 
 
-urlpatterns = [url('^biz/docs/api-docs/biz/$',
+urlpatterns = [url('^vsd/docs/api-docs/biz/$',
                    biz_schema_view),
                ] + [url for pattern_list in grouped_url_patterns.values()
                     for url in pattern_list]

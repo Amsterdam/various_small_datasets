@@ -122,7 +122,7 @@ class BIZFilter(FilterSet):
 
         # Creating one big queryset
         biz_results = queryset.filter(
-            wkb_geometry__contains=(point))
+            geometrie__contains=(point))
         return biz_results
 
     @staticmethod
@@ -134,7 +134,7 @@ class BIZFilter(FilterSet):
     @staticmethod
     def id_filter(queryset, _filter_name, value):
         return queryset.filter(
-            biz_id__iexact=(value)
+            id__iexact=(value)
         )
 
 

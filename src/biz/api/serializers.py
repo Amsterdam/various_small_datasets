@@ -51,7 +51,7 @@ class BIZSerializer(BaseSerializer, HALSerializer):
         fields = [
             '_links',
             '_display',
-            'biz_id',
+            'id',
             'naam',
             'biz_type',
             'heffingsgrondslag',
@@ -59,13 +59,13 @@ class BIZSerializer(BaseSerializer, HALSerializer):
             'heffing',
             'bijdrageplichtigen',
             'verordening',
-            'wkb_geometry'
+            'geometrie'
         ]
 
     def get__links(self, obj):
         links = self.dict_with_self_href(
-            '/biz/biz/{}/'.format(
-                obj.biz_id))
+            '/vsd/biz/{}/'.format(
+                obj.id))
         if obj.website != None:
             links["website"] = { "href": obj.website }
         if obj.verordening != None:
@@ -73,5 +73,3 @@ class BIZSerializer(BaseSerializer, HALSerializer):
             links["verordening"] = { "verordening": verordening }
 
         return links
-
-
