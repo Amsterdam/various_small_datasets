@@ -33,7 +33,7 @@ node {
 
     stage("Build image") {
         tryStep "build", {
-            def image = docker.build("build.datapunt.amsterdam.nl:5000/datapunt/various_small_datasets:${env.BUILD_NUMBER}", "src")
+            def image = docker.build("build.datapunt.amsterdam.nl:5000/datapunt/various_small_datasets:${env.BUILD_NUMBER}")
             image.push()
         }
     }
