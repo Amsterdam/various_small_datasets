@@ -22,14 +22,14 @@ node {
         checkout scm
     }
 
-    stage('Test') {
-        tryStep "test", {
-            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml build && " +
-               "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml run -u root --rm test"
-        }, {
-            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml down"
-        }
-    }
+#    stage('Test') {
+#        tryStep "test", {
+#            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml build && " +
+#               "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml run -u root --rm test"
+#        }, {
+#            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml down"
+#        }
+#    }
 
     stage("Build image") {
         tryStep "build", {
