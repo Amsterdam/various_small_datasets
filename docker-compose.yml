@@ -24,6 +24,6 @@ services:
       UWSGI_STATIC_MAP: "/various_small_datasets/static=/static"
       DATAPUNT_API_URL: ${DATAPUNT_API_URL:-https://api.data.amsterdam.nl/}
       SECRET_KEY: insecure
-      DATABASE_NAME: grondexploitatie
-      DATABASE_USER: grondexploitatie
+      DATABASE_NAME: various_small_datasets
+      DATABASE_USER: various_small_datasets
       DATABASE_PASSWORD: insecure
