@@ -78,6 +78,12 @@ def main():
         # df1 = df[['Naam BIZ', 'geometry']]
         # df1[df1['geometry'].isnull()]
 
+        def makequotedlink(s):
+            s = s.lstrip('#').rstrip('#')
+            if not re.match('^https?://', s):
+                s = 'http://' + s
+            return "'" + s +  "'"
+
         # Create insert statements
         def makequote(s):
             return "'" + s + "'"
@@ -104,17 +110,17 @@ def main():
         , {}
         , {}
         , {}
-        , '{}'
+        , {}
         , {}
         );
         '''.format(t[0]
                    , t[1]
                    , t[3]
                    , t[4]
-                   , 'NULL' if isinstance(t[5], float) and math.isnan(t[5]) else makequote(t[5])
+                   , 'NULL' if isinstance(t[5], float) and math.isnan(t[5]) else makequotedlink(t[5])
                    , 'NULL' if math.isnan(t[6]) else int(t[6])
                    , 'NULL' if math.isnan(t[7]) else int(t[7])
-                   , t[8]
+                   , makequotedlink(t[8])
                    , 'NULL' if t[9] is None else makesrid28992(t[9]))
             return insert
 

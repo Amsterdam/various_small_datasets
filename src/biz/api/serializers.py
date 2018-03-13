@@ -66,10 +66,4 @@ class BIZSerializer(BaseSerializer, HALSerializer):
         links = self.dict_with_self_href(
             '/vsd/biz/{}/'.format(
                 obj.id))
-        if obj.website != None:
-            links["website"] = { "href": obj.website }
-        if obj.verordening != None:
-            verordening = obj.verordening.lstrip('#').rstrip('#')
-            links["verordening"] = { "verordening": verordening }
-
         return links
