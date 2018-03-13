@@ -13,7 +13,7 @@ DATABASE_USER=${DATABASE_USER:-various_small_datasets}
 DATABASE_PASSWORD=${DATABASE_PASSWORD:-insecure}
 
 # Register database credentials
-PGPASSFILE=~/.pgpass_various_small_datasets
+export PGPASSFILE=~/.pgpass_various_small_datasets
 CREDENTIALS="${DATABASE_HOST}:${DATABASE_PORT}:${DATABASE_NAME}:${DATABASE_USER}:${DATABASE_PASSWORD}"
 echo $CREDENTIALS > ${PGPASSFILE}
 chmod 600 ${PGPASSFILE}
