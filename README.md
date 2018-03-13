@@ -5,14 +5,19 @@ docker-compose up -d database
 
 # Bedrijfsinvesteringszone (BIZ)
 
-Use Jupyter convert_data.ipynb notebook to create new version of biz_data_insert.sql
-
 echo 0.0.0.0:5408:various_small_datasets:various_small_datasets:insecure >> ~/.pgpass
 chmod 600 ~/.pgpass
 
-cd bedrijfsinvesteringszone
+cd biz
 
-./convert.sh
+# Convert MapInfo files to PostGIS SQL dump file
+ogr2ogr -f "PGDump" tmp/BIZZONES.sql data/BIZZONES.shp
+
+# Convert SQL file to utf-8 SQL file
+iconv -f iso-8859-1 -t utf-8  tmp/BIZZONES.sql tmp/BIZZONES.utf8.sql
+
+# Create SQL insert file 
+python import/convert_data.py
 
 
 cat biz_data_create.sql | psql -p 5408 -h 0.0.0.0 -U various_small_datasets various_small_datasets
