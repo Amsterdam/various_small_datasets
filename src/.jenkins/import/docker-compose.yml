@@ -24,3 +24,4 @@ services:
       DATABASE_PASSWORD: insecure
     command: >
       bash -c "./biz/import/import.sh"
+      bash -c "./trm/import/import.sh"

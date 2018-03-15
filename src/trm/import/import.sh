@@ -49,6 +49,9 @@ sed -i -- "s/'LINESTRING'/'GEOMETRY'/g" tmp/trm_tram.utf8.sql
 # Replace column names with spaces
 sed -i -- 's/"baanvak in"/"baanvak_in"/g; s/"baanvak _1"/"baanvak_1"/g; s/"lijnnrs aa"/"lijnnrs_aa"/g' tmp/trm_tram.utf8.sql
 
+# Replace HTML entities
+sed -i -- 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g;' tmp/trm_tram.utf8.sql
+
 cat tmp/trm_tram.utf8.sql | psql -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
 cat tmp/trm_metro.utf8.sql | psql -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
 
