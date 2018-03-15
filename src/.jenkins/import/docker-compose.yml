@@ -23,5 +23,4 @@ services:
       DATABASE_USER: various_small_datasets
       DATABASE_PASSWORD: insecure
     command: >
-      bash -c "./biz/import/import.sh"
-      bash -c "./trm/import/import.sh"
+      bash -c "./biz/import/import.sh && ./trm/import/import.sh"
