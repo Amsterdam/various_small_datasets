@@ -30,8 +30,8 @@ unzip data/Tram\ KGEs.zip -d ${TMPDIR}
 unzip data/Metro\ KGEs.zip -d ${TMPDIR}
 
 # Convert Shape files to PostGIS SQL dump file
-ogr2ogr -f "PGDump" ${TMPDIR}/trm_tram.sql ${TMPDIR}/KGE_hartlijnen_Amsterdam_2.050.shp
-ogr2ogr -f "PGDump" ${TMPDIR}/trm_metro.sql ${TMPDIR}/Metro\ KGEs.shp
+ogr2ogr -f "PGDump" -nlt GEOMETRY ${TMPDIR}/trm_tram.sql ${TMPDIR}/KGE_hartlijnen_Amsterdam_2.050.shp
+ogr2ogr -f "PGDump" -nlt GEOMETRY ${TMPDIR}/trm_metro.sql ${TMPDIR}/Metro\ KGEs.shp
 
 # Convert SQL file to utf-8 SQL file
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/trm_tram.sql > ${TMPDIR}/trm_tram.utf8.sql
@@ -43,10 +43,6 @@ sed -i -- 's/"050/"trm_tram/g' ${TMPDIR}/trm_tram.utf8.sql
 sed -i -- "s/'050/'trm_tram/g" ${TMPDIR}/trm_tram.utf8.sql
 
 sed -i -- 's/metro kges/trm_metro/g' ${TMPDIR}/trm_metro.utf8.sql
-
-# Replace LINESTRING with GEOMETRY because the data also contains MULTILINESTRING elements
-sed -i -- "s/'LINESTRING'/'GEOMETRY'/g" ${TMPDIR}/trm_metro.utf8.sql
-sed -i -- "s/'LINESTRING'/'GEOMETRY'/g" ${TMPDIR}/trm_tram.utf8.sql
 
 # Replace column names with spaces
 sed -i -- 's/"baanvak in"/"baanvak_in"/g; s/"baanvak _1"/"baanvak_1"/g; s/"lijnnrs aa"/"lijnnrs_aa"/g' ${TMPDIR}/trm_tram.utf8.sql
