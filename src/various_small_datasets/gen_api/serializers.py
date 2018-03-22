@@ -1,9 +1,7 @@
-import json
 import logging
 
 from rest_framework import serializers
 
-from biz.dataset.models import BIZData
 from various_small_datasets.gen_api.rest import HALSerializer, DisplayField
 
 log = logging.getLogger(__name__)
@@ -42,29 +40,20 @@ class BaseSerializer(object):
         }
 
 
-class BIZSerializer(BaseSerializer, HALSerializer):
-
+class GenericSerializer(BaseSerializer, HALSerializer):
     _links = serializers.SerializerMethodField()
     _display = DisplayField()
 
     class Meta(object):
-        model = BIZData
+        model = None
         fields = [
             '_links',
             '_display',
-            'id',
-            'naam',
-            'biz_type',
-            'heffingsgrondslag',
-            'website',
-            'heffing',
-            'bijdrageplichtigen',
-            'verordening',
-            'geometrie'
-        ]
+            ]
 
     def get__links(self, obj):
         links = self.dict_with_self_href(
-            '/vsd/biz/{}/'.format(
+            '/vsd/{}/{}/'.format(
+                self.context['dataset'],
                 obj.id))
         return links

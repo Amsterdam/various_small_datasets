@@ -1,14 +1,16 @@
 import logging
 from django.contrib.gis.geos import Point
-from rest_framework.response import Response
+from rest_framework.exceptions import NotFound, ParseError
 
-from biz.dataset.models import BIZData
 import various_small_datasets.gen_api.rest
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework import filters
 from rest_framework import serializers as rest_serializers
 
-from biz.api import serializers
+from various_small_datasets.gen_api import serializers
+
+import various_small_datasets.gen_api.dataset_config as config
+
 
 log = logging.getLogger(__name__)
 
@@ -47,8 +49,6 @@ def valid_lat_lon(lat, lon):
 
 def convert_input_to_float(value):
 
-    x = None
-    y = None
     err = None
 
     try:
@@ -70,9 +70,6 @@ def validate_x_y(value):
     """
     Check if we get valid values
     """
-    x = None
-    y = None
-    err = None
     point = None
 
     x, y, err = convert_input_to_float(value)
@@ -92,15 +89,13 @@ def validate_x_y(value):
     return point, err
 
 
-class BIZFilter(FilterSet):
-    id = filters.CharFilter()
-
-    locatie = filters.CharFilter(method="locatie_filter")
-    naam = filters.CharFilter(method="naam_filter")
+class GenericFilter(FilterSet):
     id = filters.CharFilter(method="id_filter")
+    location = filters.CharFilter(method="location_filter")
+    name = filters.CharFilter(method="name_filter")
 
     class Meta(object):
-        model = BIZData
+        model = None
         fields = (
             'naam',
             'locatie',
@@ -124,27 +119,58 @@ class BIZFilter(FilterSet):
 
         # Creating one big queryset
         biz_results = queryset.filter(
-            geometrie__contains=(point))
+            geometrie__contains=point)
         return biz_results
 
     @staticmethod
     def naam_filter(queryset, _filter_name, value):
         return queryset.filter(
-            naam__icontains=(value)
+            naam__icontains=value
         )
 
     @staticmethod
     def id_filter(queryset, _filter_name, value):
         return queryset.filter(
-            id__iexact=(value)
+            id__iexact=value
         )
 
 
-class BIZViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
-    serializer_detail_class = serializers.BIZSerializer
+def get_fields(model):
+    return map(lambda x: x.name, model._meta.get_fields())
 
-    queryset = BIZData.objects.all()
-    filter_class = BIZFilter
+
+class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
+    """
+    Generic Viewset for arbitrary Django models
+
+    """
+    dataset = None
+    model = None
+    #filter_class = GenericFilter
+    filter_class = None
+
+    def get_queryset(self):
+        if 'dataset' in self.kwargs:
+            self.dataset = self.kwargs['dataset']
+        else:
+            raise ParseError("missing dataset")
+
+        if self.dataset in config.DATASET_CONFIG:
+            self.model = config.DATASET_CONFIG[self.dataset]
+        else:
+            raise NotFound("dataset" + self.dataset)
+
+        GenericFilter.Meta.model = self.model()
+
+        return self.model.objects.all()
 
     def get_serializer_class(self):
-        return serializers.BIZSerializer
+        serializer_class = serializers.GenericSerializer
+        serializer_class.Meta.model = self.model
+        serializer_class.Meta.fields.extend(get_fields(self.model))
+        return serializer_class
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({ 'dataset': self.dataset})
+        return context

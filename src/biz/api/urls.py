@@ -15,5 +15,5 @@ class BIZRouter(routers.DefaultRouter):
 
 
 biz = BIZRouter()
-biz.register(r'biz', api_views.BIZViewSet, base_name='biz')
+biz.register(r'', api_views.BIZViewSet, base_name='biz')
 urls = biz.urls
