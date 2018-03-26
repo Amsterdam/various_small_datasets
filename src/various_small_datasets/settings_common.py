@@ -140,6 +140,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'ERROR',
         },
+        # 'django.db.backends': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console'],
+        # },
 
         # Debug all batch jobs
         'doc': {

@@ -1,0 +1,85 @@
+{
+  "datasets": [
+    {
+      "name": "biz",
+      "table_name": "biz_data",
+      "ordering": "id",
+      "enable_api": true,
+      "name_field": "naam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "maplayer_template": "default",
+      "maplayer_color": "#004699",
+      "maplayer_minscale": 10,
+      "maplayer_maxscale": 400000,
+      "maplayer_label": "naam",
+      "maplayer_label_minscale": 10,
+      "maplayer_lable_maxscale": 10000,
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "integer",
+          "db_column": "biz_id",
+          "primary_key": true
+        },
+        {
+          "name": "naam",
+          "data_type": "char",
+          "unique": true,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "biz_type",
+          "data_type": "char",
+          "max_length": 64,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "heffingsgrondslag",
+          "data_type": "char",
+          "max_length": 128,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "website",
+          "data_type": "char",
+          "max_length": 128,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "heffing",
+          "data_type": "decimal",
+          "max_digits": 10,
+          "decimal_places": 2
+        },
+        {
+          "name": "bijdrageplichtigen",
+          "data_type": "integer",
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "verordening",
+          "data_type": "char",
+          "max_length": 128,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "geometrie",
+          "data_type": "geometry",
+          "db_column": "wkb_geometry",
+          "srid": 28992,
+          "blank": true,
+          "null": true
+        }
+      ]
+    }
+  ]
+}

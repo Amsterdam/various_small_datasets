@@ -136,6 +136,9 @@ class GenericFilter(FilterSet):
 
 
 def get_fields(model):
+    """
+    This gets the fields
+    """
     return map(lambda x: x.name, model._meta.get_fields())
 
 
@@ -146,6 +149,7 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
     """
     dataset = None
     model = None
+    # TODO add filtering
     #filter_class = GenericFilter
     filter_class = None
 
@@ -162,10 +166,14 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
 
         GenericFilter.Meta.model = self.model()
 
+        # TODO cache this in a dictionary per dataset, see if  it improves performance
         return self.model.objects.all()
 
     def get_serializer_class(self):
         serializer_class = serializers.GenericSerializer
+        # TODO how does this work for multiple datasets . Can't we have  more serializer
+        # classes ?? instances ?? Do we need to inherit from GenericSerializer here to make it
+        # more safe. In that case we can also cache these serializers for each dataset
         serializer_class.Meta.model = self.model
         serializer_class.Meta.fields.extend(get_fields(self.model))
         return serializer_class

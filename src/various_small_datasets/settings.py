@@ -11,7 +11,9 @@ from various_small_datasets.settings_databases import LocationKey,\
 INSTALLED_APPS += [
     'biz.api',
     'biz.dataset',
+    'various_small_datasets.catalog',
     'various_small_datasets.gen_api',
+    'various_small_datasets.importer',
 ]
 
 ROOT_URLCONF = 'various_small_datasets.urls'
