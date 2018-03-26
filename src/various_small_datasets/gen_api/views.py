@@ -147,13 +147,23 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
     Generic Viewset for arbitrary Django models
 
     """
-    dataset = None
-    model = None
-    # TODO add filtering
-    #filter_class = GenericFilter
-    filter_class = None
+    initialized = False
+
+    def __init__(self, *args, **kwargs):
+        self.dataset = None
+        self.model = None
+        # TODO add filtering
+        # filter_class = GenericFilter
+        self.filter_class = None
+        super(GenericViewSet, self).__init__(*args, **kwargs)
 
     def get_queryset(self):
+        if GenericViewSet.initialized == False:
+            # Initialize datasets from the catalog configuration
+            config.read_all_datasets()
+            GenericViewSet.initialized = True
+
+
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
         else:
