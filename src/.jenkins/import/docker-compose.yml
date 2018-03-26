@@ -23,4 +23,4 @@ services:
       DATABASE_USER: various_small_datasets
       DATABASE_PASSWORD: insecure
     command: >
-      bash -c "./biz/import/import.sh && ./trm/import/import.sh"
+      bash -c "python manage.py import_catalog && ./biz/import/import.sh && ./trm/import/import.sh"
