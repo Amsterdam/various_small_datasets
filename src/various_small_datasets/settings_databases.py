@@ -1,6 +1,7 @@
 import os
 import re
 
+
 def get_docker_host():
     """
     Looks for the DOCKER_HOST environment variable to find the VM
@@ -17,6 +18,7 @@ def get_docker_host():
         return re.match(r'tcp://(.*?):\d+', d_host).group(1)
     return 'localhost'
 
+
 def in_docker():
     """
     Checks pid 1 cgroup settings to check with reasonable certainty we're in a
@@ -29,8 +31,10 @@ def in_docker():
     except IOError:
         return False
 
+
 OVERRIDE_HOST_ENV_VAR = 'DATABASE_HOST_OVERRIDE'
 OVERRIDE_PORT_ENV_VAR = 'DATABASE_PORT_OVERRIDE'
+
 
 class LocationKey:
     local = 'local'

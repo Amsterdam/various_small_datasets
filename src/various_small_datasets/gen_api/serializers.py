@@ -49,7 +49,7 @@ class GenericSerializer(BaseSerializer, HALSerializer):
         fields = [
             '_links',
             '_display',
-            ]
+        ]
 
     def get__links(self, obj):
         links = self.dict_with_self_href(

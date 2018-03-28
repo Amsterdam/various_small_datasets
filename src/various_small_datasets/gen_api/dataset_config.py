@@ -1,6 +1,6 @@
 from django.contrib.gis.db import models
 from django.forms.models import model_to_dict
-from various_small_datasets.catalog.models import DataSet, DataSetField
+from various_small_datasets.catalog.models import DataSet
 
 # Use of dynamic Django model for generic rest API
 #

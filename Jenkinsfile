@@ -22,6 +22,15 @@ node {
         checkout scm
     }
 
+    stage('Test') {
+        tryStep "test", {
+            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml build && " +
+               "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml run -u root --rm test"
+        }, {
+            sh "docker-compose -p various_small_datasets -f src/.jenkins/test/docker-compose.yml down"
+        }
+    }
+
     stage("Build image") {
         tryStep "build", {
             def image = docker.build("build.datapunt.amsterdam.nl:5000/datapunt/various_small_datasets:${env.BUILD_NUMBER}", "src")

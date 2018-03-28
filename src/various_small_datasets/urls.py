@@ -6,7 +6,7 @@ from rest_framework.renderers import CoreJSONRenderer
 from rest_framework_swagger.renderers import OpenAPIRenderer
 from rest_framework_swagger.renderers import SwaggerUIRenderer
 
-from biz.api import urls as biz_urls
+# from biz.api import urls as biz_urls
 from various_small_datasets.gen_api import urls as gen_urls
 from various_small_datasets.health import urls as health_urls
 
@@ -22,6 +22,7 @@ grouped_url_patterns = {
     ],
 }
 
+
 @api_view()
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer, CoreJSONRenderer])
 def biz_schema_view(request):
@@ -33,7 +34,7 @@ def biz_schema_view(request):
 
 
 urlpatterns = [path('vsd/docs/api-docs/biz/',
-                   biz_schema_view),
+                    biz_schema_view),
                ] + [url for pattern_list in grouped_url_patterns.values()
                     for url in pattern_list]
 
