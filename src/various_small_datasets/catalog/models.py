@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 
+
 class DataSet(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=10, blank=False, null=False)
@@ -38,7 +39,7 @@ class DataSetField(models.Model):
     data_type = models.CharField(max_length=128, blank=False, null=False)
     db_column = models.CharField(max_length=128, blank=False, null=True)  # Default same as name
     primary_key = models.BooleanField(default=False)
-    unique=models.BooleanField(default=False)
+    unique = models.BooleanField(default=False)
     max_length = models.PositiveSmallIntegerField(null=True)
     blank = models.BooleanField(default=False)
     null = models.BooleanField(default=False)
