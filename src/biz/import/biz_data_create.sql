@@ -28,7 +28,7 @@ CREATE VIEW biz_view AS SELECT
     WHEN True THEN
         NULL
     ELSE
-        concat(E'\u20AC', ' ', cast(heffing as character(10)))
+        concat(E'\u20AC', ' ', cast(heffing as character varying(10)))
     END as heffing_display,
     bijdrageplichtigen,
     verordening ,
