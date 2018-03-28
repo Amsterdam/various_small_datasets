@@ -24,7 +24,12 @@ CREATE VIEW biz_view AS SELECT
     website,
     heffing,
     'EUR' as heffing_valuta_code,
-    concat(E'\u20AC', ' ', cast(heffing as character varying(10))) as heffing_display,
+    CASE heffing IS NULL
+    WHEN True THEN
+        NULL
+    ELSE
+        concat(E'\u20AC', ' ', cast(heffing as character(10)))
+    END as heffing_display,
     bijdrageplichtigen,
     verordening ,
     wkb_geometry
