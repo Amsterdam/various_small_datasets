@@ -34,7 +34,7 @@ class DataSet(models.Model):
 class DataSetField(models.Model):
     id = models.AutoField(primary_key=True)
     dataset = models.ForeignKey(DataSet, on_delete=models.CASCADE)
-    name = models.CharField(unique=True, max_length=128, blank=False, null=False)
+    name = models.CharField(max_length=128, blank=False, null=False)
     data_type = models.CharField(max_length=128, blank=False, null=False)
     db_column = models.CharField(max_length=128, blank=False, null=True)  # Default same as name
     primary_key = models.BooleanField(default=False)
@@ -50,6 +50,7 @@ class DataSetField(models.Model):
         managed = True
         db_table = 'cat_dataset_fields'
         ordering = ['id']
+        unique_together = ('dataset', 'name',)
 
     def __str__(self):
         return self.name

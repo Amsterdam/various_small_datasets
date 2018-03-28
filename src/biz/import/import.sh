@@ -18,8 +18,7 @@ CREDENTIALS="${DATABASE_HOST}:${DATABASE_PORT}:${DATABASE_NAME}:${DATABASE_USER}
 echo $CREDENTIALS > ${PGPASSFILE}
 chmod 600 ${PGPASSFILE}
 
-psql -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME} -c "drop table if exists biz_data;"
-cat biz_data_create.sql| psql -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
-cat biz_data_insert.sql| psql -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
+cat biz_data_create.sql| psql -v ON_ERROR_STOP=1 -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
+cat biz_data_insert.sql| psql -v ON_ERROR_STOP=1 -h ${DATABASE_HOST} -p ${DATABASE_PORT} -U ${DATABASE_USER} ${DATABASE_NAME}
 
 cd $CUR_DIR

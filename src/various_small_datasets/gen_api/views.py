@@ -84,7 +84,7 @@ def validate_x_y(value):
     elif valid_lat_lon(x, y):
         point = Point(y, x, srid=4326).transform(28992, clone=True)
     else:
-        err = "Coordinates recieved not within Amsterdam"
+        err = "Coordinates received not within Amsterdam"
 
     return point, err
 
@@ -148,6 +148,7 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
 
     """
     initialized = False
+    serializerClasses = {}
 
     def __init__(self, *args, **kwargs):
         self.dataset = None
@@ -158,11 +159,10 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
         super(GenericViewSet, self).__init__(*args, **kwargs)
 
     def get_queryset(self):
-        if GenericViewSet.initialized == False:
+        if not GenericViewSet.initialized:
             # Initialize datasets from the catalog configuration
             config.read_all_datasets()
             GenericViewSet.initialized = True
-
 
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
@@ -180,15 +180,15 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
         return self.model.objects.all()
 
     def get_serializer_class(self):
-        serializer_class = serializers.GenericSerializer
-        # TODO how does this work for multiple datasets . Can't we have  more serializer
-        # classes ?? instances ?? Do we need to inherit from GenericSerializer here to make it
-        # more safe. In that case we can also cache these serializers for each dataset
-        serializer_class.Meta.model = self.model
-        serializer_class.Meta.fields.extend(get_fields(self.model))
-        return serializer_class
+        if self.dataset not in GenericViewSet.serializerClasses:
+            model_name = self.dataset.upper() + 'GenericSerializer'
+            serializer_class = type(model_name, (serializers.GenericSerializer,), {})
+            serializer_class.Meta.model = self.model
+            serializer_class.Meta.fields.extend(get_fields(self.model))
+            GenericViewSet.serializerClasses[self.dataset] = serializer_class
+        return GenericViewSet.serializerClasses[self.dataset]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({ 'dataset': self.dataset})
+        context.update({'dataset': self.dataset})
         return context

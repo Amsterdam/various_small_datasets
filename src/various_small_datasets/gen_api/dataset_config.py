@@ -24,7 +24,7 @@ from various_small_datasets.catalog.models import DataSet, DataSetField
 #     'biz_type': models.CharField(max_length=64, blank=True, null=True),
 #     'heffingsgrondslag': models.CharField(max_length=128, blank=True, null=True),
 #     'website': models.CharField(max_length=128, blank=True, null=True),
-#     'heffing': models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True),
+#     'heffing': models.IntegerField(blank=True, null=True),
 #     'bijdrageplichtigen': models.IntegerField(blank=True, null=True),
 #     'verordening': models.CharField(max_length=128, blank=True, null=True),
 #     'geometrie': models.GeometryField(db_column='wkb_geometry', srid=28992, blank=True, null=True),
@@ -77,5 +77,4 @@ def read_all_datasets():
 
         model_name = ds.name.upper() + 'Model'
         new_model = type(model_name, (models.Model,), new_attrs)
-        map_name = 'baz' if ds.name == 'biz' else ds.name
-        DATASET_CONFIG[map_name] = new_model
+        DATASET_CONFIG[ds.name] = new_model

@@ -14,9 +14,9 @@ grouped_url_patterns = {
     'base_patterns': [
         path('status/', include(health_urls)),
     ],
-    'biz_patterns': [
-        path('vsd/biz/', include(biz_urls.urls)),
-    ],
+    # 'biz_patterns': [
+    #     path('vsd/biz/', include(biz_urls.urls)),
+    # ],
     'gen_patterns': [
         path('vsd/', include(gen_urls.urls)),
     ],

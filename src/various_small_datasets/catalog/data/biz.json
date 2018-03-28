@@ -2,7 +2,7 @@
   "datasets": [
     {
       "name": "biz",
-      "table_name": "biz_data",
+      "table_name": "biz_view",
       "ordering": "id",
       "enable_api": true,
       "name_field": "naam",
@@ -54,9 +54,23 @@
         },
         {
           "name": "heffing",
-          "data_type": "decimal",
-          "max_digits": 10,
-          "decimal_places": 2
+          "data_type": "integer",
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "heffing_valuta_code",
+          "data_type": "char",
+          "max_length" : 20,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "heffing_display",
+          "data_type": "char",
+          "max_length" : 20,
+          "blank": true,
+          "null": true
         },
         {
           "name": "bijdrageplichtigen",
