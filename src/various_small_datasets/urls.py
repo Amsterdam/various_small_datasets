@@ -38,13 +38,14 @@ grouped_url_patterns = {
 #                ] + [url for pattern_list in grouped_url_patterns.values()
 #                     for url in pattern_list]
 
+
 @api_view()
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer, CoreJSONRenderer])
 def genapi_schema_view(request):
     datasets = GenericViewSet.get_all_datasets()
     description = 'Beschikbare datasets :\n'
     for k, v in datasets.items():
-        description += "\n\n{} : {}".format(k,v)
+        description += "\n\n{} : {}".format(k, v)
     generator = schemas.SchemaGenerator(
         title='Generieke API voor datasets',
         description=description,
@@ -57,7 +58,6 @@ urlpatterns = [path('vsd/docs/api-docs/',
                     genapi_schema_view),
                ] + [url for pattern_list in grouped_url_patterns.values()
                     for url in pattern_list]
-
 
 
 if settings.DEBUG:
