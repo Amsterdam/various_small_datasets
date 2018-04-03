@@ -158,11 +158,14 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
         self.filter_class = None
         super(GenericViewSet, self).__init__(*args, **kwargs)
 
-    def get_queryset(self):
+    @classmethod
+    def initialize(cls):
         if not GenericViewSet.initialized:
-            # Initialize datasets from the catalog configuration
             config.read_all_datasets()
             GenericViewSet.initialized = True
+
+    def get_queryset(self):
+        GenericViewSet.initialize()
 
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
@@ -192,3 +195,11 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
         context = super().get_serializer_context()
         context.update({'dataset': self.dataset})
         return context
+
+    @classmethod
+    def get_all_datasets(cls):
+        GenericViewSet.initialize()
+        datasets = {}
+        for k, v in config.DATASET_CONFIG.items():
+            datasets[k] = v.__doc__
+        return datasets

@@ -31,6 +31,7 @@ from various_small_datasets.catalog.models import DataSet
 #     '__module__': 'various_small_datasets.gen_api.models',
 #     'Meta': BIZMeta,
 #     '__str__': lambda self: getattr(self, 'naam'),
+#     '__doc__': 'Bedrijfs Investerings Zones',
 # }
 #
 # BIZModel = type("BIZModel", (models.Model,), biz_attrs)
@@ -63,6 +64,7 @@ def read_all_datasets():
             '__module__': 'various_small_datasets.gen_api.models',
             '__str__': lambda self: getattr(self, ds.name_field),
             'Meta': new_meta,
+            '__doc__': ds.description,
         }
 
         for dataset_fields in ds.datasetfield_set.all():

@@ -2,6 +2,7 @@
   "datasets": [
     {
       "name": "biz",
+      "description":"Bedrijfs Investerings Zones",
       "table_name": "biz_view",
       "ordering": "id",
       "enable_api": true,
