@@ -30,8 +30,8 @@ DROP TABLE IF EXISTS icp_data_old;
 
 -- Here we update the catalog for the Ice Cream Parlour dataset
 
-DELETE  FROM cat_dataset_fields where dataset_id = (select id from cat_dataset where name = 'icp');
-DELETE  FROM cat_dataset where name = 'icp';
+DELETE  FROM cat_dataset_fields where dataset_id = (select id from cat_dataset where name = 'ijs');
+DELETE  FROM cat_dataset where name = 'ijs';
 
 -- Import catalog
 INSERT INTO cat_dataset(
@@ -46,17 +46,17 @@ INSERT INTO cat_dataset(
     enable_geosearch,
     enable_maplayer
 ) VALUES(
-    'icp', 'Ice Cream Parlours', 'icp_data', 'icp_id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
+    'ijs', 'Ice Cream Parlours', 'icp_data', 'icp_id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
 
 WITH ins ("name", data_type, db_column, primary_key, "unique", max_length, blank, "null",
           max_digits, decimal_places, srid, dataset) AS
 ( VALUES
-      ('id', 'integer', 'icp_id', true, false,  NULL, false, false, NULL::integer, NULL::integer, NULL, 'icp')
-    , ('naam', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'icp')
-    , ('prijs', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'icp')
-    , ('sterren', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'icp')
-    , ('smaken', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'icp')
-    , ('locatie', 'geometry', 'wkb_geometry', false, false, NULL, false, false, NULL, NULL, 28992, 'icp')
+      ('id', 'integer', 'icp_id', true, false,  NULL, false, false, NULL::integer, NULL::integer, NULL, 'ijs')
+    , ('naam', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'ijs')
+    , ('prijs', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'ijs')
+    , ('sterren', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'ijs')
+    , ('smaken', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'ijs')
+    , ('locatie', 'geometry', 'wkb_geometry', false, false, NULL, false, false, NULL, NULL, 28992, 'ijs')
 )
 INSERT INTO cat_dataset_fields(
 	name,
