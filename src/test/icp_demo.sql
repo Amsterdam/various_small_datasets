@@ -20,9 +20,9 @@ CREATE TABLE icp_data_new (
 ALTER TABLE icp_data_new ADD UNIQUE (naam);
 CREATE INDEX ON icp_data_new USING gist(wkb_geometry);
 INSERT INTO icp_data_new (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
-            (1, 'IJscuypje', 3, 4, 'pistache', ST_Transform(ST_GeomFromText('POINT(52.367379 4.911880)', 4326), 28992) ),
-            (2, 'De ijsfiets', 2, 3, 'sinaasappel', ST_Transform(ST_GeomFromText('POINT(52.365912 4.906130)', 4326), 28992) ),
-            (3, 'Het ijsboefje', 1, 4, 'straciatelli', ST_Transform(ST_GeomFromText('POINT(52.358312 4.918146)', 4326), 28992) );
+            (1, 'IJscuypje', 3, 4, 'pistache', ST_Transform(ST_GeomFromText('POINT(4.911880 52.367379)', 4326), 28992) ),
+            (2, 'De ijsfiets', 2, 3, 'sinaasappel', ST_Transform(ST_GeomFromText('POINT(4.906130 52.365912)', 4326), 28992) ),
+            (3, 'Het ijsboefje', 1, 4, 'straciatelli', ST_Transform(ST_GeomFromText('POINT(4.918146 52.358312)', 4326), 28992) );
 
 ALTER TABLE IF EXISTS icp_data RENAME TO icp_data_old;
 ALTER TABLE icp_data_new RENAME TO icp_data;
