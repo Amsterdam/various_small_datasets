@@ -57,3 +57,23 @@ class GenericSerializer(BaseSerializer, HALSerializer):
                 self.context['dataset'],
                 obj.id))
         return links
+
+
+def get_fields(model):
+    """
+    This gets the fields for a model
+    """
+    return map(lambda x: x.name, model._meta.get_fields())
+
+
+def serializer_factory(dataset, model):
+    model_name = dataset.upper() + 'GenericSerializer'
+    fields = ['_links', '_display']
+    fields.extend(get_fields(model))
+    new_meta_attrs = {'model': model, 'fields': fields}
+    new_meta = type('Meta', (object,), new_meta_attrs)
+    new_attrs = {
+        '__module__': 'various_small_datasets.gen_api.serializers',
+        'Meta': new_meta,
+    }
+    return type(model_name, (GenericSerializer,), new_attrs)

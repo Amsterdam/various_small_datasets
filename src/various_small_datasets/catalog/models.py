@@ -32,6 +32,7 @@ class DataSet(models.Model):
     def __str__(self):
         return self.name
 
+# TODO : we can have multiple map layers for one dataset, so we need a different relation for this
 
 class DataSetField(models.Model):
     id = models.AutoField(primary_key=True)

@@ -135,13 +135,6 @@ class GenericFilter(FilterSet):
         )
 
 
-def get_fields(model):
-    """
-    This gets the fields
-    """
-    return map(lambda x: x.name, model._meta.get_fields())
-
-
 class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
     """
     Generic Viewset for arbitrary Django models
@@ -184,11 +177,7 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
 
     def get_serializer_class(self):
         if self.dataset not in GenericViewSet.serializerClasses:
-            model_name = self.dataset.upper() + 'GenericSerializer'
-            serializer_class = type(model_name, (serializers.GenericSerializer,), {})
-            serializer_class.Meta.model = self.model
-            serializer_class.Meta.fields.extend(get_fields(self.model))
-            GenericViewSet.serializerClasses[self.dataset] = serializer_class
+            GenericViewSet.serializerClasses[self.dataset] = serializers.serializer_factory(self.dataset, self.model)
         return GenericViewSet.serializerClasses[self.dataset]
 
     def get_serializer_context(self):
