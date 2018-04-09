@@ -9,8 +9,6 @@ from various_small_datasets.settings_databases import LocationKey,\
     OVERRIDE_PORT_ENV_VAR
 
 INSTALLED_APPS += [
-    'biz.api',
-    'biz.dataset',
     'various_small_datasets.catalog',
     'various_small_datasets.gen_api',
     'various_small_datasets.importer',
@@ -120,4 +118,4 @@ SWAGGER_SETTINGS = {
     'doc_expansion': 'list',
 }
 
-HEALTH_MODEL = 'dataset.bizdata'
+HEALTH_MODEL = 'catalog.DataSet'

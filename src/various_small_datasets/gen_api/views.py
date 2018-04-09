@@ -1,12 +1,15 @@
 import logging
-from django.contrib.gis.geos import Point
 from rest_framework.exceptions import NotFound, ParseError
 
 import various_small_datasets.gen_api.rest
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework import filters
 from rest_framework import serializers as rest_serializers
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 
+from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.gen_api import serializers
 
 import various_small_datasets.gen_api.dataset_config as config
@@ -48,22 +51,29 @@ def valid_lat_lon(lat, lon):
 
 
 def convert_input_to_float(value):
-
     err = None
 
-    try:
-        x, y = value.split(',')
-    except ValueError:
-        return None, None, f"Not enough values x, y {value}"
+    lvalues = value.split(',')
+    if len(lvalues) < 2:
+        return None, None, None, f"Not enough values x, y {value}"
+
+    x = lvalues[0]
+    y = lvalues[1]
+    radius = lvalues[2] if len(lvalues) > 2 else None
 
     # Converting to float
     try:
         x = float(x)
         y = float(y)
+        radius = None if radius is None else int(radius)
     except ValueError:
-        return None, None, f"Invalid value {x} {y}"
+        return None, None, None, f"Invalid value {x} {y} {radius}"
 
-    return x, y, err
+    # checking sane radius size
+    if radius is not None and radius > 1000:
+        return None, None, None, "radius too big"
+
+    return x, y, radius, err
 
 
 def validate_x_y(value):
@@ -72,10 +82,10 @@ def validate_x_y(value):
     """
     point = None
 
-    x, y, err = convert_input_to_float(value)
+    x, y, radius, err = convert_input_to_float(value)
 
     if err:
-        return None, None, err
+        return None, None, None, err
 
     # Checking if the given coords are valid
 
@@ -86,53 +96,79 @@ def validate_x_y(value):
     else:
         err = "Coordinates received not within Amsterdam"
 
-    return point, err
+    return point, radius, err
 
 
 class GenericFilter(FilterSet):
-    id = filters.CharFilter(method="id_filter")
-    location = filters.CharFilter(method="location_filter")
-    name = filters.CharFilter(method="name_filter")
 
     class Meta(object):
         model = None
-        fields = (
-            'naam',
-            'locatie',
-            'id',
-        )
+        fields = ()
 
     @staticmethod
-    def locatie_filter(queryset, _filter_name, value):
+    def location_filter(queryset, _filter_name, value):
         """
         Filter based on the geolocation. This filter actually
-        expect 2 numerical values: x and y
+        expect 2 or 3 numerical values: x, y and optional radius
         The value given is broken up by ',' and converted
         to the value tuple
         """
 
-        point, err = validate_x_y(value)
+        point, radius, err = validate_x_y(value)
 
         if err:
             log.exception(err)
             raise rest_serializers.ValidationError(err)
 
         # Creating one big queryset
-        biz_results = queryset.filter(
-            geometrie__contains=point)
+        (geo_field, geo_type) = _filter_name.split(':')
+
+        if geo_type.lower() == 'polygon' and radius is None:
+            args = {'__'.join([geo_field, 'contains']): point}
+            biz_results = queryset.filter(**args)
+        elif radius is not None:
+            args = {'__'.join([geo_field, 'dwithin']): (point, D(m=radius))}
+            biz_results = queryset.filter(**args).annotate(afstand=Distance(geo_field, point))
+        else:
+            err = "Radius in argument expected"
+            log.exception(err)
+            raise rest_serializers.ValidationError(err)
         return biz_results
 
     @staticmethod
-    def naam_filter(queryset, _filter_name, value):
-        return queryset.filter(
-            naam__icontains=value
-        )
+    def name_filter(queryset, _filter_name, value):
+        args = {'__'.join([_filter_name, 'icontains']): value}
+        return queryset.filter(**args)
 
-    @staticmethod
-    def id_filter(queryset, _filter_name, value):
-        return queryset.filter(
-            id__iexact=value
-        )
+
+def filter_factory(ds_name, model):
+    model_name = ds_name.upper() + 'GenericFilter'
+    ds = DataSet.objects.get(name=ds_name)
+    name_field = ds.name_field
+    geometry_field = ds.geometry_field
+    fields = model._meta.get_fields()
+    for field in fields:
+        if field.db_column == geometry_field:
+            geometry_field = field.name
+        if field.db_column == name_field:
+            name_field = field.name
+    geometry_type = ds.geometry_type
+    fields = [name_field, geometry_field]
+    location_filter_name = ':'.join([geometry_field, geometry_type])
+    location = filters.CharFilter(name=location_filter_name, method="location_filter")
+    name = filters.CharFilter(name=name_field, method="name_filter")
+
+    new_meta_attrs = {'model': model,
+                      'fields': fields,
+                      }
+    new_meta = type('Meta', (object,), new_meta_attrs)
+    new_attrs = {
+        '__module__': 'various_small_datasets.gen_api.filters',
+        'Meta': new_meta,
+        geometry_field: location,
+        name_field: name,
+    }
+    return type(model_name, (GenericFilter,), new_attrs)
 
 
 class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
@@ -142,6 +178,7 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
     """
     initialized = False
     serializerClasses = {}
+    filterClasses = {}
 
     def __init__(self, *args, **kwargs):
         self.dataset = None
@@ -170,9 +207,10 @@ class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
         else:
             raise NotFound("dataset" + self.dataset)
 
-        GenericFilter.Meta.model = self.model()
-
-        # TODO cache this in a dictionary per dataset, see if  it improves performance
+        if self.action == 'list':
+            if self.dataset not in GenericViewSet.filterClasses:
+                GenericViewSet.filterClasses[self.dataset] = filter_factory(self.dataset, self.model)
+            self.filter_class = GenericViewSet.filterClasses[self.dataset]
         return self.model.objects.all()
 
     def get_serializer_class(self):

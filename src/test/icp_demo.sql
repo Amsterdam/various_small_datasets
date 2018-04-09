@@ -3,9 +3,9 @@
 -- Import this file in various_small_datasets database ,
 -- and then you can try
 --
--- http://localhost:8000/vsd/icp/1/
--- http://localhost:8000/vsd/icp/2/
--- http://localhost:8000/vsd/icp/3/
+-- http://localhost:8000/vsd/ijs/1/
+-- http://localhost:8000/vsd/ijs/2/
+-- http://localhost:8000/vsd/ijs/3/
 
 DROP TABLE IF EXISTS icp_data_new;
 CREATE TABLE icp_data_new (
@@ -46,7 +46,7 @@ INSERT INTO cat_dataset(
     enable_geosearch,
     enable_maplayer
 ) VALUES(
-    'ijs', 'Ice Cream Parlours', 'icp_data', 'icp_id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
+    'ijs', 'IJs Salons rond de Weesperstraat', 'icp_data', 'id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
 
 WITH ins ("name", data_type, db_column, primary_key, "unique", max_length, blank, "null",
           max_digits, decimal_places, srid, dataset) AS
