@@ -1,26 +1,27 @@
 import math
-import os
 import pandas
 import re
+import argparse
 
 
 def main():
-    current_dir = os.getcwd()
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(script_dir)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("sql_shape", type=str, help="SQL from Shape file")
+    parser.add_argument("xlsx", type=str, help="XLSX spreadsheet")
+    parser.add_argument("output", type=str, help="output file")
+    args = parser.parse_args()
 
     try:
         # Read Excel sheet in dataframe df
-        df = pandas.read_excel('../data/Dataset BIZ v4.xlsx', sheet_name=1)
+        df = pandas.read_excel(args.xlsx, sheet_name=1)
 
         # Read SQL data  in shape_map dictionary
-        sql_path = '../tmp/BIZZONES.utf8.sql'
-        sql_file = open(sql_path, 'r')
+        sql_file = open(args.sql_shape, 'r')
         sql = sql_file.readlines()
         shape_map = dict()
         for line in sql:
             m = re.search('INSERT INTO "public"\."bizzones" \("wkb_geometry" , "id1", "naam", "aktief", "ddingang".*\) '
-            'VALUES \(\'([^\']+)\', (\d+), \'([^\']+)\', \'([^\']+)\', \'([^\']+)\'', line)
+                          'VALUES \(\'([^\']+)\', (\d+), \'([^\']+)\', \'([^\']+)\', \'([^\']+)\'', line)
             if m:
                 geometry, id1, naam, aktief, ddingang = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
                 if aktief == 'Ja':
@@ -33,40 +34,40 @@ def main():
         # Add name mapping. This maps the name in the spreadsheet to the name in the shape file
 
         name_mapping = {
-         'Albert Cuyp': 'AlbertCuypstraat',
-         'Bedrijvencentrum Osdorp': 'BC Osdorp',
-         'Beukenweg-Beukenplein': 'Beukenplein',
-         'Cornelis Schuytstraat': 'Cor Schuijtstraat',
-         'Damrak': 'Damrak_2017',
-         'De Clercqstraat': 'De clercqstraat',
-         'Eerste van der Helststraat': '1evdhelsttstraat',
-         'Eerste van Swindenstraat': '1evSwindenstraat',
-         'Ferdinand Bolstraat': 'Ferdinandbol_2017',
-         'Haarlemmerbuurt 2e termijn': 'Haarlemmerstraat_2017',
-         'Hoofddorpplein e.o.': 'Hoofddorppleinbuurt',
-         'Jan Pieter Heijestraat': 'JP Heijerstraat',
-         'Jodenbreestraat-Antoniesbreestraat': 'Jodebreestraat',
-         'Kalverstraat-Heiligeweg eigenaren': 'KalverstraatOndernemers',
-         'Kalverstraat-Heiligeweg gebruikers': 'KalverstraatOndernemers',
-         'Knowledge Mile': 'Wibautstraat',
-         'Olympiapleinbuurt': 'Olympiaplein',
-         'Oostelijke Eilanden & Czaar Peterbuurt': 'CzaarPeter',
-         'Osdorp Centrum': 'OsdorpCentrum',
-         'Osdorper Ban eigenaren': 'OsdorperbanEigenaar',
-         'Oud West': 'Eerste C Huygensstraat',
-         'Prinsheerlijk': 'PrinsHeerlijk_2017',
-         'Raadhuisstraat-Westermarkt': 'RaadhuisstraatWestermarkt',
-         'Rembrandtplein/Thorbeckeplein': 'Rembrandtplein',
-         'Rokin eigenaren': 'RokinOndernemers',
-         'Rokin gebruikers': 'RokinOndernemers',
-         'Rozengracht': 'Rozengracht_2017',
-         'Spuistraat': 'SpuistraatEO',
-         'Uitgaansgebied Leidsebuurt': 'Leidseplein',
-         'Utrechtsestraat': 'Utrechtsestraat_2017',
-         'Van Dam tot Stopera': 'Van Dam tot Stopera_2017',
-         'Van Woustraat': 'V Woustraat',
-         'Van der Helstplein': 'Vdhelstplein',
-         'Warmoesstraat en omgeving': 'Warmoesstraat'
+            'Albert Cuyp': 'AlbertCuypstraat',
+            'Bedrijvencentrum Osdorp': 'BC Osdorp',
+            'Beukenweg-Beukenplein': 'Beukenplein',
+            'Cornelis Schuytstraat': 'Cor Schuijtstraat',
+            'Damrak': 'Damrak_2017',
+            'De Clercqstraat': 'De clercqstraat',
+            'Eerste van der Helststraat': '1evdhelsttstraat',
+            'Eerste van Swindenstraat': '1evSwindenstraat',
+            'Ferdinand Bolstraat': 'Ferdinandbol_2017',
+            'Haarlemmerbuurt 2e termijn': 'Haarlemmerstraat_2017',
+            'Hoofddorpplein e.o.': 'Hoofddorppleinbuurt',
+            'Jan Pieter Heijestraat': 'JP Heijerstraat',
+            'Jodenbreestraat-Antoniesbreestraat': 'Jodebreestraat',
+            'Kalverstraat-Heiligeweg eigenaren': 'KalverstraatOndernemers',
+            'Kalverstraat-Heiligeweg gebruikers': 'KalverstraatOndernemers',
+            'Knowledge Mile': 'Wibautstraat',
+            'Olympiapleinbuurt': 'Olympiaplein',
+            'Oostelijke Eilanden & Czaar Peterbuurt': 'CzaarPeter',
+            'Osdorp Centrum': 'OsdorpCentrum',
+            'Osdorper Ban eigenaren': 'OsdorperbanEigenaar',
+            'Oud West': 'Eerste C Huygensstraat',
+            'Prinsheerlijk': 'PrinsHeerlijk_2017',
+            'Raadhuisstraat-Westermarkt': 'RaadhuisstraatWestermarkt',
+            'Rembrandtplein/Thorbeckeplein': 'Rembrandtplein',
+            'Rokin eigenaren': 'RokinOndernemers',
+            'Rokin gebruikers': 'RokinOndernemers',
+            'Rozengracht': 'Rozengracht_2017',
+            'Spuistraat': 'SpuistraatEO',
+            'Uitgaansgebied Leidsebuurt': 'Leidseplein',
+            'Utrechtsestraat': 'Utrechtsestraat_2017',
+            'Van Dam tot Stopera': 'Van Dam tot Stopera_2017',
+            'Van Woustraat': 'V Woustraat',
+            'Van der Helstplein': 'Vdhelstplein',
+            'Warmoesstraat en omgeving': 'Warmoesstraat'
         }
 
         def find_geometry(name):
@@ -82,7 +83,7 @@ def main():
             s = s.lstrip('#').rstrip('#')
             if not re.match('^https?://', s):
                 s = 'http://' + s
-            return "'" + s +  "'"
+            return "'" + s + "'"
 
         # Create insert statements
         def makequote(s):
@@ -92,7 +93,7 @@ def main():
             return "ST_SetSRID('" + s + "'::geometry, 28992)"
 
         def make_insert(t):
-            insert = '''insert into biz_data(
+            insert = '''insert into biz_data_new(
           biz_id  
         , naam
         , biz_type
@@ -124,20 +125,17 @@ def main():
                    , 'NULL' if t[9] is None else makesrid28992(t[9]))
             return insert
 
-
         inserts = []
         for t1 in df.itertuples():
             inserts.append(make_insert(t1))
 
         # Write file
-        with open('biz_data_insert.sql', 'w') as f:
+        with open(args.output, 'w') as f:
             f.write("\n".join(inserts))
-        f.closed
 
-    finally:
-        os.chdir(current_dir)
+    except IOError as exc:
+        print (exc)
+
 
 if __name__ == '__main__':
     main()
-
-
