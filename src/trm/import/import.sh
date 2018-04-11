@@ -16,6 +16,7 @@ TMPDIR=/tmp/trm
 
 # Move to trm directory
 cd ..
+rm -Rf ${TMPDIR}
 mkdir -p ${TMPDIR}
 unzip data/Tram\ KGEs.zip -d ${TMPDIR}
 unzip data/Metro\ KGEs.zip -d ${TMPDIR}
@@ -35,8 +36,8 @@ perl -i -ne "print unless /DROP TABLE/" ${TMPDIR}/trm_metro.utf8.sql
 # Replace HTML entities
 sed -i -- 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g;' ${TMPDIR}/trm_tram.utf8.sql
 
-export PGHOST=${DATABASE_HOST:-localhost}
-export PGPORT=${DATABASE_PORT:-5408}
+export PGHOST=${DATABASE_HOST_OVERRIDE:-${DATABASE_HOST:-localhost}}
+export PGPORT=${DATABASE_PORT_OVERRIDE:-${DATABASE_PORT:-5408}}
 export PGDATABASE=${DATABASE_NAME:-various_small_datasets}
 export PGUSER=${DATABASE_USER:-various_small_datasets}
 export PGPASSWORD=${DATABASE_PASSWORD:-insecure}

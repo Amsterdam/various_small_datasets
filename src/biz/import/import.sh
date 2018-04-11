@@ -20,8 +20,8 @@ ogr2ogr -f "PGDump" ${TMPDIR}/BIZZONES.sql data/BIZZONES.shp
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/BIZZONES.sql > ${TMPDIR}/BIZZONES.utf8.sql
 python import/convert_data.py ${TMPDIR}/BIZZONES.utf8.sql data/Dataset\ BIZ\ v4.xlsx ${TMPDIR}/biz_data_insert.sql
 
-export PGHOST=${DATABASE_HOST:-localhost}
-export PGPORT=${DATABASE_PORT:-5408}
+export PGHOST=${DATABASE_HOST_OVERRIDE:-${DATABASE_HOST:-localhost}}
+export PGPORT=${DATABASE_PORT_OVERRIDE:-${DATABASE_PORT:-5408}}
 export PGDATABASE=${DATABASE_NAME:-various_small_datasets}
 export PGUSER=${DATABASE_USER:-various_small_datasets}
 export PGPASSWORD=${DATABASE_PASSWORD:-insecure}
@@ -42,5 +42,5 @@ ALTER INDEX biz_data_new_wkb_geometry_geom_idx RENAME TO biz_data_wkb_geometry_g
 COMMIT;
 SQL
 
-# rm -Rf ${TMPDIR}
+rm -Rf ${TMPDIR}
 cd $CUR_DIR
