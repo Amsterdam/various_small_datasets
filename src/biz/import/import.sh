@@ -27,6 +27,7 @@ export PGUSER=${DATABASE_USER:-various_small_datasets}
 export PGPASSWORD=${DATABASE_PASSWORD:-insecure}
 
 psql -X --set ON_ERROR_STOP=on <<SQL
+ALTER DEFAULT PRIVILEGES grant SELECT on tables to ${PGUSER}_read;
 \echo Create new tables
 \i import/biz_data_create.sql
 \echo Import data

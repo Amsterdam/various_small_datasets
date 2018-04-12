@@ -43,6 +43,7 @@ export PGUSER=${DATABASE_USER:-various_small_datasets}
 export PGPASSWORD=${DATABASE_PASSWORD:-insecure}
 
 psql -X --set ON_ERROR_STOP=on <<SQL
+ALTER DEFAULT PRIVILEGES grant SELECT on tables to ${PGUSER}_read;
 BEGIN;
 DROP TABLE IF EXISTS trm_tram_new, trm_metro_new;
 COMMIT;
