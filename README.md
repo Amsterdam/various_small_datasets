@@ -24,7 +24,6 @@ Code for various small datasets where data does not change very often
 Import data with :
 
     src/biz/import/import.sh
-    src/biz/import/import.sh
 
 # Tram & Metro (TRM)
 
@@ -50,4 +49,11 @@ urls to test are
     /status/health
     /status/data
     /vsd/biz/
-    /vsd/biz/0
+    /vsd/biz/0/
+
+Filtering on name and geometry field is also supported, although this is not yet  shown in the swagger definition
+
+For example :
+
+    /vsd/biz/?naam=kalverstraat
+    /vsd/biz/?geometrie=52.362762,4.907598
