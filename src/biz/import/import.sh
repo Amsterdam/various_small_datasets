@@ -26,16 +26,8 @@ export PGDATABASE=${DATABASE_NAME:-various_small_datasets}
 export PGUSER=${DATABASE_USER:-various_small_datasets}
 export PGPASSWORD=${DATABASE_PASSWORD:-insecure}
 
-# TODO : The statement ALTER DEFAULT PRIVILEGES grant SELECT on tables to ${PGUSER}_read; is temporary
-# This should probably be fixed in Openstack in roles/with-database/tasks/main.yml
-# Replace :
-#       shell: psql -U postgres {{ name }} -c 'ALTER DEFAULT PRIVILEGES grant SELECT on tables to {{ name }}_read;'
-# with :
-#       shell: psql -U postgres {{ name }} -c 'ALTER DEFAULT PRIVILEGES FOR postgres, {{ name}} grant SELECT on tables to {{ name }}_read;
-# Same for sequences there
 # TODO : Add verification of new tables after creation and insert and before rename. If not verified  the rename should not happen
 psql -X --set ON_ERROR_STOP=on <<SQL
-ALTER DEFAULT PRIVILEGES grant SELECT on tables to ${PGUSER}_read;
 \echo Create new tables
 \i import/biz_data_create.sql
 \echo Import data
