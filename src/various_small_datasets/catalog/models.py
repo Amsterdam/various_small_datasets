@@ -3,7 +3,7 @@ from django.contrib.gis.db import models
 
 class DataSet(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(unique=True, max_length=10, blank=False, null=False)
+    name = models.CharField(unique=True, max_length=30, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
     database = models.CharField(max_length=128, null=True)  # default is 'default'
     schema = models.CharField(max_length=128, null=True)  # default is 'public'.
