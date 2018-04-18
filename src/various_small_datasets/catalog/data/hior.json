@@ -37,6 +37,12 @@
       "name_field": "name",
       "fields": [
         {
+          "name": "id",
+          "data_type": "integer",
+          "db_column": "id",
+          "primary_key": true
+        },
+        {
           "name": "item_id",
           "data_type": "integer",
           "db_column": "item_id"

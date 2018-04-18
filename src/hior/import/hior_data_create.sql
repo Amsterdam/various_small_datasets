@@ -10,6 +10,7 @@ CREATE TABLE hior_items_new (
 );
 
 CREATE TABLE hior_properties_new (
+    id SERIAL PRIMARY KEY,
     item_id integer REFERENCES hior_items_new(id),
     name character varying(128),
     value character varying(128)
