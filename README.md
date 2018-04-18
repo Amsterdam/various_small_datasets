@@ -102,4 +102,14 @@ When the import is OK include the dataset in the catalog
     
 View your new dataset at localhost:8000/vsd/ds
 
-    
+Because we now have multiple datasets in one database we want to be able to add or update only one dataset
+without touching or impacting the other datasets. That is why we import initially all the data in "_new" tables
+and, if everything went well, finally we rename in one transactions the existing tables to "_old" en the "_new"
+tables to the version used by the API.
+
+In this way, nothing is broken if something went wrong before the last step of renaming the tables, and the database
+usage for other tables is not in any way impacted (except for some db performance during import).
+
+In Jenkins we also have a special import called "Partial_Import_Various_Small_Datasets_(DEV|PROD)" where we can
+do a partial import for only one of the datasets or do a Django migrate or import_catalog if that was changed.
+This Jenkins import itself uses the Openstack Ansible playbook "import-various-small-datasets.yml"
