@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django_filters',
     'django_extensions',
 
+    'corsheaders',
+
     'django.contrib.gis',
     'rest_framework',
     'rest_framework_gis',
@@ -45,12 +47,14 @@ if DEBUG:
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
