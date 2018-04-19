@@ -57,16 +57,13 @@ def read_all_datasets():
     This should called at the start of the application, for example in the toplevel urls
     """
 
-    def _str_factory(name_field):
-        return lambda self: getattr(self, name_field)
-
     datasets = DataSet.objects.filter(enable_api=True)
     for ds in datasets:
         new_meta_attrs = {'managed': False, 'db_table': ds.table_name, 'ordering': [ds.ordering]}
         new_meta = type('Meta', (object, ), new_meta_attrs)
         new_attrs = {
             '__module__': 'various_small_datasets.gen_api.models',
-            '__str__': _str_factory(ds.name_field),
+            '__str__': lambda self, name_field=ds.name_field: getattr(self, name_field),
             'Meta': new_meta,
             '__doc__': ds.description,
         }
