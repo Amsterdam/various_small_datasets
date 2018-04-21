@@ -6,7 +6,14 @@ import pprint
 pp = pprint.PrettyPrinter()
 
 # Configuration
+# Sheet that contains the reference data
 SHEET_NAME = "Achterkant"
+
+# Columns that contain the items
+TEXT = "Kerntekst"
+DESCRIPTION = "Toelichting"
+
+# Colums that contain the item properties
 PROPERTIES = [
     ('Theme', ['Thema', 'Subthema 1', 'Subthema 2']),
     ('Area', ['Stadsdeel']),
@@ -14,26 +21,19 @@ PROPERTIES = [
     ('Level', ['Niveau ']),
     ('Source', ['(bestuurlijke)  bron '])
 ]
-TEXT = "Kerntekst"
-DESCRIPTION = "Toelichting"
 
+# Table names to write new HIOR data to
 ITEMS_TABLE = "hior_items_new"
 PROPS_TABLE = "hior_properties_new"
 
-def import_file(filename):
 
-    # xl = pd.ExcelFile(FILENAME)
-    # sheets = xl.sheet_names
+def import_file(filename):
+    # Import the HIOR Excel file
 
     items = []
     properties = []
 
     df = pd.read_excel(filename, sheet_name=SHEET_NAME)
-    # columns = df.axes[1]
-
-    # pp.pprint(sheets)
-    # pp.pprint(columns)
-
     for row in df.iterrows():
         id, series = row
 
@@ -53,15 +53,17 @@ def import_file(filename):
             for value in [value for value in values if not pd.isnull(value)]:
                 item_properties.append({"item_id": id, "name": name, "value": value})
 
-
         # Post process
         for property in item_properties:
             value = property["value"]
+            # Levels are stored as "1. <Level name>", convert to "<Level name>"
             if property["name"] == "Level":
                 value = re.sub(r'^\d\. ', '', value)
+            # Uniform values, transform string like "aap noot " to "Aap Noot"
             value = value.title().strip()
             property["value"] = value
 
+        # Check validity
         isValid = True
         for (name, _) in PROPERTIES:
             props = [property["value"] for property in item_properties if property["name"] == name]
@@ -74,6 +76,7 @@ def import_file(filename):
             items.append({"id": id, "text": text, "description": description})
             properties = properties + item_properties
 
+    # Report summary; unique property values, #items and #properties
     for (name, _) in PROPERTIES:
         values = set([property["value"] for property in properties if property["name"] == name])
         pp.pprint(f'{name} - {len(values)} values')
@@ -84,6 +87,7 @@ def import_file(filename):
 
 
 def get_value(item, field):
+    # Values are stored as strings, '...'. Convert any containg quotes to double quotes
     value = item[field]
     if isinstance(value, str):
         value = value.replace("'", "\"")
@@ -91,6 +95,12 @@ def get_value(item, field):
     return str(value)
 
 def write_inserts(out_dir, items, properties):
+    # Write import statements
+    # INSERT INTO table
+    #     (fieldA, fieldB, ...)
+    # VALUES
+    #     (valueA, valueB, ...)
+    #     (valueA, valueB, ...);
     for (collection, table_name) in [(items, ITEMS_TABLE), (properties, PROPS_TABLE)]:
         with open(f"{out_dir}/{table_name}.sql", "w") as f:
             fields = collection[0].keys()
