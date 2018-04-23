@@ -3,4 +3,3 @@
 echo "Cleanup temp files"
 
 rm -Rf ${TMPDIR}
-cd $CUR_DIR

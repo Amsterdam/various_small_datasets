@@ -22,5 +22,9 @@ case $i in
     echo "Importing catalog"
     python ./manage.py import_catalog
     ;;
+    hior)
+    echo "Importing HIOR"
+    python hior/import.sh
+    ;;
 esac
 done
