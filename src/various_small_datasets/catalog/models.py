@@ -35,6 +35,7 @@ class DataSet(models.Model):
         else:
             return None
 
+
 class DataSetField(models.Model):
     id = models.AutoField(primary_key=True)
     dataset = models.ForeignKey(DataSet, on_delete=models.CASCADE)

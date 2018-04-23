@@ -1,10 +1,8 @@
 import logging
 import os
 
-from django.core.exceptions import ObjectDoesNotExist
 from jinja2 import Environment, FileSystemLoader
-
-from various_small_datasets.catalog.models import DataSet, MapLayer
+from various_small_datasets.catalog.models import DataSet
 from django.core.management import BaseCommand
 
 
