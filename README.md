@@ -113,3 +113,38 @@ usage for other tables is not in any way impacted (except for some db performanc
 In Jenkins we also have a special import called "Partial_Import_Various_Small_Datasets_(DEV|PROD)" where we can
 do a partial import for only one of the datasets or do a Django migrate or import_catalog if that was changed.
 This Jenkins import itself uses the Openstack Ansible playbook "import-various-small-datasets.yml"
+
+# Generate MAP files for MAPSERVER
+
+It is also possible to generate a simple MAP file for MAPSERVER from the specification.
+
+In the JSON file that describes the dataset the following entries should be present :
+        
+      "enable_maplayer": true,
+      "map_template": "name_of_template"    # Optional default is default.map.template  
+      "map_title": "Title
+      "map_abstract": "Oneline abstract"    # Optional
+      "map_layers": [
+        {
+          "name": "name_of_layer",
+          "title": "title_of_layer",
+          "abstract": "abstract_for_layer",    # Optional
+          "filter": "expression for filter in layer"    # Optional
+          "color": "0 70 153",                 # Optional  
+          "style": "expression for style",     # Optional, overrides color 
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ],
+ 
+ If these entries are specified map files are generated with the command : 
+ 
+    cd src
+    python manage.py generate_map_files 
+    
+Then you can find the generated mapfiles in **various_small_datasets/tools/mapfiles**    
+
+Copy these files to the **mapserver**  and test if they work. 

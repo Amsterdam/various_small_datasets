@@ -16,13 +16,9 @@ class DataSet(models.Model):
     geometry_type = models.CharField(max_length=32)  # POINT, POLYGON, LINE
     enable_geosearch = models.BooleanField()
     enable_maplayer = models.BooleanField()
-    maplayer_template = models.CharField(max_length=128, null=True)  # default = 'default'
-    maplayer_color = models.CharField(max_length=9, null=True)  # RGB hex start with # last 2 digits translucence
-    maplayer_minscale = models.PositiveIntegerField(null=True)
-    maplayer_maxscale = models. PositiveIntegerField(null=True)
-    maplayer_label = models.CharField(max_length=128, null=True)
-    maplayer_label_minscale = models.PositiveIntegerField(null=True)
-    maplayer_lable_maxscale = models.PositiveIntegerField(null=True)
+    map_template = models.CharField(max_length=128, null=True)  # default = 'default'
+    map_title = models.CharField(max_length=128, null=True)
+    map_abstract = models.CharField(max_length=128, null=True)
 
     class Meta:
         managed = True
@@ -32,8 +28,12 @@ class DataSet(models.Model):
     def __str__(self):
         return self.name
 
-# TODO : we can have multiple map layers for one dataset, so we need a different relation for this
-
+    def pk_field(self):
+        pkfields = self.datasetfield_set.filter(primary_key=True)
+        if len(pkfields) >= 1:  # In Django we only have one PK field
+            return pkfields[0]
+        else:
+            return None
 
 class DataSetField(models.Model):
     id = models.AutoField(primary_key=True)
@@ -55,6 +55,30 @@ class DataSetField(models.Model):
         db_table = 'cat_dataset_fields'
         ordering = ['id']
         unique_together = ('dataset', 'name',)
+
+    def __str__(self):
+        return self.name
+
+
+class MapLayer(models.Model):
+    id = models.AutoField(primary_key=True)
+    dataset = models.ForeignKey(DataSet, on_delete=models.CASCADE)
+    name = models.CharField(max_length=128, blank=False, null=False)
+    title = models.CharField(max_length=128, blank=False, null=False)
+    abstract = models.CharField(max_length=128, blank=False, null=True)
+    filter = models.CharField(max_length=128, blank=False, null=True)
+    color = models.CharField(max_length=11, null=True)  # RGB hex start with # last 2 digits translucence or 3 numbers
+    style = models.TextField(null=True)
+    minscale = models.PositiveIntegerField(null=True)
+    maxscale = models. PositiveIntegerField(null=True)
+    label = models.CharField(max_length=128, null=True)
+    label_minscale = models.PositiveIntegerField(null=True)
+    label_maxscale = models.PositiveIntegerField(null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'cat_maplayer'
+        ordering = ['id']
 
     def __str__(self):
         return self.name

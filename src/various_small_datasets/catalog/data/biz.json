@@ -11,13 +11,21 @@
       "geometry_type": "POLYGON",
       "enable_geosearch": true,
       "enable_maplayer": true,
-      "maplayer_template": "default",
-      "maplayer_color": "#004699",
-      "maplayer_minscale": 10,
-      "maplayer_maxscale": 400000,
-      "maplayer_label": "naam",
-      "maplayer_label_minscale": 10,
-      "maplayer_lable_maxscale": 10000,
+      "map_title": "Bedrijfsinvesteringszone",
+      "map_abstract": "Bedrijfsinvesteringszone Amsterdam",
+      "map_layers": [
+        {
+          "name": "biz_polygons",
+          "title": "bedrijfsinvesteringszone",
+          "abstract": "bedrijfsinvesteringszone polygons Amsterdam",
+          "color": "0 70 153",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ],
       "fields": [
         {
           "name": "id",
