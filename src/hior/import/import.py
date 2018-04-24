@@ -24,8 +24,9 @@ PROPERTIES = [
 
 # Columns that contain attributes
 ATTRIBUTES = [
-    ('Images', ['Afbeelding 1', 'Afbeelding 2', 'Afbeelding 3']),
-    ('Link', ['Download 1', 'Download 2'])
+    ('Image', ['Afbeelding 1', 'Afbeelding 2', 'Afbeelding 3']),
+    ('Link', ['Download 1', 'Download 2']),
+    ('SourceLink', ['(bestuurlijke)  bron '])
 ]
 
 # Table names to write new HIOR data to
@@ -76,6 +77,11 @@ def import_file(filename):
             # Uniform values, transform string like "aap noot " to "Aap Noot"
             value = value.title().strip()
             property["value"] = value
+
+        for attribute in item_attributes:
+            value = attribute["value"]
+            value = re.sub(r'\\', '/', value) # Correction for Windows path names
+            attribute["value"] = value.strip()
 
         # Check validity
         isValid = True
