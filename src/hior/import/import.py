@@ -22,9 +22,16 @@ PROPERTIES = [
     ('Source', ['(bestuurlijke)  bron '])
 ]
 
+# Columns that contain attributes
+ATTRIBUTES = [
+    ('Images', ['Afbeelding 1', 'Afbeelding 2', 'Afbeelding 3']),
+    ('Link', ['Download 1', 'Download 2'])
+]
+
 # Table names to write new HIOR data to
 ITEMS_TABLE = "hior_items_new"
 PROPS_TABLE = "hior_properties_new"
+ATTRS_TABLE = "hior_attributes_new"
 
 
 def import_file(filename):
@@ -32,6 +39,7 @@ def import_file(filename):
 
     items = []
     properties = []
+    attributes = []
 
     df = pd.read_excel(filename, sheet_name=SHEET_NAME)
     for row in df.iterrows():
@@ -52,6 +60,12 @@ def import_file(filename):
             values = [series[key] for key in keys]
             for value in [value for value in values if not pd.isnull(value)]:
                 item_properties.append({"item_id": id, "name": name, "value": value})
+
+        item_attributes = []
+        for (name, keys) in ATTRIBUTES:
+            values = [series[key] for key in keys]
+            for value in [value for value in values if not pd.isnull(value)]:
+                item_attributes.append({"item_id": id, "name": name, "value": value})
 
         # Post process
         for property in item_properties:
@@ -75,6 +89,7 @@ def import_file(filename):
         if isValid:
             items.append({"id": id, "text": text, "description": description})
             properties = properties + item_properties
+            attributes = attributes + item_attributes
 
     # Report summary; unique property values, #items and #properties
     for (name, _) in PROPERTIES:
@@ -83,7 +98,8 @@ def import_file(filename):
 
     pp.pprint(f'Total items {len(items)}')
     pp.pprint(f'Total properties {len(properties)}')
-    return (items, properties)
+    pp.pprint(f'Total attributes {len(attributes)}')
+    return (items, properties, attributes)
 
 
 def get_value(item, field):
@@ -94,14 +110,14 @@ def get_value(item, field):
         value = f"'{value}'"
     return str(value)
 
-def write_inserts(out_dir, items, properties):
+def write_inserts(out_dir, items, properties, attributes):
     # Write import statements
     # INSERT INTO table
     #     (fieldA, fieldB, ...)
     # VALUES
     #     (valueA, valueB, ...)
     #     (valueA, valueB, ...);
-    for (collection, table_name) in [(items, ITEMS_TABLE), (properties, PROPS_TABLE)]:
+    for (collection, table_name) in [(items, ITEMS_TABLE), (properties, PROPS_TABLE), (attributes, ATTRS_TABLE)]:
         with open(f"{out_dir}/{table_name}.sql", "w") as f:
             fields = collection[0].keys()
             f.write(f"""
@@ -121,8 +137,8 @@ def main():
     parser.add_argument("out_dir", type=str, help="Output directory for resulting SQL import files")
     args = parser.parse_args()
 
-    items, properties = import_file(args.input_xls)
-    write_inserts(args.out_dir,  items, properties)
+    items, properties, attributes = import_file(args.input_xls)
+    write_inserts(args.out_dir,  items, properties, attributes)
 
 
 if __name__ == '__main__':
