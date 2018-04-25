@@ -29,7 +29,7 @@ class Command(BaseCommand):
             ds_dict = ds.__dict__
             # get layers
             ds_dict["layers"] = map(lambda x: x.__dict__, ds.maplayer_set.all())
-            ds_dict["id_field"] = ds.pk_field
+            ds_dict["id_field"] = ds.pk_field().db_column
             if ds.map_template is not None:
                 template_file = ds.map_template
             else:

@@ -5,7 +5,7 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
-from various_small_datasets.catalog.models import DataSet,  MapLayer
+from various_small_datasets.catalog.models import DataSet, DataSetField, MapLayer
 
 from django.core.management import BaseCommand
 
@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 
 
 def import_dataset_in_db(dataset_json):
+    fields = dataset_json.pop('fields')
     layers = dataset_json.pop('map_layers', None)
     with transaction.atomic():
         try:
@@ -22,6 +23,10 @@ def import_dataset_in_db(dataset_json):
             pass
         dataset = DataSet(**dataset_json)
         dataset.save()
+        for field in fields:
+            field['dataset'] = dataset
+            ds_field = DataSetField(**field)
+            ds_field.save()
         if dataset.enable_maplayer:
             for layer in layers:
                 layer['dataset'] = dataset

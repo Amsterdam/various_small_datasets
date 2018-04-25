@@ -144,9 +144,15 @@ class GenericFilter(FilterSet):
 def filter_factory(ds_name, model):
     model_name = ds_name.upper() + 'GenericFilter'
     ds = DataSet.objects.get(name=ds_name)
-    name_field = ds.name_field or 'UNKNOWN'
-    geometry_field = ds.geometry_field or 'UNKNOWN'
-    geometry_type = ds.geometry_type or 'UNKNOWN'
+    name_field = ds.name_field
+    geometry_field = ds.geometry_field
+    fields = model._meta.get_fields()
+    for field in fields:
+        if field.db_column == geometry_field:
+            geometry_field = field.name
+        if field.db_column == name_field:
+            name_field = field.name
+    geometry_type = ds.geometry_type
     fields = [name_field, geometry_field]
     location_filter_name = ':'.join([geometry_field, geometry_type])
     location = filters.CharFilter(name=location_filter_name, method="location_filter")

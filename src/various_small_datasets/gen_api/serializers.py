@@ -55,7 +55,7 @@ class GenericSerializer(BaseSerializer, HALSerializer):
         links = self.dict_with_self_href(
             '/vsd/{}/{}/'.format(
                 self.context['dataset'],
-                obj.get_id()))
+                obj.id))
         return links
 
 

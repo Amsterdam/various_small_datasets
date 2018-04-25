@@ -18,7 +18,7 @@ ALTER TABLE biz_data_new ADD CONSTRAINT naam_unique_new UNIQUE (naam);
 CREATE INDEX biz_data_new_wkb_geometry_geom_idx ON biz_data_new USING gist (wkb_geometry);
 
 CREATE VIEW biz_view_new AS SELECT
-    biz_id as id,
+    biz_id,
     naam,
     biz_type,
     heffingsgrondslag ,
@@ -33,6 +33,6 @@ CREATE VIEW biz_view_new AS SELECT
     END as heffing_display,
     bijdrageplichtigen,
     verordening ,
-    wkb_geometry as geometrie
+    wkb_geometry
 FROM biz_data_new;
 COMMIT;
