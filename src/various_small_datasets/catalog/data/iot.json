@@ -1,0 +1,85 @@
+{
+  "datasets": [
+    {
+      "name": "iot_things",
+      "description":"IoT Things",
+      "table_name": "iot_things",
+      "ordering": "id",
+      "enable_api": true,
+      "enable_geosearch": false,
+      "enable_maplayer": false,
+      "name_field": "name",
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "char",
+          "db_column": "id",
+          "primary_key": true
+        },
+        {
+          "name": "ref",
+          "data_type": "char"
+        },
+        {
+          "name": "name",
+          "data_type": "char"
+        },
+        {
+          "name": "description",
+          "data_type": "char"
+        },
+        {
+          "name": "purpose",
+          "data_type": "char"
+        }
+      ]
+    },
+    {
+      "name": "iot_locations",
+      "description":"IoT Locations",
+      "table_name": "iot_locations",
+      "ordering": "thing_id",
+      "enable_api": true,
+      "enable_geosearch": false,
+      "enable_maplayer": false,
+      "name_field": "name",
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "integer",
+          "db_column": "id",
+          "primary_key": true
+        },
+        {
+          "name": "thing_id",
+          "data_type": "char",
+          "db_column": "thing_id"
+        },
+        {
+          "name": "ref",
+          "data_type": "char"
+        },
+        {
+          "name": "name",
+          "data_type": "char"
+        },
+        {
+          "name": "rd_geometry",
+          "data_type": "geometry",
+          "db_column": "rd_geometry",
+          "srid": 28992,
+          "blank": true,
+          "null": true
+        },
+        {
+          "name": "wgs84_geometry",
+          "data_type": "geometry",
+          "db_column": "wgs84_geometry",
+          "srid": 4326,
+          "blank": true,
+          "null": true
+        }
+      ]
+    }
+  ]
+}
