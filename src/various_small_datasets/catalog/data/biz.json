@@ -5,9 +5,10 @@
       "description":"Bedrijfs Investerings Zones",
       "table_name": "biz_view",
       "ordering": "id",
+      "pk_field": "id",
       "enable_api": true,
       "name_field": "naam",
-      "geometry_field": "wkb_geometry",
+      "geometry_field": "geometrie",
       "geometry_type": "POLYGON",
       "enable_geosearch": true,
       "enable_maplayer": true,
@@ -24,83 +25,6 @@
           "label": "naam",
           "label_minscale": 10,
           "label_maxscale": 10000
-        }
-      ],
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "biz_id",
-          "primary_key": true
-        },
-        {
-          "name": "naam",
-          "data_type": "char",
-          "unique": true,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "biz_type",
-          "data_type": "char",
-          "max_length": 64,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "heffingsgrondslag",
-          "data_type": "char",
-          "max_length": 128,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "website",
-          "data_type": "char",
-          "max_length": 128,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "heffing",
-          "data_type": "integer",
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "heffing_valuta_code",
-          "data_type": "char",
-          "max_length" : 20,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "heffing_display",
-          "data_type": "char",
-          "max_length" : 20,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "bijdrageplichtigen",
-          "data_type": "integer",
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "verordening",
-          "data_type": "char",
-          "max_length": 128,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "geometrie",
-          "data_type": "geometry",
-          "db_column": "wkb_geometry",
-          "srid": 28992,
-          "blank": true,
-          "null": true
         }
       ]
     }

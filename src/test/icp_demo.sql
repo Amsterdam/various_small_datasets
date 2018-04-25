@@ -47,31 +47,3 @@ INSERT INTO cat_dataset(
     enable_maplayer
 ) VALUES(
     'ijs', 'IJs Salons rond de Weesperstraat', 'icp_data', 'id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
-
-WITH ins ("name", data_type, db_column, primary_key, "unique", max_length, blank, "null",
-          max_digits, decimal_places, srid, dataset) AS
-( VALUES
-      ('id', 'integer', 'icp_id', true, false,  NULL, false, false, NULL::integer, NULL::integer, NULL, 'ijs')
-    , ('naam', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'ijs')
-    , ('prijs', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'ijs')
-    , ('sterren', 'integer', NULL, false, false,  NULL, false, false, NULL, NULL, NULL, 'ijs')
-    , ('smaken', 'char', NULL, false, true, 128, false, false, NULL, NULL, NULL, 'ijs')
-    , ('locatie', 'geometry', 'wkb_geometry', false, false, NULL, false, false, NULL, NULL, 28992, 'ijs')
-)
-INSERT INTO cat_dataset_fields(
-	name,
-    data_type,
-    db_column,
-    primary_key,
-    "unique",
-    max_length,
-    blank,
-    "null",
-    max_digits,
-    decimal_places,
-    srid,
-    dataset_id
-)
-SELECT ins.name, ins.data_type, ins.db_column, ins.primary_key, ins."unique", ins.max_length, ins.blank, ins."null",
-       ins.max_digits, ins.decimal_places, ins.srid, cat_dataset.id
-FROM cat_dataset JOIN ins on ins.dataset = cat_dataset.name;

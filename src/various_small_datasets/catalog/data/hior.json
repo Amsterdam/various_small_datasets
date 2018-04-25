@@ -8,23 +8,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "text",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "text",
-          "data_type": "char"
-        },
-        {
-          "name": "description",
-          "data_type": "char"
-        }
-      ]
+      "name_field": "text"
     },
     {
       "name": "hior_properties",
@@ -34,28 +18,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "name",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "item_id",
-          "data_type": "integer",
-          "db_column": "item_id"
-        },
-        {
-          "name": "name",
-          "data_type": "char"
-        },
-        {
-          "name": "value",
-          "data_type": "char"
-        }
-      ]
+      "name_field": "name"
     },
     {
       "name": "hior_attributes",
@@ -65,28 +28,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "name",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "item_id",
-          "data_type": "integer",
-          "db_column": "item_id"
-        },
-        {
-          "name": "name",
-          "data_type": "char"
-        },
-        {
-          "name": "value",
-          "data_type": "char"
-        }
-      ]
+      "name_field": "name"
     },
     {
       "name": "hior_faq",
@@ -96,23 +38,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "question",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "question",
-          "data_type": "char"
-        },
-        {
-          "name": "answer",
-          "data_type": "char"
-        }
-      ]
+      "name_field": "question"
     }
   ]
 }

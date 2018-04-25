@@ -1,6 +1,6 @@
 import json
 from django.test import TestCase, Client
-from various_small_datasets.catalog.models import DataSet, DataSetField
+from various_small_datasets.catalog.models import DataSet
 from django.db import connection
 
 
@@ -11,7 +11,7 @@ class TestGenericApi(TestCase):
 
         # Setup test catalog
         ice_cream_parlours = DataSet(
-            name='icp',
+            name='ijs',
             table_name='icp_data',
             enable_api=True,
             name_field='naam',
@@ -22,36 +22,29 @@ class TestGenericApi(TestCase):
         )
         ice_cream_parlours.save()
 
-        DataSetField(name='id', db_column='icp_id', data_type='integer', primary_key=True,
-                     dataset=ice_cream_parlours).save()
-        DataSetField(name='naam', data_type='char', unique=True, dataset=ice_cream_parlours).save()
-        DataSetField(name='prijs', data_type='integer', dataset=ice_cream_parlours).save()
-        DataSetField(name='sterren', data_type='integer', dataset=ice_cream_parlours).save()
-        DataSetField(name='smaken', data_type='char', dataset=ice_cream_parlours).save()
-        DataSetField(name='locatie', db_column='wkb_geometry', data_type='geometry', dataset=ice_cream_parlours).save()
-
         create_table = '''
-            create table icp_data (
-            icp_id integer NOT NULL,
-            naam character varying(128),
-            prijs integer,
-            sterren integer,
-            smaken character varying(256),
-            wkb_geometry geometry(Geometry,28992)
+create table icp_data (
+icp_id integer NOT NULL PRIMARY KEY,
+naam character varying(128),
+prijs integer,
+sterren integer,
+smaken character varying(256),
+wkb_geometry geometry(Geometry,28992)
             )'''
 
         add_constraint = '''
-        ALTER TABLE icp_data
-        ADD CONSTRAINT icp_naam_unique UNIQUE(naam)'''
+ALTER TABLE icp_data
+ADD CONSTRAINT icp_naam_unique UNIQUE(naam)'''
 
         create_index = '''
-        CREATE INDEX icp_data_wkb_geometry_geom_idx
-        ON icp_data USING gist(wkb_geometry);
+CREATE INDEX icp_data_wkb_geometry_geom_idx
+ON icp_data USING gist(wkb_geometry);
         '''
         insert_data = '''
-        INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
-            (1, 'giraudi', 3, 4, 'pistache', ST_SetSRID(ST_MakePoint( 1000, 1000), 28992) ),
-            (2, 'garone', 2, 3, 'sinaasappel', ST_SetSRID(ST_MakePoint( 2000, 2000), 28992) )
+INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
+(1, 'IJscuypje', 3, 4, 'pistache', ST_Transform(ST_GeomFromText('POINT(4.911880 52.367379)', 4326), 28992) ),
+(2, 'De ijsfiets', 2, 3, 'sinaasappel', ST_Transform(ST_GeomFromText('POINT(4.906130 52.365912)', 4326), 28992) ),
+(3, 'Het ijsboefje', 1, 4, 'straciatelli', ST_Transform(ST_GeomFromText('POINT(4.918146 52.358312)', 4326), 28992) );
         '''
         with connection.cursor() as cursor:
             cursor.execute(create_table)
@@ -60,17 +53,33 @@ class TestGenericApi(TestCase):
             cursor.execute(insert_data)
 
     def test_een(self):
-        response = self.http_client.get('/vsd/icp/1/')
+        response = self.http_client.get('/vsd/ijs/1/')
         assert response.status_code == 200
         result = json.loads(response.content)
-        assert result["id"] == 1
-        assert result["naam"] == 'giraudi'
+        assert result["icp_id"] == 1
+        assert result["naam"] == 'IJscuypje'
         assert result["smaken"] == 'pistache'
+
+    def test_naam(self):
+        response = self.http_client.get('/vsd/ijs/?naam=boefje')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']) ==  1
+        assert result['results'][0]['icp_id'] == 3
+        assert result['results'][0]['naam'] == 'Het ijsboefje'
+
+    def test_locatie(self):
+        response = self.http_client.get('/vsd/ijs/?wkb_geometry=52.362762,4.907598,500')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']) == 1
+        assert result['results'][0]['icp_id'] == 2
+        assert result['results'][0]['naam'] == 'De ijsfiets'
 
     def test_no_icp(self):
         response = self.http_client.get('/vsd/ipc/1/')
         assert response.status_code == 404
 
     def test_not_exist2(self):
-        response = self.http_client.get('/vsd/icp/100/')
+        response = self.http_client.get('/vsd/ijs/100/')
         assert response.status_code == 404
