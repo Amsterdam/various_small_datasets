@@ -87,6 +87,32 @@
           "data_type": "char"
         }
       ]
+    },
+    {
+      "name": "hior_faq",
+      "description":"HIOR FAQ",
+      "table_name": "hior_faq",
+      "ordering": "id",
+      "enable_api": true,
+      "enable_geosearch": false,
+      "enable_maplayer": false,
+      "name_field": "question",
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "integer",
+          "db_column": "id",
+          "primary_key": true
+        },
+        {
+          "name": "question",
+          "data_type": "char"
+        },
+        {
+          "name": "answer",
+          "data_type": "char"
+        }
+      ]
     }
   ]
 }
