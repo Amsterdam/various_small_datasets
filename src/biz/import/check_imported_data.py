@@ -29,15 +29,15 @@ def all_valid_url(urls):
 
 
 sql_checks = [
-    ('count', "select count(*) from biz_view", lambda x: x[0][0] > 48),
+    ('count', "select count(*) from biz_view_new", lambda x: x[0][0] > 48),
     ('columns', """
 select column_name from information_schema.columns where                                                                  
-table_schema = 'public' and table_name = 'biz_data'    
+table_schema = 'public' and table_name = 'biz_data_new'
     """, lambda x: x == [("biz_id",), ("naam",), ("biz_type",), ("heffingsgrondslag",), ("website",), ("heffing",),
                          ("bijdrageplichtigen",), ("verordening",), ("wkb_geometry",)]),
-    ('website', "select website from biz_view where website is not NULL", all_valid_url),
-    ('verordening', "select verordening from biz_view where verordening is not NULL", all_valid_url),
-    ('geometrie', "select count(*) from biz_view where ST_IsValid(geometrie) = false", lambda x: x[0][0] == 0),
+    ('website', "select website from biz_view_new where website is not NULL", all_valid_url),
+    ('verordening', "select verordening from biz_view_new where verordening is not NULL", all_valid_url),
+    ('geometrie', "select count(*) from biz_view_new where ST_IsValid(geometrie) = false", lambda x: x[0][0] == 0),
 ]
 
 
