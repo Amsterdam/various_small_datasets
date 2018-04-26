@@ -102,7 +102,8 @@
         },
         {
           "name": "name",
-          "data_type": "char"
+          "data_type": "char",
+          "db_column": "name"
         },
         {
           "name": "location_id",
