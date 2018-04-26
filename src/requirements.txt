@@ -32,3 +32,4 @@ typing==3.6.4
 uritemplate==3.0.0
 urllib3==1.22
 xlrd==1.1.0
+git+https://github.com/Amsterdam/drf_amsterdam.git#egg=drf_amsterdam
