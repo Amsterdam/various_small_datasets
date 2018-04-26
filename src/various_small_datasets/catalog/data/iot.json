@@ -8,31 +8,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "name",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "char",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "ref",
-          "data_type": "char"
-        },
-        {
-          "name": "name",
-          "data_type": "char"
-        },
-        {
-          "name": "description",
-          "data_type": "char"
-        },
-        {
-          "name": "purpose",
-          "data_type": "char"
-        }
-      ]
+      "name_field": "name"
     },
     {
       "name": "iot_locations",
@@ -42,44 +18,7 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "name",
-      "fields": [
-        {
-          "name": "id",
-          "data_type": "integer",
-          "db_column": "id",
-          "primary_key": true
-        },
-        {
-          "name": "thing_id",
-          "data_type": "char",
-          "db_column": "thing_id"
-        },
-        {
-          "name": "ref",
-          "data_type": "char"
-        },
-        {
-          "name": "name",
-          "data_type": "char"
-        },
-        {
-          "name": "rd_geometry",
-          "data_type": "geometry",
-          "db_column": "rd_geometry",
-          "srid": 28992,
-          "blank": true,
-          "null": true
-        },
-        {
-          "name": "wgs84_geometry",
-          "data_type": "geometry",
-          "db_column": "wgs84_geometry",
-          "srid": 4326,
-          "blank": true,
-          "null": true
-        }
-      ]
+      "name_field": "name"
     }
   ]
 }
