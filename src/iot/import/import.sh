@@ -26,14 +26,17 @@ BEGIN;
 ALTER TABLE IF EXISTS iot_things RENAME TO iot_things_old;
 ALTER TABLE IF EXISTS iot_locations RENAME TO iot_locations_old;
 ALTER TABLE IF EXISTS iot_owners RENAME TO iot_owners_old;
+ALTER VIEW IF EXISTS iot_markers RENAME TO iot_markers_old;
 
 ALTER TABLE iot_things_new RENAME TO iot_things;
 ALTER TABLE iot_locations_new RENAME TO iot_locations;
 ALTER TABLE iot_owners_new RENAME TO iot_owners;
+ALTER VIEW iot_markers_new RENAME TO iot_markers;
 
 DROP TABLE IF EXISTS iot_owners_old CASCADE;
 DROP TABLE IF EXISTS iot_locations_old CASCADE;
 DROP TABLE IF EXISTS iot_things_old CASCADE;
+DROP VIEW IF EXISTS iot_markers_old;
 COMMIT;
 SQL
 
