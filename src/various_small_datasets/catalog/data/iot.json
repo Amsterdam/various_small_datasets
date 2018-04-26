@@ -84,6 +84,40 @@
           "null": true
         }
       ]
+    },
+    {
+      "name": "iot_markers",
+      "description":"IoT Markers",
+      "table_name": "iot_markers",
+      "ordering": "id",
+      "enable_api": true,
+      "enable_geosearch": false,
+      "enable_maplayer": false,
+      "name_field": "id",
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "char",
+          "db_column": "id"
+        },
+        {
+          "name": "location_id",
+          "data_type": "char",
+          "db_column": "location_id"
+        },
+        {
+          "name": "device_type",
+          "data_type": "char"
+        },
+        {
+          "name": "wgs84_geometry",
+          "data_type": "geometry",
+          "db_column": "wgs84_geometry",
+          "srid": 4326,
+          "blank": true,
+          "null": true
+        }
+      ]
     }
   ]
 }

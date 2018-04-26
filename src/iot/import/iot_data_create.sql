@@ -31,7 +31,7 @@ CREATE TABLE iot_owners_new (
 );
 
 CREATE VIEW iot_markers_new AS SELECT
-    things.id as thing_id,
+    things.id as id,
     locations.id as location_id,
     device_type,
     wgs84_geometry
