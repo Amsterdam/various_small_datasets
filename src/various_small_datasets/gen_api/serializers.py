@@ -1,8 +1,7 @@
 import logging
 
+from datapunt_api.serializers import HALSerializer, DisplayField
 from rest_framework import serializers
-
-from various_small_datasets.gen_api.rest import HALSerializer, DisplayField
 
 log = logging.getLogger(__name__)
 

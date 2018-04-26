@@ -1,7 +1,8 @@
 import logging
+
+from datapunt_api.rest import DatapuntViewSet
 from rest_framework.exceptions import NotFound, ParseError
 
-import various_small_datasets.gen_api.rest
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework import filters
 from rest_framework import serializers as rest_serializers
@@ -171,7 +172,7 @@ def filter_factory(ds_name, model):
     return type(model_name, (GenericFilter,), new_attrs)
 
 
-class GenericViewSet(various_small_datasets.gen_api.rest.DatapuntViewSet):
+class GenericViewSet(DatapuntViewSet):
     """
     Generic Viewset for arbitrary Django models
 
