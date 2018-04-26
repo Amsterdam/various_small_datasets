@@ -80,8 +80,8 @@ LOCATIONS_TABLE = "iot_locations_new"
 # OWNERS_TABLE = "iot_owners_new"
 
 
-def thing(id, ref, name, description, purpose):
-    return {"id": id, "ref": ref, "name": name, "description": description, "purpose": purpose}
+def thing(id, ref, name, description, device_type, purpose):
+    return {"id": id, "ref": ref, "name": name, "description": description, "device_type": device_type, "purpose": purpose}
 
 
 def geometry(x, y, code):
@@ -124,6 +124,7 @@ def import_beacons(filename):
                     ref=beacon_value(row, "thing", "ref"),
                     name=beacon_value(row, "thing", "name"),
                     description=beacon_value(row, "thing", "description"),
+                    device_type="Beacon",
                     purpose=beacon_value(row, "thing", "purpose"),
                 ))
                 locations.append(location(
@@ -173,6 +174,7 @@ def import_cameras(filename):
                 ref=camera_value(sheet, series, "thing", "ref"),
                 name=camera_value(sheet, series, "thing", "name"),
                 description=camera_value(sheet, series, "thing", "description"),
+                device_type="Camera",
                 purpose=camera_value(sheet, series, "thing", "purpose"),
             ))
             locations.append(location(

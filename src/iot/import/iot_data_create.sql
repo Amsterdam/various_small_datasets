@@ -9,6 +9,7 @@ CREATE TABLE iot_things_new (
     ref character varying(128),
     name character varying(128),
     description text,
+    device_type varchar(32),
     purpose text
 );
 
