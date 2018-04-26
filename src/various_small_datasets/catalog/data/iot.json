@@ -29,6 +29,10 @@
           "data_type": "char"
         },
         {
+          "name": "device_type",
+          "data_type": "char"
+        },
+        {
           "name": "purpose",
           "data_type": "char"
         }
