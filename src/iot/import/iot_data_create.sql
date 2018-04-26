@@ -33,6 +33,7 @@ CREATE TABLE iot_owners_new (
 CREATE VIEW iot_markers_new AS SELECT
     things.id as id,
     locations.id as location_id,
+    things.name as name,
     device_type,
     wgs84_geometry
 FROM iot_things_new as things

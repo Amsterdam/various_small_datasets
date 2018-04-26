@@ -93,12 +93,16 @@
       "enable_api": true,
       "enable_geosearch": false,
       "enable_maplayer": false,
-      "name_field": "id",
+      "name_field": "name",
       "fields": [
         {
           "name": "id",
           "data_type": "char",
           "db_column": "id"
+        },
+        {
+          "name": "name",
+          "data_type": "char"
         },
         {
           "name": "location_id",
