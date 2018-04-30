@@ -38,7 +38,7 @@ COMMIT;
 \i ${TMPDIR}/trm_tram.utf8.sql
 SQL
 
-# TODO : Add verification of new tables after creation and insert and before rename. If not verified  the rename should not happen
+PYTHONPATH=${SCRIPT_DIR}/../.. ${SCRIPT_DIR}/check_imported_data.py
 
 echo "Rename tables"
 psql -X --set ON_ERROR_STOP=on <<SQL
