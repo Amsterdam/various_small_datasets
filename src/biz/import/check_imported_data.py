@@ -38,7 +38,7 @@ table_schema = 'public' and table_name = 'biz_data_new'
     ('website', "select website from biz_view_new where website is not NULL", all_valid_url),
     ('verordening', "select verordening from biz_view_new where verordening is not NULL", all_valid_url),
     ('geometrie', """
-select count(*) from biz_view where
+select count(*) from biz_view_new where
 geometrie is null or ST_IsValid(geometrie) = false or ST_GeometryType(geometrie) <> 'ST_Polygon'
     """,
      lambda x: x[0][0] == 0),
