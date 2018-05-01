@@ -7,8 +7,8 @@ source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
 echo "Process import data"
-wget -O "${TMPDIR}/HIOR Amsterdam.xlsx" "http://131f4363709c46b89a6ba5bc764b38b9.objectstore.eu/hior/HIOR Amsterdam.xlsx"
-python ${SCRIPT_DIR}/import.py "${TMPDIR}/HIOR Amsterdam.xlsx" ${TMPDIR}
+wget -O "${TMPDIR}/HIOR Amsterdam.xls" "http://131f4363709c46b89a6ba5bc764b38b9.objectstore.eu/hior/HIOR Amsterdam.xls"
+python ${SCRIPT_DIR}/import.py "${TMPDIR}/HIOR Amsterdam.xls" ${TMPDIR}
 
 echo "Create tables"
 psql -X --set ON_ERROR_STOP=on << SQL
@@ -34,9 +34,9 @@ ALTER TABLE hior_items_new RENAME TO hior_items;
 ALTER TABLE hior_properties_new RENAME TO hior_properties;
 ALTER TABLE hior_attributes_new RENAME TO hior_attributes;
 ALTER TABLE hior_faq_new RENAME TO hior_faq;
-DROP TABLE IF EXISTS hior_items_old CASCADE;
 DROP TABLE IF EXISTS hior_properties_old CASCADE;
 DROP TABLE IF EXISTS hior_attributes_old CASCADE;
+DROP TABLE IF EXISTS hior_items_old CASCADE;
 DROP TABLE IF EXISTS hior_faq_old CASCADE;
 COMMIT;
 SQL

@@ -27,7 +27,7 @@ PROPERTIES = [
 
 # Columns that contain attributes
 ATTRIBUTES = [
-    ('Image', ['Afbeelding 1', 'Afbeelding 2', 'Afbeelding 3']),
+    ('Image', ['Afbeelding 1', 'Afbeelding 2', 'Afbeelding 3', 'Afbeelding 4', 'Afbeelding 5']),
     ('Link', ['Download 1', 'Download 2']),
     ('SourceLink', ['(bestuurlijke)  bron '])
 ]
