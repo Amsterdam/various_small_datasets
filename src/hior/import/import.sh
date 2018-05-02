@@ -7,8 +7,8 @@ source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
 echo "Process import data"
-wget -O "${TMPDIR}/HIOR Amsterdam.xls" "http://131f4363709c46b89a6ba5bc764b38b9.objectstore.eu/hior/HIOR Amsterdam.xls"
-python ${SCRIPT_DIR}/import.py "${TMPDIR}/HIOR Amsterdam.xls" ${TMPDIR}
+wget -O "${TMPDIR}/HIOR Amsterdam.xlsx" "http://131f4363709c46b89a6ba5bc764b38b9.objectstore.eu/hior/HIOR Amsterdam.xlsx"
+python ${SCRIPT_DIR}/import.py "${TMPDIR}/HIOR Amsterdam.xlsx" ${TMPDIR}
 
 echo "Create tables"
 psql -X --set ON_ERROR_STOP=on << SQL
