@@ -7,6 +7,7 @@ from rest_framework_swagger.renderers import OpenAPIRenderer
 from rest_framework_swagger.renderers import SwaggerUIRenderer
 
 # from biz.api import urls as biz_urls
+from various_small_datasets.catalog.views import MetaAPIViewSet
 from various_small_datasets.gen_api import urls as gen_urls
 from various_small_datasets.gen_api.views import GenericViewSet
 from various_small_datasets.health import urls as health_urls
@@ -54,7 +55,8 @@ def genapi_schema_view(request):
     return response.Response(generator.get_schema(request=request))
 
 
-urlpatterns = [path('vsd/docs/api-docs/',
+urlpatterns = [   path('vsd/docs/api-info/', MetaAPIViewSet.as_view({'get': 'list'})),
+                  path('vsd/docs/api-docs/',
                     genapi_schema_view),
                ] + [url for pattern_list in grouped_url_patterns.values()
                     for url in pattern_list]
