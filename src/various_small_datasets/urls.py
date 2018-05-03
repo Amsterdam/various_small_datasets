@@ -55,8 +55,8 @@ def genapi_schema_view(request):
     return response.Response(generator.get_schema(request=request))
 
 
-urlpatterns = [   path('vsd/docs/api-info/', MetaAPIViewSet.as_view({'get': 'list'})),
-                  path('vsd/docs/api-docs/',
+urlpatterns = [path('vsd/docs/api-info/', MetaAPIViewSet.as_view({'get': 'list'})),
+               path('vsd/docs/api-docs/',
                     genapi_schema_view),
                ] + [url for pattern_list in grouped_url_patterns.values()
                     for url in pattern_list]
