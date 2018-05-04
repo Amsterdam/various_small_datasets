@@ -139,7 +139,7 @@ def import_file(filename):
     pp.pprint(f'Total items {len(items)}')
     pp.pprint(f'Total properties {len(properties)}')
     pp.pprint(f'Total attributes {len(attributes)}')
-    pp.pprint(f'Total faq {len(faq)}')
+    pp.pprint(f'Total faq {len(faqs)}')
     return (items, properties, attributes, faqs)
 
 
