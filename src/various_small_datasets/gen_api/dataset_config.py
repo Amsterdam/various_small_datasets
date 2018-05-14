@@ -70,9 +70,9 @@ def read_postgres_metadata(schema, table):  # noqa: C901
 
     with connection.cursor() as cursor:
         query = '''
-select column_name, data_type, character_maximum_length, is_nullable, numeric_precision, numeric_scale
-from information_schema.columns where
-table_schema = %s and table_name = %s
+SELECT column_name, data_type, character_maximum_length, is_nullable, numeric_precision, numeric_scale
+FROM information_schema.columns
+WHERE table_schema = %s AND table_name = %s
         '''
         cursor.execute(query, [schema, table])
         fields = dictfetchall(cursor)
@@ -83,6 +83,7 @@ table_schema = %s and table_name = %s
             max_length = field.pop('character_maximum_length')
             if max_length is not None:
                 field['max_length'] = max_length
+            # numeric_precision and numeric_scale should always be popped from field, but only used if numeric
             max_digits = field.pop('numeric_precision')
             decimal_places = field.pop('numeric_scale')
             if field['data_type'] == 'numeric':
@@ -111,17 +112,16 @@ table_schema = %s and table_name = %s
         # We would have to parse the information.schema.views.view_definition
         # statement to find out. So this currently not work for views
         query = '''
-select
+SELECT
 ccu.column_name, constraint_type
-from information_schema.table_constraints tc
-join information_schema.constraint_column_usage as ccu using (constraint_schema, constraint_name)
-where  tc.table_schema = %s and tc.table_name = %s
+FROM information_schema.table_constraints tc
+JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name)
+WHERE  tc.table_schema = %s AND tc.table_name = %s
         '''
         cursor.execute(query, [real_schema, real_table])
         rows = cursor.fetchall()
         if rows:
-            for row in rows:
-                (name, constraint) = row
+            for (name, constraint) in rows:
                 if name in d_fields:
                     if constraint.upper() == 'PRIMARY KEY':
                         d_fields[name]['primary_key'] = True
@@ -134,9 +134,9 @@ where  tc.table_schema = %s and tc.table_name = %s
 
         # Get srid for geometry columns
         query = '''
-select f_geometry_column, srid, type
-from geometry_columns
-where f_table_schema = %s and  f_table_name = %s
+SELECT f_geometry_column, srid, type
+FROM geometry_columns
+WHERE f_table_schema = %s AND f_table_name = %s
         '''
         cursor.execute(query, [schema, table])
         rows = cursor.fetchall()

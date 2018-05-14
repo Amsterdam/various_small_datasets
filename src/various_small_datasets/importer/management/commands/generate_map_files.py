@@ -9,6 +9,20 @@ from django.core.management import BaseCommand
 log = logging.getLogger(__name__)
 
 
+def get_map_content(env, ds):
+    ds_dict = ds.__dict__
+    # get layers
+    ds_dict["layers"] = map(lambda x: x.__dict__, ds.maplayer_set.all())
+    ds_dict["id_field"] = ds.pk_field
+    if ds.map_template is not None:
+        template_file = ds.map_template
+    else:
+        template_file = 'default.map.template'
+
+    template = env.get_template(template_file)
+    return template.render(ds=ds_dict)
+
+
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
@@ -16,8 +30,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         log.info("Generate map files")
-        template_dir = "various_small_datasets/tools/map_templates"
-        map_dir = "various_small_datasets/tools/map_files"
+        tools_dir = "various_small_datasets/tools"
+        template_dir = tools_dir + "/map_templates"
+        map_dir = tools_dir + "/map_files"
         if not os.path.exists(map_dir):
             os.mkdir(map_dir)
         env = Environment(loader=FileSystemLoader(template_dir))
@@ -26,18 +41,7 @@ class Command(BaseCommand):
         datasets = DataSet.objects.filter(enable_maplayer=True)
         for ds in datasets:
             log.info(f"Generate map file for {ds.name}")
-            ds_dict = ds.__dict__
-            # get layers
-            ds_dict["layers"] = map(lambda x: x.__dict__, ds.maplayer_set.all())
-            ds_dict["id_field"] = ds.pk_field
-            if ds.map_template is not None:
-                template_file = ds.map_template
-            else:
-                template_file = 'default.map.template'
-
-            template = env.get_template(template_file)
-            map_content = template.render(ds=ds_dict)
-
+            map_content = get_map_content(env, ds)
             mapfile_name = f"{map_dir}/{ds.name}.map"
             with open(mapfile_name, "w") as f:
                 f.write(map_content)
