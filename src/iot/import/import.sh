@@ -6,8 +6,19 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
+rm -f "${DATA_DIR}/sensors.json"
+echo "[" > "${DATA_DIR}/sensors.json"
+for S in "3D sensor" "WiFi sensor" "Telcamera"
+do
+    curl "https://maps.amsterdam.nl/_php/haal_objecten.php?TABEL=CROWDSENSOREN&SELECT=${S}&SELECTIEKOLOM=Soort&THEMA=cmsa&TAAL=en&BEHEER=0&NIEUW=niet" >> "${DATA_DIR}/sensors.json"
+    echo "," >> "${DATA_DIR}/sensors.json"
+done
+echo "[]]" >> "${DATA_DIR}/sensors.json"
+
 echo "Process import data"
-python ${SCRIPT_DIR}/import.py "${DATA_DIR}/cameras.xlsx" "${DATA_DIR}/beacons.csv" ${TMPDIR}
+python ${SCRIPT_DIR}/import.py "${DATA_DIR}/cameras.xlsx" "${DATA_DIR}/beacons.csv" "${DATA_DIR}/sensors.json" ${TMPDIR}
+
+cdrm -f "${DATA_DIR}/sensors.json"
 
 echo "Create tables"
 psql -X --set ON_ERROR_STOP=on << SQL

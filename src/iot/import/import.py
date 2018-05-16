@@ -3,6 +3,7 @@ import csv
 import math
 import re
 import argparse
+import json
 
 import pprint
 pp = pprint.PrettyPrinter()
@@ -102,6 +103,34 @@ def print_summary(id, things, locations):
   Total things {len(things)}
   Total locations {len(locations)}''')
 
+
+def import_sensors(filename):
+    things = []
+    locations = []
+    with open(filename, newline='') as jsonfile:
+        reader = json.load(jsonfile)
+        for id, items in enumerate(reader):
+            for row in items:
+                id = f'{row["SELECTIE"]}.{row["VOLGNR"]}'
+                things.append(thing(
+                    id=id,
+                    ref=row['VOLGNR'],
+                    name=row['LABEL'],
+                    description=row['SELECTIE'],
+                    device_type=row['SELECTIE'],
+                    purpose=row['SELECTIE'],
+                ))
+                locations.append(location(
+                    thing_id=id,
+                    ref=row['LABEL'],
+                    name=row['LABEL'],
+                    rd_x=None,
+                    rd_y=None,
+                    wgs84_lat=row['LATMAX'],
+                    wgs84_lon=row['LNGMAX'],
+                ))
+    print_summary(id='Sensors', things=things, locations=locations)
+    return (things, locations)
 
 def beacon_value(row, entity, key):
     try:
@@ -228,16 +257,20 @@ def import_things(item, arg):
         return import_cameras(arg)
     elif item == "beacons":
         return import_beacons(arg)
+    else:
+        return import_sensors(arg)
+
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("cameras", type=str, help="Cameras input xlsx")
     parser.add_argument("beacons", type=str, help="Beacons input csv")
+    parser.add_argument("sensors", type=str, help="Sensors input json")
     parser.add_argument("out_dir", type=str, help="Output directory for resulting SQL import files")
     args = parser.parse_args()
 
-    for item in ["cameras", "beacons"]:
+    for item in ["cameras", "beacons", "sensors"]:
         things, locations = import_things(item, getattr(args, item))
         write_inserts(args.out_dir, things, locations)
 
