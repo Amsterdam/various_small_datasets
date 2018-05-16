@@ -15,13 +15,13 @@ password = database['PASSWORD']
 host = database['HOST']
 port = database['PORT']
 
-val = URLValidator()
+url_validator = URLValidator()
 
 
 def all_valid_url(urls):
     try:
         for url in urls:
-            val(url[0])
+            url_validator(url[0])
     except ValidationError as e:
         print(f"URL validation error for {url[0]}: ", e)
         return False
