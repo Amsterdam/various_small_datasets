@@ -29,7 +29,7 @@ CONFIG = {
     #        ' WGS84 DD\n Longitude (gr)', ' Google Maps\n link coördinaten',
     #        ' Richting\n van het verkeer'
     "cameras": {
-        "sheet_names": ["111", "124", "127"], 
+        "sheet_names": ["111", "124", "127"],
         "header": 1,
         "default": {
             "thing": {
