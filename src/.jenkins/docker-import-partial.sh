@@ -24,7 +24,7 @@ case $i in
     ;;
     hior)
     echo "Importing HIOR"
-    python hior/import.sh
+    hior/importer/import.sh
     ;;
 esac
 done
