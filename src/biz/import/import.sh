@@ -10,7 +10,7 @@ echo "Process import data"
 
 ogr2ogr -f "PGDump" ${TMPDIR}/BIZZONES.sql ${DATA_DIR}/BIZZONES.shp
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/BIZZONES.sql > ${TMPDIR}/BIZZONES.utf8.sql
-python ${SCRIPT_DIR}/convert_data.py ${TMPDIR}/BIZZONES.utf8.sql ${DATA_DIR}/Dataset\ BIZ\ v4.xlsx ${TMPDIR}/biz_data_insert.sql
+python ${SCRIPT_DIR}/convert_data.py ${TMPDIR}/BIZZONES.utf8.sql ${DATA_DIR}/BIZ\ Dataset\ v07.xlsx ${TMPDIR}/biz_data_insert.sql
 
 echo "Create tables"
 psql -X --set ON_ERROR_STOP=on << SQL
