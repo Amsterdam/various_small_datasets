@@ -27,3 +27,5 @@ services:
       DATABASE_NAME: various_small_datasets
       DATABASE_USER: various_small_datasets
       DATABASE_PASSWORD: insecure
+    volumes:
+      - ./src:/app
