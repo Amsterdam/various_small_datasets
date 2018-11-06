@@ -56,6 +56,7 @@ _MAP_DS_TYPE = {
 
 log = logging.getLogger(__name__)
 
+
 def dictfetchall(cursor):
     """Return all rows from a cursor as a dict"""
     columns = [col[0] for col in cursor.description]
