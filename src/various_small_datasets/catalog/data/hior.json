@@ -39,6 +39,16 @@
       "enable_geosearch": false,
       "enable_maplayer": false,
       "name_field": "question"
+    },
+    {
+      "name": "hior_metadata",
+      "description":"HIOR Metadata",
+      "table_name": "hior_metadata",
+      "ordering": "id",
+      "enable_api": true,
+      "enable_geosearch": false,
+      "enable_maplayer": false,
+      "name_field": "property"
     }
   ]
 }
