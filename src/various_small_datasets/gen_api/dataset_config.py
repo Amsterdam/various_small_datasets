@@ -1,3 +1,4 @@
+import logging
 from django.contrib.gis.db import models
 from various_small_datasets.catalog.models import DataSet
 from django.db import connection
@@ -53,6 +54,7 @@ _MAP_DS_TYPE = {
     # TODO add missing types
 }
 
+log = logging.getLogger(__name__)
 
 def dictfetchall(cursor):
     """Return all rows from a cursor as a dict"""
@@ -162,27 +164,31 @@ def read_all_datasets():
 
     datasets = DataSet.objects.filter(enable_api=True)
     for ds in datasets:
-        schema = 'public' if ds.schema is None else ds.schema
-        postgres_metadata = read_postgres_metadata(schema, ds.table_name)
-        ds.pk_field = ds.pk_field or ds.ordering or postgres_metadata['pk_field']
-        ds.ordering = ds.ordering or postgres_metadata['pk_field']
-        ds.name_field = ds.name_field or postgres_metadata['name_field']
-        ds.geometry_field = ds.geometry_field or postgres_metadata['geometry_field']
+        try:
+            schema = 'public' if ds.schema is None else ds.schema
+            postgres_metadata = read_postgres_metadata(schema, ds.table_name)
+            ds.pk_field = ds.pk_field or ds.ordering or postgres_metadata['pk_field']
+            ds.ordering = ds.ordering or postgres_metadata['pk_field']
+            ds.name_field = ds.name_field or postgres_metadata['name_field']
+            ds.geometry_field = ds.geometry_field or postgres_metadata['geometry_field']
 
-        new_meta_attrs = {'managed': False, 'db_table': ds.table_name, 'ordering': [ds.ordering]}
-        new_meta = type('Meta', (object, ), new_meta_attrs)
-        new_attrs = {
-            '__module__': 'various_small_datasets.gen_api.models',
-            '__str__': lambda self, name_field=ds.name_field: getattr(self, name_field),
-            'get_id': lambda self, pk_field=ds.pk_field: getattr(self, pk_field),
-            'Meta': new_meta,
-            '__doc__': ds.description,
-        }
+            new_meta_attrs = {'managed': False, 'db_table': ds.table_name, 'ordering': [ds.ordering]}
+            new_meta = type('Meta', (object, ), new_meta_attrs)
+            new_attrs = {
+                '__module__': 'various_small_datasets.gen_api.models',
+                '__str__': lambda self, name_field=ds.name_field: getattr(self, name_field),
+                'get_id': lambda self, pk_field=ds.pk_field: getattr(self, pk_field),
+                'Meta': new_meta,
+                '__doc__': ds.description,
+            }
 
-        dataset_fields = postgres_metadata['fields']
-        for field_name, dsf in dataset_fields.items():
-            data_type = dsf.pop('data_type')
-            new_attrs[field_name] = _MAP_DS_TYPE[data_type](**dsf)
+            dataset_fields = postgres_metadata['fields']
+            for field_name, dsf in dataset_fields.items():
+                data_type = dsf.pop('data_type')
+                new_attrs[field_name] = _MAP_DS_TYPE[data_type](**dsf)
+        except KeyError as err:
+            log.error(f'Error: Skip dataset for {ds.table_name} : {err}')
+            continue
 
         model_name = ds.name.upper() + 'Model'
         new_model = type(model_name, (models.Model,), new_attrs)
