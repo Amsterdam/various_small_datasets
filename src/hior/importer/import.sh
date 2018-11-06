@@ -21,6 +21,7 @@ psql -X --set ON_ERROR_STOP=on <<SQL
 \i ${TMPDIR}/hior_properties_new.sql
 \i ${TMPDIR}/hior_attributes_new.sql
 \i ${TMPDIR}/hior_faq_new.sql
+\i ${TMPDIR}/hior_metadata_new.sql
 SQL
 
 echo "Rename tables"
@@ -30,14 +31,17 @@ ALTER TABLE IF EXISTS hior_items RENAME TO hior_items_old;
 ALTER TABLE IF EXISTS hior_properties RENAME TO hior_properties_old;
 ALTER TABLE IF EXISTS hior_attributes RENAME TO hior_attributes_old;
 ALTER TABLE IF EXISTS hior_faq RENAME TO hior_faq_old;
+ALTER TABLE IF EXISTS hior_metadata RENAME TO hior_metadata_old;
 ALTER TABLE hior_items_new RENAME TO hior_items;
 ALTER TABLE hior_properties_new RENAME TO hior_properties;
 ALTER TABLE hior_attributes_new RENAME TO hior_attributes;
 ALTER TABLE hior_faq_new RENAME TO hior_faq;
+ALTER TABLE hior_metadata_new RENAME TO hior_metadata;
 DROP TABLE IF EXISTS hior_properties_old CASCADE;
 DROP TABLE IF EXISTS hior_attributes_old CASCADE;
 DROP TABLE IF EXISTS hior_items_old CASCADE;
 DROP TABLE IF EXISTS hior_faq_old CASCADE;
+DROP TABLE IF EXISTS hior_metadata_old CASCADE;
 COMMIT;
 SQL
 

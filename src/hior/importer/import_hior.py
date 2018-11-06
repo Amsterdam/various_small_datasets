@@ -9,12 +9,15 @@ pp = pprint.PrettyPrinter()
 # Sheet that contains the reference data
 SHEET_NAME = "Achterkant"
 FAQ_SHEET_NAME = "FAQ"
+METADATA_SHEET_NAME = "Metadata"
 
 # Columns that contain the items
 TEXT = "Kerntekst"
 DESCRIPTION = "Toelichting"
 QUESTION = "Vraag"
 ANSWER = "Antwoord"
+PROPERTY = "Eigenschap"
+VALUE = "Waarde"
 
 # Colums that contain the item properties
 PROPERTIES = [
@@ -37,6 +40,7 @@ ITEMS_TABLE = "hior_items_new"
 PROPS_TABLE = "hior_properties_new"
 ATTRS_TABLE = "hior_attributes_new"
 FAQ_TABLE = "hior_faq_new"
+METADATA_TABLE = "hior_metadata_new"
 
 
 def import_row(id, series):
@@ -107,13 +111,28 @@ def import_faq_row(id, series):
     return {"id": id, "question": question, "answer": answer}
 
 
+def import_meta_row(id, series):
+    # Add 2 to id because lines start at 1. Index starts at 0 and 1 line if for the header
+    id = id + 2
+    property = "" if pd.isnull(series[PROPERTY]) else series[PROPERTY].strip()
+    value = "" if pd.isnull(series[VALUE]) else series[VALUE]
+
+    if len(property) == 0:
+        # Skip lines with empty TEXT field
+        pp.pprint(f'Warning: line {id} - Missing property: {property} or value: {value}')
+        return {}
+
+    return {"id": id, "property": property, "value": f'{value}'}
+
+
 def import_file(filename):
     # Import the HIOR Excel file
-    df = pd.read_excel(filename, sheet_name=[SHEET_NAME, FAQ_SHEET_NAME])
+    df = pd.read_excel(filename, sheet_name=[SHEET_NAME, FAQ_SHEET_NAME, METADATA_SHEET_NAME])
 
     items = []
     properties = []
     attributes = []
+    metadata = []
     for row in df[SHEET_NAME].iterrows():
         id, series = row
 
@@ -131,6 +150,13 @@ def import_file(filename):
         if faq != {}:
             faqs.append(faq)
 
+    for row in df[METADATA_SHEET_NAME].iterrows():
+        id, series = row
+
+        meta = import_meta_row(id, series)
+        if meta != {}:
+            metadata.append(meta)
+
     # Report summary; unique property values, #items and #properties
     for (name, _) in PROPERTIES:
         values = set([property["value"] for property in properties if property["name"] == name])
@@ -140,7 +166,8 @@ def import_file(filename):
     pp.pprint(f'Total properties {len(properties)}')
     pp.pprint(f'Total attributes {len(attributes)}')
     pp.pprint(f'Total faq {len(faqs)}')
-    return (items, properties, attributes, faqs)
+    pp.pprint(f'Total metadata {len(metadata)}')
+    return (items, properties, attributes, faqs, metadata)
 
 
 def get_value(item, field):
@@ -165,7 +192,7 @@ VALUES""")
     return insert_into
 
 
-def write_inserts(out_dir, items, properties, attributes, faq):
+def write_inserts(out_dir, items, properties, attributes, faq, metadata):
     # Write import statements
     # INSERT INTO table
     #     (fieldA, fieldB, ...)
@@ -173,7 +200,7 @@ def write_inserts(out_dir, items, properties, attributes, faq):
     #     (valueA, valueB, ...)
     #     (valueA, valueB, ...);
     for (collection, table_name) in [
-        (items, ITEMS_TABLE), (properties, PROPS_TABLE), (attributes, ATTRS_TABLE), (faq, FAQ_TABLE)]:
+        (items, ITEMS_TABLE), (properties, PROPS_TABLE), (attributes, ATTRS_TABLE), (faq, FAQ_TABLE), (metadata, METADATA_TABLE)]:
         with open(f"{out_dir}/{table_name}.sql", "w") as f:
             fields = collection[0].keys()
             f.write(get_insert(table_name, collection, fields))
@@ -185,9 +212,10 @@ def main():
     parser.add_argument("out_dir", type=str, help="Output directory for resulting SQL import files")
     args = parser.parse_args()
 
-    items, properties, attributes, faq = import_file(args.input_xls)
-    write_inserts(args.out_dir,  items, properties, attributes, faq)
+    items, properties, attributes, faq, metadata = import_file(args.input_xls)
+    write_inserts(args.out_dir,  items, properties, attributes, faq, metadata)
 
 
 if __name__ == '__main__':
     main()
+    
