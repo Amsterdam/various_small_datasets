@@ -165,6 +165,8 @@ def read_all_datasets():
 
     datasets = DataSet.objects.filter(enable_api=True)
     for ds in datasets:
+        if ds.name in DATASET_CONFIG:
+            continue
         try:
             schema = 'public' if ds.schema is None else ds.schema
             postgres_metadata = read_postgres_metadata(schema, ds.table_name)

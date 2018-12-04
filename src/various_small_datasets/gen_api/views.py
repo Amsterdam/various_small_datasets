@@ -1,4 +1,5 @@
 import logging
+import time
 
 from datapunt_api.rest import DatapuntViewSet
 from rest_framework.exceptions import NotFound, ParseError
@@ -150,8 +151,8 @@ def filter_factory(ds_name, model):
     geometry_type = ds.geometry_type or 'UNKNOWN'
     fields = [name_field, geometry_field]
     location_filter_name = ':'.join([geometry_field, geometry_type])
-    location = filters.CharFilter(name=location_filter_name, method="location_filter")
-    name = filters.CharFilter(name=name_field, method="name_filter")
+    location = filters.CharFilter(field_name=location_filter_name, method="location_filter")
+    name = filters.CharFilter(field_name=name_field, method="name_filter")
 
     new_meta_attrs = {'model': model,
                       'fields': fields,
@@ -171,7 +172,8 @@ class GenericViewSet(DatapuntViewSet):
     Generic Viewset for arbitrary Django models
 
     """
-    initialized = False
+    INITIALIZE_DELAY = 600  # 10 minutes
+    initialized = 0
     serializerClasses = {}
     filterClasses = {}
 
@@ -185,13 +187,11 @@ class GenericViewSet(DatapuntViewSet):
 
     @classmethod
     def initialize(cls):
-        if not GenericViewSet.initialized:
+        if time.time() - GenericViewSet.initialized > cls.INITIALIZE_DELAY:
             config.read_all_datasets()
-            GenericViewSet.initialized = True
+            GenericViewSet.initialized = time.time()
 
     def get_queryset(self):
-        GenericViewSet.initialize()
-
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
         else:
@@ -200,7 +200,11 @@ class GenericViewSet(DatapuntViewSet):
         if self.dataset in config.DATASET_CONFIG:
             self.model = config.DATASET_CONFIG[self.dataset]
         else:
-            raise NotFound("dataset" + self.dataset)
+            GenericViewSet.initialize()
+            if self.dataset in config.DATASET_CONFIG:
+                self.model = config.DATASET_CONFIG[self.dataset]
+            else:
+                raise NotFound("dataset" + self.dataset)
 
         if self.action == 'list':
             if self.dataset not in GenericViewSet.filterClasses:

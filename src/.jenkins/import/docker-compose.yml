@@ -23,4 +23,10 @@ services:
       DATABASE_USER: various_small_datasets
       DATABASE_PASSWORD: insecure
     command: >
-      bash -c "python manage.py import_catalog && ./biz/import/import.sh && ./trm/import/import.sh && ./hior/importer/import.sh && ./iot/import/import.sh"
+      bash -c "python manage.py import_catalog &&
+      ./biz/import/import.sh &&
+      ./trm/import/import.sh &&
+      ./hior/importer/import.sh &&
+      ./iot/import/import.sh &&
+      ./hoofdroutes/import/import.sh &&
+      ./oplaadpalen/import/import.sh"

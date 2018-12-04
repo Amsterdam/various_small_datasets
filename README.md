@@ -37,6 +37,18 @@ Import data with :
 
     src/hior/import/import.sh
 
+# Oplaadpalen
+
+Import data with :
+
+    src/oplaadpalen/import/import.sh
+
+# Hoofdroutes
+
+Import data with :
+
+    src/hoofdroutes/import/import.sh
+
 # Import JSON data for catalog (description of BIZ dataset)
 
     cd src 
@@ -56,6 +68,8 @@ urls to test are
     /status/data
     /vsd/biz/
     /vsd/biz/0/
+    /vsd/oplaadpalen/?wkb_geometry=123291,487198,500
+    /vsd/oplaadpalen/1000/
 
 Filtering on name and geometry field is also supported, although this is not yet  shown in the swagger definition
 

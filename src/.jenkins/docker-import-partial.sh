@@ -26,5 +26,13 @@ case $i in
     echo "Importing HIOR"
     hior/importer/import.sh
     ;;
+    oplaadpalen)
+    echo "Importing Oplaadpalen"
+    oplaadpalen/import/import.sh
+    ;;
+    hoofdroutes)
+    echo "Importing Hoofdroutes"
+    hoofdroutes/import/import.sh
+    ;;
 esac
 done
