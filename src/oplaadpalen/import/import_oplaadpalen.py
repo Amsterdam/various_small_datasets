@@ -18,7 +18,7 @@ wsdl = 'https://emobilitygetstatchargingpointvipprdnl.azurewebsites.net/GetStatC
 
 
 def get_static_data():
-    datafile = 'static_oplaadpalen.dat'
+    datafile = '/tmp/static_oplaadpalen.dat'
 
     if os.path.isfile(datafile) and time.time() - os.path.getmtime(datafile) < 24 * 60 * 60:
         fd = open(datafile, 'rb')

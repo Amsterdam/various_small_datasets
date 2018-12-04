@@ -86,7 +86,7 @@ def convert_to_geojson(data):
 
 
 def get_static_data():
-    datafile = f'hoofdroutes.dat'
+    datafile = f'/tmp/hoofdroutes.dat'
 
     if os.path.isfile(datafile) and time.time() - os.path.getmtime(datafile) < 24 * 60 * 60:
         fd = open(datafile, 'rb')
