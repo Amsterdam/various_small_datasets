@@ -20,15 +20,15 @@ def convert_to_geojson(data):
 
     elements = data['elements']
     for element in elements:
-        id1 = str(element['id'])
+        id1 = element['id']
         type = element['type']
         if type == 'relation':
             relations[id1] = element
         elif type == 'way':
-            ways[element['id']] = element
+            ways[id1] = element
             start_nodes[element['nodes'][0]] = element
         elif type == 'node':
-            nodes[element['id']] = element
+            nodes[id1] = element
 
     for rel_id, relation in relations.items():
         members = relation['members']
