@@ -39,6 +39,7 @@ python-dateutil==2.7.5
 pytz==2018.7
 requests==2.20.1
 requests-toolbelt==0.8.0
+sentry-sdk==0.6.4
 simplejson==3.16.0
 six==1.11.0
 sqlparse==0.2.4

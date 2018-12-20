@@ -26,6 +26,7 @@ psycopg2-binary
 python-dateutil
 pytz
 requests
+sentry-sdk
 simplejson
 six
 sqlparse

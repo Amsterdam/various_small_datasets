@@ -1,4 +1,6 @@
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from various_small_datasets.settings_common import * # noqa F403
 from various_small_datasets.settings_common import INSTALLED_APPS, DEBUG
@@ -119,3 +121,10 @@ SWAGGER_SETTINGS = {
 }
 
 HEALTH_MODEL = 'catalog.DataSet'
+
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
