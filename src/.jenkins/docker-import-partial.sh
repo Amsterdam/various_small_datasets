@@ -34,5 +34,9 @@ case $i in
     echo "Importing Hoofdroutes"
     hoofdroutes/import/import.sh
     ;;
+    milieuzones)
+    echo "Importing Mileuzones"
+    milieuzones/import/import.sh
+    ;;
 esac
 done

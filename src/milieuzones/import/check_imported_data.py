@@ -6,7 +6,7 @@ sql_checks = [
     ('columns', """
 select column_name from information_schema.columns where                                                                  
 table_schema = 'public' and table_name = 'milieuzones_new'
-    """, lambda x: x == [("ogc_fid",), ("wkb_geometry",), ("id",), ("verkeerstype",), ("vanafdatum",)]),
+    """, lambda x: x == [("ogc_fid",), ("wkb_geometry",), ("id",), ("verkeerstype",), ("vanafdatum",),("color",)]),
     ('geometrie', """
 select count(*) from milieuzones_new where
 wkb_geometry is null or ST_GeometryType(wkb_geometry) <> 'ST_MultiPolygon'

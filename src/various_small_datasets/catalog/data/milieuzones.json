@@ -1,0 +1,32 @@
+{
+  "datasets": [
+    {
+      "name": "milieuzones",
+      "description":"Milieuzones",
+      "table_name": "milieuzones",
+      "ordering": "id",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "verkeerstype",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": false,
+      "enable_maplayer": true,
+      "map_title": "Milieuzones",
+      "map_abstract": "Milieuzones Amsterdam",
+      "map_layers": [
+        {
+          "name": "milieuzones",
+          "title": "Milieuzones",
+          "abstract": "Milieuzones Amsterdam",
+          "color": "0 70 153",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "verkeerstype",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,16 @@ ogr2ogr -f "PGDump"  -t_srs EPSG:28992 -s_srs EPSG:4326 -nln milieuzones_new ${T
 echo "Create tables & import data for milieuzones"
 psql -X --set ON_ERROR_STOP=on <<SQL
 \i ${TMPDIR}/milieuzones.sql
+ALTER TABLE milieuzones_new ADD COLUMN vanafdatum_new DATE;
+UPDATE milieuzones_new SET vanafdatum_new = to_date(vanafdatum, 'DD-MM-YYYY');
+ALTER TABLE milieuzones_new DROP COLUMN vanafdatum;
+ALTER TABLE milieuzones_new RENAME COLUMN vanafdatum_new TO vanafdatum;
+ALTER TABLE milieuzones_new ADD COLUMN color VARCHAR(7);
+UPDATE milieuzones_new SET color = c.color FROM
+  ( VALUES('vracht', '#772b90'), ('bestel', '#f7f706'),
+          ('taxi','#ec008c'), ( 'brom- en snorfiets', '#3062b7'),
+          ('touringcar', '#fa9f1b')) AS c(verkeerstype, color)
+  WHERE milieuzones_new.verkeerstype = c. verkeerstype;
 SQL
 
 echo "Check imported data for milieuzones"

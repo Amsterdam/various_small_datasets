@@ -50,7 +50,9 @@ _MAP_DS_TYPE = {
     'decimal': models.DecimalField,
     'numeric': models.DecimalField,
     'datetime': models.DateTimeField,
+    'date': models.DateField,
     'geometry': models.GeometryField,
+    'multipolygon': models.MultiPolygonField,
     # TODO add missing types
 }
 
