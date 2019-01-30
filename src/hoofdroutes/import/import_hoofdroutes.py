@@ -24,8 +24,13 @@ def convert_to_geojson(data):
         type = element['type']
         if type == 'relation':
             relations[id1] = element
+        # The same way elements can occur multiple times with and without
+        # tags.
         elif type == 'way':
-            ways[id1] = element
+            if id1 not in ways:
+                ways[id1] = element
+            else:
+                ways[id1].update(element)
             start_nodes[element['nodes'][0]] = element
         elif type == 'node':
             nodes[id1] = element
@@ -39,7 +44,7 @@ def convert_to_geojson(data):
             if member['type'] == 'way':
                 way_id = member['ref']
                 way = copy.deepcopy(ways[way_id])
-                relation['ways'][way_id] = copy.deepcopy(way)
+                relation['ways'][way_id] = way
                 relation['start_nodes'][way['nodes'][0]] = way
 
         # combine way segments to longer lines
@@ -56,6 +61,27 @@ def convert_to_geojson(data):
                 relation['start_nodes'].pop(last_node)
                 last_node = way['nodes'][-1]
             relation['lines'][way_id] = way
+
+    # The relation with name 'Lijnbusbanen medegebruik Taxi uitgesloten (GOED)' is old and should be replaced
+    # by the collection of ways with "taxi"="no"
+    for relation_id, relation in list(relations.items()):
+        if relation['tags']['name'] == 'Lijnbusbanen medegebruik Taxi uitgesloten (GOED)':
+            del relations[relation_id]
+
+    taxi_no_busbaan = {
+        'tags': {
+            'name' : 'Lijnbusbanen medegebruik Taxi uitgesloten',
+            'type' : 'route',
+            'route': 'taxi_no',
+        },
+        'ways' : {}
+    }
+    for way_id, way in ways.items():
+        if 'tags' in way and 'taxi' in way['tags'] and way['tags']['taxi'] == 'no':
+            taxi_no_busbaan['ways'][way_id] = way
+
+    relations['9999999'] = taxi_no_busbaan
+
 
     return {"type": "FeatureCollection",
             "properties": {
@@ -93,7 +119,17 @@ def get_static_data():
         result = pickle.load(fd)
         fd.close()
     else:
-        data = f'[out:json];\n\n(\n relation[route~"truck|taxi"](52.35337677858021,4.868316650390625,52.39346332646216,4.936208724975586);\n);\n\nout body;\n>;\nout skel qt;'
+        bbox = '52.35337677858021,4.868316650390625,52.39346332646216,4.936208724975586'
+        data = f'''
+[out:json];
+(
+  way["taxi"="no"]({bbox});
+  relation[route~"truck|taxi"]({bbox});
+);
+out body;
+>;
+out skel qt;\
+'''
         url = 'https://overpass-api.de/api/interpreter?data=' + urllib.parse.quote(data)
         req = urllib.request.Request(url)
         with urllib.request.urlopen(req) as response:
