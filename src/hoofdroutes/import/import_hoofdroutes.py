@@ -119,7 +119,8 @@ def get_static_data():
         result = pickle.load(fd)
         fd.close()
     else:
-        bbox = '52.35337677858021,4.868316650390625,52.39346332646216,4.936208724975586'
+        #  Bounding box is from Aker till IJburg longitude and Tuindorp Oostzaan till Zuidoost latitude
+        bbox = '52.287,4.768,52.425,5.014'
         data = f'''
 [out:json];
 (
