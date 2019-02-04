@@ -29,5 +29,5 @@ services:
       ./hior/importer/import.sh &&
       ./iot/import/import.sh &&
       ./hoofdroutes/import/import.sh &&
-      ./milieuzones/import/import.sh &&
-      ./oplaadpalen/import/import.sh"
+      ./milieuzones/import/import.sh
+# oplaadpalen is  in a special import

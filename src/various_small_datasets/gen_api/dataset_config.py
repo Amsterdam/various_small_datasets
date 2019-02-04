@@ -53,6 +53,8 @@ _MAP_DS_TYPE = {
     'date': models.DateField,
     'geometry': models.GeometryField,
     'multipolygon': models.MultiPolygonField,
+    'timestamp with time zone': models.DateTimeField,
+    'timestamp': models.DateTimeField,
     # TODO add missing types
 }
 
