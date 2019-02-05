@@ -46,7 +46,7 @@ def get_all_oplaadpunten():
 
 def get_remote_oplaadpaal(id: str):
     try:
-        if '&' in str:
+        if '&' in id:
             # TODO Tell / Ask Allego about invalid characters in ID
             # The URL https://www.allego.eu/api/feature/experienceaccelerator/areas/chargepointmap/getchargepoints/P1%20Parking%20V%26D
             # also gives a error on their own website (Parking in former V&D in Amstelveen)
