@@ -1,5 +1,5 @@
 BEGIN;
-DROP TABLE IF EXISTS oplaadpalen_new;
+DROP TABLE IF EXISTS oplaadpalen_new CASCADE;
 
 CREATE TABLE oplaadpalen_new
 (
