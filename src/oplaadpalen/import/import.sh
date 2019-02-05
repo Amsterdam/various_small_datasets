@@ -6,8 +6,8 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
-MAX_INSERTS=100
-DO_DELETE=false
+MAX_INSERTS=${MAX_INSERTS:-100}
+DO_DELETE=${DO_DELETE:-false}
 while test $# -gt 0
 do
     case "$1" in

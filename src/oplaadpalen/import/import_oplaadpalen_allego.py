@@ -1,30 +1,18 @@
 import argparse
-import os.path
-import pickle
+import os
 import re
-import sys
-import time
 from collections import OrderedDict
 import requests
 import logging
 import psycopg2
 import urllib.parse
+import random
 
 from various_small_datasets.settings import DATABASES
 
+LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
+logging.basicConfig(level=LOGLEVEL)
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
-
-# create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-# add formatter to ch
-console.setFormatter(formatter)
-
-# add ch to logger
-log.addHandler(console)
 
 database = DATABASES['default']
 dbname = database['NAME']
@@ -33,6 +21,7 @@ password = database['PASSWORD']
 host = database['HOST']
 port = database['PORT']
 
+LAADPAAL_MAX_AGE = 8640000  # 100 days
 
 oplaadpunten_providers = {
     'Allego',
@@ -74,56 +63,7 @@ where cs_external_id = %(id)s
     return ret
 
 
-def get_oplaadpaal(curs, table_name:str, id1: str):
-    sql = f'select * from {table_name} where cs_external_id = %(id)s'
-    curs.execute(sql, {'id': id1})
-    result = curs.fetchall()
-    if result and len(result) > 0:
-        return result[0]
-    else:
-        return None
-
-
-def create_oplaadpaal(curs, table_name:str, opl: dict):
-    sql = f'''
-insert into {table_name}(
-   cs_external_id
-,  wkb_geometry
-,  street
-,  housenumber
-,  housnumberext
-,  postalcode
-,  district
-,  countryiso
-,  city
-,  provider
-,  restrictionsremark
-,  charging_point
-,  status
-,  connector_type
-,  vehicle_type
-,  charging_capability
-,  identification_type
-) values (
-   %(cs_external_id)s
-,  ST_Transform(ST_SetSRID(ST_MakePoint(%(longitude)s, %(latitude)s), 4326), 28992)
-,  %(street)s
-,  %(housenumber)s
-,  %(housnumberext)s
-,  %(postalcode)s 
-,  %(district)s
-,  %(countryiso)s
-,  %(city)s
-,  %(provider)s
-,  %(restrictionsremark)s
-,  %(charging_point)s  
-,  %(status)s
-,  %(connector_type)s
-,  %(vehicle_type)s 
-,  %(charging_capability)s
-,  %(identification_type)s
-);
-    '''
+def _make_oplaadpaal_args(opl:dict):
     # Match street with spaces not greedy, then optional housenumber and optional housenumberext
     p = re.compile('^([\w\s]+?)(?:\s+(\d+)\s*([A-Za-z][\w]*)?)?$')
     m = p.match(opl['address']['addressLine1'])
@@ -179,9 +119,98 @@ insert into {table_name}(
         'charging_capability': ';'.join(list(OrderedDict.fromkeys(charging_capability_list))),
         'identification_type': ';'.join(list(OrderedDict.fromkeys(identification_type_list)))
     }
+    return args
 
+
+def update_complete_oplaadpaal(curs, table_name: str, opl:dict):
+    sql = f'''
+update {table_name}
+  set wkb_geometry = ST_Transform(ST_SetSRID(ST_MakePoint(%(longitude)s, %(latitude)s), 4326), 28992)
+  , street = %(street)s
+  , housenumber = %(housenumber)s
+  , housnumberext = %(housnumberext)s
+  , postalcode = %(postalcode)s
+  , district = %(district)s
+  , countryiso = %(countryiso)s
+  , city = %(city)s
+  , provider = %(provider)s
+  , restrictionsremark = %(restrictionsremark)s
+  , charging_point = %(charging_point)s
+  , status = %(status)s
+  , connector_type = %(connector_type)s
+  , vehicle_type = %(vehicle_type)s
+  , charging_capability = %(charging_capability)s
+  , identification_type = %(identification_type)s
+  , last_update = current_timestamp
+  , last_status_update = current_timestamp
+    where cs_external_id = %(cs_external_id)s
+    '''
+    args = _make_oplaadpaal_args(opl)
     curs.execute(sql, args)
+    if curs.rowcount != 1:
+        log.error(f"Failedcomplete update oplaadpaal {args['cs_external_id']}")
+        ret = False
+    else:
+        ret = True
+    return ret
 
+
+def get_oplaadpaal(curs, table_name:str, id1: str):
+    sql = f'''
+select id, cs_external_id, status, (EXTRACT(EPOCH FROM NOW() - last_update))::int as update_age 
+from {table_name} 
+where cs_external_id = %(id)s
+'''
+    curs.execute(sql, {'id': id1})
+    result = curs.fetchall()
+    if result and len(result) > 0:
+        return result[0]
+    else:
+        return None
+
+
+def create_oplaadpaal(curs, table_name:str, opl: dict):
+    sql = f'''
+insert into {table_name}(
+   cs_external_id
+,  wkb_geometry
+,  street
+,  housenumber
+,  housnumberext
+,  postalcode
+,  district
+,  countryiso
+,  city
+,  provider
+,  restrictionsremark
+,  charging_point
+,  status
+,  connector_type
+,  vehicle_type
+,  charging_capability
+,  identification_type
+) values (
+   %(cs_external_id)s
+,  ST_Transform(ST_SetSRID(ST_MakePoint(%(longitude)s, %(latitude)s), 4326), 28992)
+,  %(street)s
+,  %(housenumber)s
+,  %(housnumberext)s
+,  %(postalcode)s
+,  %(district)s
+,  %(countryiso)s
+,  %(city)s
+,  %(provider)s
+,  %(restrictionsremark)s
+,  %(charging_point)s
+,  %(status)s
+,  %(connector_type)s
+,  %(vehicle_type)s
+,  %(charging_capability)s
+,  %(identification_type)s
+);
+    '''
+    args = _make_oplaadpaal_args(opl)
+    curs.execute(sql, args)
     if curs.rowcount != 1:
         log.error(f"Failed to create oplaadpaal {opl['chargePointId']}")
         ret = False
@@ -191,9 +220,21 @@ insert into {table_name}(
 
 
 def main():
+    """
+    First we get a list of all chargepoints from Allego in Amsterdam
+
+    Then we update the status of  all the oplaadpunten that are already present in the database
+    If it is not present in the database we will get the details from Allego and add it.
+    At most we will add max_inserts chargepoints. This is in order not to do too many
+    calls to the webservice at the same time.
+
+    If max_inserts is set 100 and the script is run 4 times per hour then we will have loaded all
+    the 2269 chargepoints in 6 hours.
+
+    If the last time details were loaded was more then 100 days ago we will reload it, in case it was
+    changed in the  last 100 days.
+    """
     parser = argparse.ArgumentParser()
-    # parser.add_argument("output", type=str, help="output file")
-    parser.add_argument('-u','--update_status_only', help="Only update status")
     parser.add_argument('-m', '--max_inserts', type=int, help='Maximum number of new inserts', default=100)
     args = parser.parse_args()
 
@@ -202,6 +243,7 @@ def main():
     log.info(f"Loaded {l} oplaadpunten")
     total_inserts = 0
     total_updates = 0
+    total_complete_updates = 0
     table_name = 'oplaadpalen_new'
     try:
         dsn = f"dbname='{dbname}' user='{user}' password='{password}' host='{host}' port={port}"
@@ -213,8 +255,15 @@ def main():
                     log.debug(f'{id} {status}')
                     oplaadpaal_db = get_oplaadpaal(curs, table_name, id)
                     if oplaadpaal_db:
-                        update_oplaadpaal(curs, table_name, id, status)
-                        total_updates += 1
+                        # randomize complete update
+                        max_age = LAADPAAL_MAX_AGE + random.randint(-10000, 10000)
+                        if oplaadpaal_db[3] > max_age and total_complete_updates < args.max_inserts:
+                            oplaadpaal_remote = get_remote_oplaadpaal(id)
+                            update_complete_oplaadpaal(curs, table_name, oplaadpaal_remote)
+                            total_complete_updates += 1
+                        else:
+                            update_oplaadpaal(curs, table_name, id, status)
+                            total_updates += 1
                     else:
                         if total_inserts < args.max_inserts:
                             oplaadpaal_remote = get_remote_oplaadpaal(id)
@@ -225,6 +274,7 @@ def main():
                             pass
         log.info(f"Inserted {total_inserts} laadpalen")
         log.info(f"Updated {total_updates} laadpalen")
+        log.info(f"Updated completely {total_complete_updates} laadpalen")
 
     except psycopg2.Error as exc:
         print("Unable to connect to the database", exc)
@@ -234,7 +284,8 @@ def main():
 if __name__ == '__main__':
     main()
 
-
+# Example output from Allego laadpunten API :
+#
 # Laadpalen https://www.allego.eu/nl-nl/consumenten/vind-een-laadpunt ->
 #  https://www.allego.eu/api/feature/experienceaccelerator/areas/chargepointmap/getchargepoints?firstPoint=52.394364402625705,4.856992783024908&secondPoint=52.39146726734137,4.8506627697497615
 # [
