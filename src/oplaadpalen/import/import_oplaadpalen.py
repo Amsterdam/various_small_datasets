@@ -144,7 +144,8 @@ def main():
             'city': chargingStation['Location']['City']['_value_1'] if chargingStation['Location'][
                                                                            'City'] is not None else '',
             'provider': chargingStation['Provider'], 'restrictionsremark': chargingStation['RestrictionsRemark'],
-            'status': ';'.join(list(OrderedDict.fromkeys(status_list))), 'charging_point': charging_point,
+            'status': ';'.join(list(OrderedDict.fromkeys(status_list))),
+            'charging_point': charging_point,
             'connector_type': ';'.join(list(OrderedDict.fromkeys(connector_type_list))),
             'vehicle_type': ';'.join(list(OrderedDict.fromkeys(vehicle_type_list))),
             'charging_capability': ';'.join(list(OrderedDict.fromkeys(charging_capability_list))),

@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS oplaadpalen_new;
 CREATE TABLE oplaadpalen_new
 (
   id                  SERIAL PRIMARY KEY,
-  cs_external_id      character varying(32) NOT NULL,
+  cs_external_id      character varying(64) NOT NULL UNIQUE,
   wkb_geometry        geometry(Geometry,28992),
   street              character varying(150),
   housenumber         character varying(6),
@@ -19,13 +19,14 @@ CREATE TABLE oplaadpalen_new
   charging_point      integer,
   -- The following items are  per charging point.
   -- If they are the same we show only one value otherwise we store a list separated with ;
-  status              character varying(32),
-  connector_type      character varying(32),
-  vehicle_type        character varying(32),
-  charging_capability character varying(32),
-  identification_type character varying(32)
+  status              character varying(64),
+  connector_type      character varying(128),
+  vehicle_type        character varying(128),
+  charging_capability character varying(64),
+  identification_type character varying(128),
+  last_update         timestamp with time zone default current_timestamp,
+  last_status_update  timestamp with time zone default current_timestamp
 );
 
-ALTER TABLE oplaadpalen_new ADD CONSTRAINT cs_external_id_unique_new UNIQUE (cs_external_id);
-CREATE INDEX oplaadpalen_new_wkb_geometry_geom_idx ON oplaadpalen_new USING gist (wkb_geometry);
+CREATE INDEX ON oplaadpalen_new USING gist (wkb_geometry);
 COMMIT;
