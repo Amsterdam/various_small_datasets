@@ -8,6 +8,8 @@ import psycopg2
 import urllib.parse
 import random
 
+from requests import HTTPError
+
 from various_small_datasets.settings import DATABASES
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
@@ -43,10 +45,20 @@ def get_all_oplaadpunten():
 
 
 def get_remote_oplaadpaal(id: str):
-    url = f'{base_url}/{urllib.parse.quote_plus(id).replace("+", "%20")}'
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+    try:
+        if '&' in str:
+            # TODO Tell / Ask Allego about invalid characters in ID
+            # The URL https://www.allego.eu/api/feature/experienceaccelerator/areas/chargepointmap/getchargepoints/P1%20Parking%20V%26D
+            # also gives a error on their own website (Parking in former V&D in Amstelveen)
+            log.warning(f"Invalid char & in ID {id} for Allego service. Skipping...")
+            return None
+        url = f'{base_url}/{urllib.parse.quote_plus(id).replace("+", "%20")}'
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except HTTPError as e:
+        log.warning(f"Failed to get oplaadpaal for {url}:", e)
+        return None
 
 
 def update_oplaadpaal(curs, table_name:str, id1: str, status: str):
@@ -259,8 +271,9 @@ def main():
                         max_age = LAADPAAL_MAX_AGE + random.randint(-10000, 10000)
                         if oplaadpaal_db[3] > max_age and total_complete_updates < args.max_inserts:
                             oplaadpaal_remote = get_remote_oplaadpaal(id)
-                            update_complete_oplaadpaal(curs, table_name, oplaadpaal_remote)
-                            total_complete_updates += 1
+                            if oplaadpaal_remote:
+                                update_complete_oplaadpaal(curs, table_name, oplaadpaal_remote)
+                                total_complete_updates += 1
                         else:
                             update_oplaadpaal(curs, table_name, id, status)
                             total_updates += 1
