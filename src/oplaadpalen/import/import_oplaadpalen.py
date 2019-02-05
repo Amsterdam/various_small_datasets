@@ -7,6 +7,8 @@ from collections import OrderedDict
 
 from zeep import Client
 
+# DEPRECATED SCRIPT : endpoint is deprecated
+
 # python -mzeep https://emobilitygetstatchargingpointvipprdnl.azurewebsites.net/GetStatChargingStationProxy.svc?wsdl
 # python -mzeep https://emobilitygetdynchargingpointvipprdnl.azurewebsites.net/GetDynChargingPointProxy.svc?wsdl
 # python -m zeep https://api.essent.nl/partner/a2a/cs/getStaticChargingStations?wsdl

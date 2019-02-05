@@ -36,7 +36,7 @@ SQL
 )
 
 TABLE_EXISTS=${TABLE_EXISTS//[[:blank:]]/}
-echo "TABLE_EXISTS:${TABLE_EXISTS}"
+echo "TABLE_EXISTS:${TABLE_EXISTS} DO_DELETE:${DO_DELETE}"
 
 if [[ ${DO_DELETE} = true ]] || [[ ${TABLE_EXISTS} = 'f' ]];
   then
