@@ -104,11 +104,15 @@ def _make_oplaadpaal_args(opl:dict):
     vehicle_type_list = []
     charging_capability_list = []
     identification_type_list = []
+    charging_cap_max = 0.0
 
     for evse in evses:
         status_list.append(evse['status'])
         connector_type_list.append(evse['connectorType'])
-        charging_capability_list.append(str(evse['maxPower']))
+        charging_cap = float(evse['maxPower'])
+        if charging_cap > charging_cap_max:
+            charging_cap_max = charging_cap
+        charging_capability_list.append(str(charging_cap))
         identification_type_list.append((evse['displayName']))
 
     args = {
@@ -129,7 +133,8 @@ def _make_oplaadpaal_args(opl:dict):
         'connector_type': ';'.join(list(OrderedDict.fromkeys(connector_type_list))),
         'vehicle_type': ';'.join(list(OrderedDict.fromkeys(vehicle_type_list))),
         'charging_capability': ';'.join(list(OrderedDict.fromkeys(charging_capability_list))),
-        'identification_type': ';'.join(list(OrderedDict.fromkeys(identification_type_list)))
+        'identification_type': ';'.join(list(OrderedDict.fromkeys(identification_type_list))),
+        'charging_cap_max': charging_cap_max
     }
     return args
 
@@ -152,6 +157,7 @@ update {table_name}
   , connector_type = %(connector_type)s
   , vehicle_type = %(vehicle_type)s
   , charging_capability = %(charging_capability)s
+  , charging_cap_max = %(charging_cap_max)s
   , identification_type = %(identification_type)s
   , last_update = current_timestamp
   , last_status_update = current_timestamp
@@ -201,6 +207,7 @@ insert into {table_name}(
 ,  vehicle_type
 ,  charging_capability
 ,  identification_type
+,  charging_cap_max
 ) values (
    %(cs_external_id)s
 ,  ST_Transform(ST_SetSRID(ST_MakePoint(%(longitude)s, %(latitude)s), 4326), 28992)
@@ -219,6 +226,7 @@ insert into {table_name}(
 ,  %(vehicle_type)s
 ,  %(charging_capability)s
 ,  %(identification_type)s
+,  %(charging_cap_max)s
 );
     '''
     args = _make_oplaadpaal_args(opl)

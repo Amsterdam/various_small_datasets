@@ -25,7 +25,8 @@ CREATE TABLE oplaadpalen_new
   charging_capability character varying(64),
   identification_type character varying(128),
   last_update         timestamp with time zone default current_timestamp,
-  last_status_update  timestamp with time zone default current_timestamp
+  last_status_update  timestamp with time zone default current_timestamp,
+  charging_cap_max    real
 );
 
 CREATE INDEX ON oplaadpalen_new USING gist (wkb_geometry);
