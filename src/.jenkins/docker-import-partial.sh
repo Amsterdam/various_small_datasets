@@ -26,6 +26,10 @@ case $i in
     echo "Importing HIOR"
     hior/importer/import.sh
     ;;
+    iot)
+    echo "Importing IOT"
+    iot/import/import.sh
+    ;;
     oplaadpalen)
     echo "Importing Oplaadpalen"
     oplaadpalen/import/import.sh
