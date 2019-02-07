@@ -55,6 +55,8 @@ _MAP_DS_TYPE = {
     'multipolygon': models.MultiPolygonField,
     'timestamp with time zone': models.DateTimeField,
     'timestamp': models.DateTimeField,
+    'real': models.FloatField,
+    'double precision': models.FloatField,
     # TODO add missing types
 }
 
