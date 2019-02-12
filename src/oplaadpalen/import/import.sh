@@ -56,12 +56,16 @@ PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/import_oplaadpalen_allego.py
 
 PYTHONPATH=${SCRIPT_DIR}/../.. ${SCRIPT_DIR}/check_imported_data.py
 
+# In view oplaadpunten exclude SHUNK_PANTOGRAPH type and all oplaadpalen that have not been updated in the last day
 echo "Rename tables"
 psql -X --set ON_ERROR_STOP=on <<SQL
 BEGIN;
 ALTER TABLE IF EXISTS oplaadpalen RENAME TO oplaadpalen_old;
 ALTER TABLE oplaadpalen_new RENAME TO oplaadpalen;
+DROP VIEW IF EXISTS oplaadpunten;
 DROP TABLE IF EXISTS oplaadpalen_old;
+CREATE VIEW oplaadpunten AS SELECT *  FROM oplaadpalen
+WHERE connector_type <> 'SHUNK_PANTOGRAPH' AND status in ('Available', 'Occupied');
 COMMIT;
 SQL
 

@@ -115,6 +115,13 @@ def _make_oplaadpaal_args(opl:dict):
         charging_capability_list.append(str(charging_cap))
         identification_type_list.append((evse['displayName']))
 
+    if 'Available' in status_list:
+        status = 'Available'
+    elif 'Occupied' in status_list:
+        status = 'Occupied'
+    else:
+        status = ';'.join(list(OrderedDict.fromkeys(status_list)))
+
     args = {
         'cs_external_id': opl['chargePointId'],
         'longitude': opl['location']['longitude'],
@@ -129,7 +136,7 @@ def _make_oplaadpaal_args(opl:dict):
         'provider': opl['cpoOrganisationId'],
         'restrictionsremark': None,
         'charging_point': charging_point,
-        'status': ';'.join(list(OrderedDict.fromkeys(status_list))),
+        'status': status,
         'connector_type': ';'.join(list(OrderedDict.fromkeys(connector_type_list))),
         'vehicle_type': ';'.join(list(OrderedDict.fromkeys(vehicle_type_list))),
         'charging_capability': ';'.join(list(OrderedDict.fromkeys(charging_capability_list))),
@@ -239,6 +246,18 @@ insert into {table_name}(
     return ret
 
 
+def set_oplaadpalen_unknown(curs, table_name:str):
+    """
+    Set all those oplaadpalen that were not present in the last update to status 'Unknown'
+    """
+    sql = '''
+UPDATE oplaadpalen set status = 'Unknown' 
+WHERE status <> 'Unknown' AND last_status_update <> (select max(last_status_update) from oplaadpalen)
+'''
+    curs.execute(sql)
+    return curs.rowcount
+
+
 def main():
     """
     First we get a list of all chargepoints from Allego in Amsterdam
@@ -264,6 +283,7 @@ def main():
     total_inserts = 0
     total_updates = 0
     total_complete_updates = 0
+    total_set_unknown = 0
     table_name = 'oplaadpalen_new'
     try:
         dsn = f"dbname='{dbname}' user='{user}' password='{password}' host='{host}' port={port}"
@@ -293,9 +313,13 @@ def main():
                                 total_inserts += 1
                         else:
                             pass
+            with conn.cursor() as curs:
+                total_set_unknown = set_oplaadpalen_unknown(curs, table_name)
+
         log.info(f"Inserted {total_inserts} laadpalen")
         log.info(f"Updated {total_updates} laadpalen")
         log.info(f"Updated completely {total_complete_updates} laadpalen")
+        log.info(f"Not updated, set to 'Unknown' {total_set_unknown} laadpalen")
 
     except psycopg2.Error as exc:
         print("Unable to connect to the database", exc)

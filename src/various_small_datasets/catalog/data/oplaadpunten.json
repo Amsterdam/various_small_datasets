@@ -1,24 +1,24 @@
 {
   "datasets": [
     {
-      "name": "oplaadpalen",
-      "description":"Oplaadpalen",
-      "table_name": "oplaadpalen",
+      "name": "oplaadpunten",
+      "description":"Oplaadpunten",
+      "table_name": "oplaadpunten",
       "ordering": "id",
       "pk_field": "id",
       "enable_api": true,
       "name_field": "cs_external_id",
       "geometry_field": "wkb_geometry",
       "geometry_type": "POINT",
-      "enable_geosearch": false,
+      "enable_geosearch": true,
       "enable_maplayer": true,
-      "map_title": "Oplaadpalen",
-      "map_abstract": "Oplaadpalen Amsterdam",
+      "map_title": "Oplaadpunten",
+      "map_abstract": "Oplaadpunten Amsterdam",
       "map_layers": [
         {
-          "name": "oplaadpalen",
-          "title": "Oplaadpalen",
-          "abstract": "Oplaadpalen Amsterdam",
+          "name": "oplaadpunten",
+          "title": "Oplaadpunten",
+          "abstract": "Oplaadpunten Amsterdam",
           "color": "0 70 153",
           "minscale": 10,
           "maxscale": 400000,
