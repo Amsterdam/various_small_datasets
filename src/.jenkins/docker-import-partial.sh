@@ -42,5 +42,9 @@ case $i in
     echo "Importing Mileuzones"
     milieuzones/import/import.sh
     ;;
+    vezips)
+    echo "Importing Verzinkbare palen"
+    vezips/import/import.sh
+    ;;
 esac
 done
