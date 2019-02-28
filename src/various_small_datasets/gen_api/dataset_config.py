@@ -167,7 +167,7 @@ WHERE f_table_schema = %s AND f_table_name = %s
                 }
 
 
-def read_all_datasets():
+def read_all_datasets():  # noqa: C901
     """
     Read all dataset configurations from the catalog and set the result DATASET_CONFIG
     This should called at the start of the application, for example in the toplevel urls
