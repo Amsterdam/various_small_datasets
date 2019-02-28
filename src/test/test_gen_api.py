@@ -14,6 +14,7 @@ class TestGenericApi(TestCase):
             name='ijs',
             table_name='icp_data',
             enable_api=True,
+            pk_field='icp_id',
             name_field='naam',
             geometry_field='wkb_geometry',
             geometry_type='POINT',
