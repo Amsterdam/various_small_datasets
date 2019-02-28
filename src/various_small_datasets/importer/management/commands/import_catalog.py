@@ -2,7 +2,6 @@ import logging
 import os
 import json
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from various_small_datasets.catalog.models import DataSet,  MapLayer
@@ -15,11 +14,6 @@ log = logging.getLogger(__name__)
 def import_dataset_in_db(dataset_json):
     layers = dataset_json.pop('map_layers', None)
     with transaction.atomic():
-        try:
-            existing_dataset = DataSet.objects.get(name=dataset_json['name'])
-            existing_dataset.delete()
-        except ObjectDoesNotExist:
-            pass
         dataset = DataSet(**dataset_json)
         dataset.save()
         if dataset.enable_maplayer:
@@ -46,6 +40,7 @@ class Command(BaseCommand):
         log.info("Import catalog")
         # Find *.json files in various_small_datasets/catalog/data
         data_dir = "various_small_datasets/catalog/data"
+        DataSet.objects.all().delete()
         for file in os.listdir(data_dir):
             if file.endswith(".json"):
                 log.info("Import catalog file %s", file)
