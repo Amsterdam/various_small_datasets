@@ -103,8 +103,8 @@ WHERE table_schema = %s AND table_name = %s
             field['null'] = field.pop('is_nullable') == 'YES'
             d_fields[name] = field
 
-        (real_schema, real_table) = (schema, table)
-        # Is this a view ?
+#        (real_schema, real_table) = (schema, table)
+#        # Is this a view ?
 #         query = '''
 # select table_schema, table_name
 # from information_schema.view_table_usage where
@@ -121,26 +121,29 @@ WHERE table_schema = %s AND table_name = %s
         # to the columns in the table because they can be renamed using AS
         # We would have to parse the information.schema.views.view_definition
         # statement to find out. So this currently not work for views
-        query = '''
-SELECT
-ccu.column_name, constraint_type
-FROM information_schema.table_constraints tc
-JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name)
-WHERE  tc.table_schema = %s AND tc.table_name = %s
-        '''
-        cursor.execute(query, [real_schema, real_table])
-        rows = cursor.fetchall()
-        if rows:
-            for (name, constraint) in rows:
-                if name in d_fields:
-                    if constraint.upper() == 'PRIMARY KEY':
-                        d_fields[name]['primary_key'] = True
-                        d_fields[name]['null'] = False
-                        pk_field = name
-                    elif constraint.upper() == 'UNIQUE':
-                        d_fields[name]['unique'] = True
-                        if name_field is None and d_fields[name]['data_type'] in {'character varying', 'text'}:
-                            name_field = name
+# The following query to get the constraints only works for the owner of the table, and not for the
+# XXXX_read users that are used. It is possible to rewrite this  using the underlying tables. They
+# are accessible to other users too. But for now we use the pk definition in the catalog
+#         query = '''
+# SELECT
+# ccu.column_name, constraint_type
+# FROM information_schema.table_constraints tc
+# JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name)
+# WHERE  tc.table_schema = %s AND tc.table_name = %s
+#         '''
+#         cursor.execute(query, [real_schema, real_table])
+#         rows = cursor.fetchall()
+#         if rows:
+#             for (name, constraint) in rows:
+#                 if name in d_fields:
+#                     if constraint.upper() == 'PRIMARY KEY':
+#                         d_fields[name]['primary_key'] = True
+#                         d_fields[name]['null'] = False
+#                         pk_field = name
+#                     elif constraint.upper() == 'UNIQUE':
+#                         d_fields[name]['unique'] = True
+#                         if name_field is None and d_fields[name]['data_type'] in {'character varying', 'text'}:
+#                             name_field = name
 
         # Get srid for geometry columns
         query = '''
@@ -178,7 +181,7 @@ def read_all_datasets():
             schema = 'public' if ds.schema is None else ds.schema
             postgres_metadata = read_postgres_metadata(schema, ds.table_name)
             ds.pk_field = ds.pk_field or ds.ordering or postgres_metadata['pk_field']
-            ds.ordering = ds.ordering or postgres_metadata['pk_field']
+            ds.ordering = ds.ordering or ds.pk_field or postgres_metadata['pk_field']
             ds.name_field = ds.name_field or postgres_metadata['name_field']
             ds.geometry_field = ds.geometry_field or postgres_metadata['geometry_field']
 
@@ -195,6 +198,11 @@ def read_all_datasets():
             dataset_fields = postgres_metadata['fields']
             for field_name, dsf in dataset_fields.items():
                 data_type = dsf.pop('data_type')
+                # Use pk definition in catalog to set primary_key
+                # If this can be retrieved from Postgres this is not required
+                if field_name == ds.pk_field:
+                    dsf['primary_key'] = True
+                    dsf['null'] = False
                 new_attrs[field_name] = _MAP_DS_TYPE[data_type](**dsf)
         except KeyError as err:
             log.error(f'Error: Skip dataset for {ds.table_name} : {err}')
