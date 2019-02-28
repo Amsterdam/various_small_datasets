@@ -2,7 +2,6 @@ import logging
 import os
 import json
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from various_small_datasets.catalog.models import DataSet,  MapLayer
