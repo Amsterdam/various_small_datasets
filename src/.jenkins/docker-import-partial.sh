@@ -46,5 +46,9 @@ case $i in
     echo "Importing Verzinkbare palen"
     vezips/import/import.sh
     ;;
+    winkgeb)
+    echo "Importing Winkel gebioeden"
+    winkgeb/import/import.sh
+    ;;
 esac
 done

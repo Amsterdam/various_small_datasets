@@ -1,0 +1,32 @@
+{
+  "datasets": [
+    {
+      "name": "winkgeb",
+      "description":"Winkelgebieden",
+      "table_name": "winkgeb",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "gebnaam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "winkgeb",
+      "map_abstract": "Winkelgebieden",
+      "map_layers": [
+        {
+          "name": "winkgeb",
+          "title": "Winkelgebieden",
+          "abstract": "Winkelgebieden Amsterdam",
+          "color": "153 70 70",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "gebnaam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}
