@@ -8,11 +8,13 @@ source ${SHARED_DIR}/import/before.sh
 
 echo "Process import data"
 
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -lco ENCODING=UTF-8 -nln winkgeb_new  ${TMPDIR}/winkgeb.sql ${DATA_DIR}/winkgeb2018.TAB
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln winkgeb_new  ${TMPDIR}/winkgeb.sql ${DATA_DIR}/winkgeb2018.TAB
+
+iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/winkgeb.sql > ${TMPDIR}/winkgeb.utf8.sql
 
 echo "Create tables & import data for winkel gebieden"
 psql -X --set ON_ERROR_STOP=on <<SQL
-\i ${TMPDIR}/winkgeb.sql
+\i ${TMPDIR}/winkgeb.utf8.sql
 BEGIN;
 \i ${DATA_DIR}/colormap.sql
 COMMIT;
