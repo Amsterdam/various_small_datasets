@@ -47,7 +47,7 @@ case $i in
     vezips/import/import.sh
     ;;
     winkgeb)
-    echo "Importing Winkel gebioeden"
+    echo "Importing Winkel gebieden"
     winkgeb/import/import.sh
     ;;
 esac
