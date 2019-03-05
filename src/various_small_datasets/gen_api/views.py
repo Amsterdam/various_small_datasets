@@ -6,7 +6,7 @@ from rest_framework.exceptions import NotFound, ParseError
 
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework import filters
-from rest_framework import serializers as rest_serializers
+from rest_framework import serializers as rest_serializers, viewsets
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
@@ -101,6 +101,36 @@ def validate_x_y(value):
     return point, radius, err
 
 
+def get_location_args(args):
+    if 'lat' in args or 'lon' in args or 'x' in args or 'y' in args:
+        lat = args.get('lat', None)
+        lon = args.get('lon', None)
+        x = args.get('x', None)
+        y = args.get('y', None)
+        radius = args.get('radius', 0)
+        if lat and lon:
+            x = lon
+            y = lat
+            rd = False
+        elif x and y:
+            rd = True
+        else:
+            raise rest_serializers.ValidationError("missing lat/lon or x/y arguments")
+
+        try:
+            x = float(x)
+            y = float(y)
+            radius = int(radius)
+        except ValueError:
+            raise rest_serializers.ValidationError("invalid lat/lon or x/y or radius arguments")
+
+        point = Point(x, y, srid=28992) if rd else Point(x, y, srid=4326).transform(28992, clone=True)
+        return point, radius
+
+    else:
+        return None, None
+
+
 class GenericFilter(FilterSet):
 
     class Meta(object):
@@ -143,9 +173,8 @@ class GenericFilter(FilterSet):
         return queryset.filter(**args)
 
 
-def filter_factory(ds_name, model):
+def filter_factory(ds_name, model, ds):
     model_name = ds_name.upper() + 'GenericFilter'
-    ds = DataSet.objects.get(name=ds_name)
     name_field = ds.name_field or 'UNKNOWN'
     geometry_field = ds.geometry_field or 'UNKNOWN'
     geometry_type = ds.geometry_type or 'UNKNOWN'
@@ -176,14 +205,34 @@ class GenericViewSet(DatapuntViewSet):
     initialized = 0
     serializerClasses = {}
     filterClasses = {}
+    dataSetsClasses = {}
 
     def __init__(self, *args, **kwargs):
+        self.dataset_name = None
         self.dataset = None
         self.model = None
-        # TODO add filtering
-        # filter_class = GenericFilter
         self.filter_class = None
         super(GenericViewSet, self).__init__(*args, **kwargs)
+
+    def _filter_geosearch(self, queryset):
+        geometry_field = self.dataset.geometry_field or None
+        geometry_type = self.dataset.geometry_type or None
+
+        if geometry_field and geometry_type:
+            point, radius = get_location_args(self.request.query_params)
+            if point:
+                if geometry_type.lower() == 'polygon':
+                    args = {'__'.join([geometry_field, 'contains']): point}
+                    queryset = queryset.filter(**args)
+                elif geometry_type.lower() == 'point' and radius is not None:
+                    args = {'__'.join([geometry_field, 'dwithin']): (point, D(m=radius))}
+                    queryset = queryset.filter(**args).annotate(afstand=Distance(geometry_field, point))
+                else:
+                    err = "Radius in argument expected"
+                    raise rest_serializers.ValidationError(err)
+
+        return queryset
+
 
     @classmethod
     def initialize(cls):
@@ -193,29 +242,36 @@ class GenericViewSet(DatapuntViewSet):
 
     def get_queryset(self):
         if 'dataset' in self.kwargs:
-            self.dataset = self.kwargs['dataset']
+            self.dataset_name = self.kwargs['dataset']
         else:
             raise ParseError("missing dataset")
 
-        if self.dataset in config.DATASET_CONFIG:
-            self.model = config.DATASET_CONFIG[self.dataset]
+        if self.dataset_name in config.DATASET_CONFIG:
+            self.model = config.DATASET_CONFIG[self.dataset_name]
         else:
             GenericViewSet.initialize()
             if self.dataset in config.DATASET_CONFIG:
-                self.model = config.DATASET_CONFIG[self.dataset]
+                self.model = config.DATASET_CONFIG[self.dataset_name]
             else:
-                raise NotFound("dataset" + self.dataset)
+                raise NotFound("dataset" + self.dataset_name)
+
+        queryset = self.model.objects.all()
 
         if self.action == 'list':
-            if self.dataset not in GenericViewSet.filterClasses:
-                GenericViewSet.filterClasses[self.dataset] = filter_factory(self.dataset, self.model)
-            self.filter_class = GenericViewSet.filterClasses[self.dataset]
-        return self.model.objects.all()
+            if self.dataset_name not in GenericViewSet.dataSetsClasses:
+                GenericViewSet.dataSetsClasses[self.dataset_name] = DataSet.objects.get(name=self.dataset_name)
+                GenericViewSet.filterClasses[self.dataset_name] = filter_factory(self.dataset_name, self.model, GenericViewSet.dataSetsClasses[self.dataset_name])
+            self.filter_class = GenericViewSet.filterClasses[self.dataset_name]
+            self.dataset = GenericViewSet.dataSetsClasses[self.dataset_name]
+
+            queryset = self._filter_geosearch(queryset)
+
+        return queryset
 
     def get_serializer_class(self):
-        if self.dataset not in GenericViewSet.serializerClasses:
-            GenericViewSet.serializerClasses[self.dataset] = serializers.serializer_factory(self.dataset, self.model)
-        return GenericViewSet.serializerClasses[self.dataset]
+        if self.dataset_name not in GenericViewSet.serializerClasses:
+            GenericViewSet.serializerClasses[self.dataset_name] = serializers.serializer_factory(self.dataset_name, self.model)
+        return GenericViewSet.serializerClasses[self.dataset_name]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
