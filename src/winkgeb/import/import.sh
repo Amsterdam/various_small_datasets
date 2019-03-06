@@ -16,7 +16,7 @@ echo "Create tables & import data for winkel gebieden"
 psql -X --set ON_ERROR_STOP=on <<SQL
 \i ${TMPDIR}/winkgeb.utf8.sql
 BEGIN;
-\i ${DATA_DIR}/colormap.sql
+\i ${DATA_DIR}/add_categorie.sql
 COMMIT;
 SQL
 

@@ -1,6 +1,9 @@
+ALTER TABLE winkgeb_new ADD COLUMN categorie VARCHAR(3);
+ALTER TABLE winkgeb_new ADD COLUMN categorie_naam VARCHAR(64);
+-- For backwards compatability in mapserver. If in mapserver this has been changed to categorie color_code can be removed
 ALTER TABLE winkgeb_new ADD COLUMN color_code VARCHAR(3);
 
-WITH colormap(codewg, colorcode) AS ( VALUES
+WITH categorie(codewg, categorie) AS ( VALUES
 ('335','BU'),
 ('415','BU'),
 ('039','WK'),
@@ -131,6 +134,19 @@ WITH colormap(codewg, colorcode) AS ( VALUES
 ('408','K'),
 ('055','WK'),
 ('337','BU'),
-('422','TR'))
-UPDATE winkgeb_new SET color_code = colormap.colorcode FROM colormap
-WHERE colormap.codewg = winkgeb_new.codewg;
+('422','TR')),
+categorie_namen(categorie, categorie_naam) AS ( VALUES
+('K', 'Kernwinkelgebied'),
+('BU','Buurtcentrum'),
+('WK', 'Wijkcentrum klein'),
+('WG', 'Wijkcentrum groot'),
+('SC', 'Stadsdeelcentra'),
+('PDV', 'Locatie voor perifere winkels'),
+('TR', 'Trafficlocaties'))
+UPDATE winkgeb_new
+SET color_code = categorie.categorie
+  , categorie = categorie.categorie
+  , categorie_naam = categorie_namen.categorie_naam
+FROM categorie
+JOIN categorie_namen ON categorie.categorie = categorie_namen.categorie
+WHERE categorie.codewg = winkgeb_new.codewg;
