@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 
 from datapunt_api.rest import DatapuntViewSet
@@ -10,6 +11,7 @@ from rest_framework import serializers as rest_serializers, viewsets
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from rest_framework.generics import ListCreateAPIView
 
 from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.gen_api import serializers
@@ -195,24 +197,20 @@ def filter_factory(ds_name, model, ds):
     }
     return type(model_name, (GenericFilter,), new_attrs)
 
-
-class GenericViewSet(DatapuntViewSet):
+class BaseGenericViewSet():
     """
-    Generic Viewset for arbitrary Django models
+    Base Generic Viewset for arbitrary Django models
 
     """
     INITIALIZE_DELAY = 600  # 10 minutes
     initialized = 0
-    serializerClasses = {}
-    filterClasses = {}
-    dataSetsClasses = {}
 
     def __init__(self, *args, **kwargs):
         self.dataset_name = None
         self.dataset = None
         self.model = None
         self.filter_class = None
-        super(GenericViewSet, self).__init__(*args, **kwargs)
+        super(BaseGenericViewSet, self).__init__(*args, **kwargs)
 
     def _filter_geosearch(self, queryset):
         geometry_field = self.dataset.geometry_field or None
@@ -226,7 +224,7 @@ class GenericViewSet(DatapuntViewSet):
                     queryset = queryset.filter(**args)
                 elif geometry_type.lower() == 'point' and radius is not None:
                     args = {'__'.join([geometry_field, 'dwithin']): (point, D(m=radius))}
-                    queryset = queryset.filter(**args).annotate(afstand=Distance(geometry_field, point))
+                    queryset = queryset.filter(**args).annotate(distance=Distance(geometry_field, point))
                 else:
                     err = "Radius in argument expected"
                     raise rest_serializers.ValidationError(err)
@@ -236,9 +234,9 @@ class GenericViewSet(DatapuntViewSet):
 
     @classmethod
     def initialize(cls):
-        if time.time() - GenericViewSet.initialized > cls.INITIALIZE_DELAY:
+        if time.time() - BaseGenericViewSet.initialized > cls.INITIALIZE_DELAY:
             config.read_all_datasets()
-            GenericViewSet.initialized = time.time()
+            BaseGenericViewSet.initialized = time.time()
 
     def get_queryset(self):
         if 'dataset' in self.kwargs:
@@ -249,39 +247,77 @@ class GenericViewSet(DatapuntViewSet):
         if self.dataset_name in config.DATASET_CONFIG:
             self.model = config.DATASET_CONFIG[self.dataset_name]
         else:
-            GenericViewSet.initialize()
-            if self.dataset in config.DATASET_CONFIG:
+            BaseGenericViewSet.initialize()
+            if self.dataset_name in config.DATASET_CONFIG:
                 self.model = config.DATASET_CONFIG[self.dataset_name]
             else:
                 raise NotFound("dataset" + self.dataset_name)
 
-        queryset = self.model.objects.all()
-
-        if self.action == 'list':
-            if self.dataset_name not in GenericViewSet.dataSetsClasses:
-                GenericViewSet.dataSetsClasses[self.dataset_name] = DataSet.objects.get(name=self.dataset_name)
-                GenericViewSet.filterClasses[self.dataset_name] = filter_factory(self.dataset_name, self.model, GenericViewSet.dataSetsClasses[self.dataset_name])
-            self.filter_class = GenericViewSet.filterClasses[self.dataset_name]
-            self.dataset = GenericViewSet.dataSetsClasses[self.dataset_name]
-
-            queryset = self._filter_geosearch(queryset)
-
-        return queryset
-
-    def get_serializer_class(self):
-        if self.dataset_name not in GenericViewSet.serializerClasses:
-            GenericViewSet.serializerClasses[self.dataset_name] = serializers.serializer_factory(self.dataset_name, self.model)
-        return GenericViewSet.serializerClasses[self.dataset_name]
+        return self.model.objects.all()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({'dataset': self.dataset})
+        context.update({'dataset': self.dataset_name})
+        detail = True if 'detail' not in self.request.query_params or self.request.query_params[
+            'detail'] == '1' else False
+        context.update({'detail': detail})
         return context
 
     @classmethod
     def get_all_datasets(cls):
-        GenericViewSet.initialize()
+        BaseGenericViewSet.initialize()
         datasets = {}
         for k, v in config.DATASET_CONFIG.items():
             datasets[k] = v.__doc__
         return datasets
+
+
+class GenericViewSet(BaseGenericViewSet, DatapuntViewSet):
+    serializerClasses = {}
+    filterClasses = {}
+    dataSetsClasses = {}
+
+    def get_serializer_class(self):
+        if self.dataset_name not in type(self).serializerClasses:
+            type(self).serializerClasses[self.dataset_name] = serializers.serializer_factory(self.dataset_name, self.model)
+        serializer = type(self).serializerClasses[self.dataset_name]
+        return serializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.action == 'list':
+            if self.dataset_name not in type(self).dataSetsClasses:
+                type(self).dataSetsClasses[self.dataset_name] = DataSet.objects.get(name=self.dataset_name)
+                type(self).filterClasses[self.dataset_name] = filter_factory(self.dataset_name, self.model, type(self).dataSetsClasses[self.dataset_name])
+            self.filter_class = type(self).filterClasses[self.dataset_name]
+            self.dataset = type(self).dataSetsClasses[self.dataset_name]
+
+        return queryset
+
+
+class GeoGenericViewSet(BaseGenericViewSet, ListCreateAPIView):
+    serializerClasses = {}
+    filterClasses = {}
+    dataSetsClasses = {}
+
+    def get_serializer_class(self):
+        if self.dataset_name not in type(self).serializerClasses:
+            type(self).serializerClasses[self.dataset_name] = serializers.geosearch_serializer_factory(
+                self.dataset_name, self.model,
+                self.dataset.pk_field,
+                self.dataset.geometry_field)
+        serializer = type(self).serializerClasses[self.dataset_name]
+        return serializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.dataset_name not in type(self).dataSetsClasses:
+            type(self).dataSetsClasses[self.dataset_name] = DataSet.objects.get(name=self.dataset_name)
+        self.dataset = type(self).dataSetsClasses[self.dataset_name]
+
+        if self.dataset.enable_geosearch:
+            queryset = self._filter_geosearch(queryset)
+
+        return queryset

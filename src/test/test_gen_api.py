@@ -18,7 +18,7 @@ class TestGenericApi(TestCase):
             name_field='naam',
             geometry_field='wkb_geometry',
             geometry_type='POINT',
-            enable_geosearch=False,
+            enable_geosearch=True,
             enable_maplayer=False,
         )
         ice_cream_parlours.save()
@@ -84,3 +84,11 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
     def test_not_exist2(self):
         response = self.http_client.get('/vsd/ijs/100/')
         assert response.status_code == 404
+
+    def test_geosearch(self):
+        response = self.http_client.get('/vsd/geosearch/ijs/?lat=52.362762&lon=4.907598&radius=500')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']['features']) == 1
+        assert result['results']['features'][0]['id'] == 2
+        assert result['results']['features'][0]['properties']['_display'] == 'De ijsfiets'
