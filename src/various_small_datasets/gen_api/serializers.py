@@ -2,6 +2,7 @@ import logging
 
 from datapunt_api.serializers import HALSerializer, DisplayField
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 log = logging.getLogger(__name__)
 
@@ -58,6 +59,41 @@ class GenericSerializer(BaseSerializer, HALSerializer):
         return links
 
 
+class GenericGeoSerializer(GeoFeatureModelSerializer):
+    uri = serializers.SerializerMethodField()
+    _display = DisplayField()
+    type = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
+
+    class Meta(object):
+        model = None
+        fields = [
+            '_display',
+            'uri',
+            'type',
+            'distance',
+            'id'
+        ]
+
+    def get_uri(self, obj):
+        return f"{self.context['request'].scheme}://{self.context['request'].get_host()}" + \
+               f"/vsd/{self.context['dataset']}/{obj.get_id()}/"
+
+    def get_type(self,obj):
+        return f"/vsd/{self.context['dataset']}"
+
+    def get_distance(self, obj):
+        return "%.2f" % obj.distance.m
+
+    def to_representation(self, instance):
+        feature = super().to_representation(instance)
+        # remove required geometry attribute
+        # MUST be present in output according to GeoJSON spec
+        if not self.context['detail']:
+            feature.pop("geometry")
+        return feature
+
+
 def get_fields(model):
     """
     This gets the fields for a model
@@ -76,3 +112,16 @@ def serializer_factory(dataset, model):
         'Meta': new_meta,
     }
     return type(model_name, (GenericSerializer,), new_attrs)
+
+
+def geosearch_serializer_factory(dataset, model, pk_field, geo_field):
+    model_name = dataset.upper() + 'GeoSerializer'
+    fields = ['_display', 'uri', 'type', 'distance']
+    fields.append(pk_field)
+    new_meta_attrs = {'model': model, 'fields': fields, 'id_field': pk_field, 'geo_field': geo_field}
+    new_meta = type('Meta', (object,), new_meta_attrs)
+    new_attrs = {
+        '__module__': 'various_small_datasets.gen_api.serializers',
+        'Meta': new_meta
+    }
+    return type(model_name, (GenericGeoSerializer,), new_attrs)
