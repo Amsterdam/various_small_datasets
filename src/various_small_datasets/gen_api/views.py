@@ -197,6 +197,7 @@ def filter_factory(ds_name, model, ds):
     }
     return type(model_name, (GenericFilter,), new_attrs)
 
+
 class BaseGenericViewSet():
     """
     Base Generic Viewset for arbitrary Django models
@@ -230,7 +231,6 @@ class BaseGenericViewSet():
                     raise rest_serializers.ValidationError(err)
 
         return queryset
-
 
     @classmethod
     def initialize(cls):
@@ -279,7 +279,8 @@ class GenericViewSet(BaseGenericViewSet, DatapuntViewSet):
 
     def get_serializer_class(self):
         if self.dataset_name not in type(self).serializerClasses:
-            type(self).serializerClasses[self.dataset_name] = serializers.serializer_factory(self.dataset_name, self.model)
+            type(self).serializerClasses[self.dataset_name] = \
+                serializers.serializer_factory(self.dataset_name, self.model)
         serializer = type(self).serializerClasses[self.dataset_name]
         return serializer
 
@@ -289,7 +290,8 @@ class GenericViewSet(BaseGenericViewSet, DatapuntViewSet):
         if self.action == 'list':
             if self.dataset_name not in type(self).dataSetsClasses:
                 type(self).dataSetsClasses[self.dataset_name] = DataSet.objects.get(name=self.dataset_name)
-                type(self).filterClasses[self.dataset_name] = filter_factory(self.dataset_name, self.model, type(self).dataSetsClasses[self.dataset_name])
+                type(self).filterClasses[self.dataset_name] = \
+                    filter_factory(self.dataset_name, self.model, type(self).dataSetsClasses[self.dataset_name])
             self.filter_class = type(self).filterClasses[self.dataset_name]
             self.dataset = type(self).dataSetsClasses[self.dataset_name]
 
