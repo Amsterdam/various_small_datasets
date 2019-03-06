@@ -23,14 +23,14 @@ class BaseSerializer(object):
             }
         }
 
-    def dict_with__links_self_href_id(self, path, id, id_name):
+    def dict_with__links_self_href_id(self, path, id1, id_name):
         return {
             "_links": {
                 "self": {
-                    "href": self.href_url(path.format(id))
+                    "href": self.href_url(path.format(id1))
                 }
             },
-            id_name: id
+            id_name: id1
         }
 
     def dict_with_count_href(self, count, path):
@@ -79,7 +79,7 @@ class GenericGeoSerializer(GeoFeatureModelSerializer):
         return f"{self.context['request'].scheme}://{self.context['request'].get_host()}" + \
                f"/vsd/{self.context['dataset']}/{obj.get_id()}/"
 
-    def get_type(self,obj):
+    def get_type(self, obj):
         return f"/vsd/{self.context['dataset']}"
 
     def get_distance(self, obj):
@@ -116,8 +116,7 @@ def serializer_factory(dataset, model):
 
 def geosearch_serializer_factory(dataset, model, pk_field, geo_field):
     model_name = dataset.upper() + 'GeoSerializer'
-    fields = ['_display', 'uri', 'type', 'distance']
-    fields.append(pk_field)
+    fields = ['_display', 'uri', 'type', 'distance', pk_field]
     new_meta_attrs = {'model': model, 'fields': fields, 'id_field': pk_field, 'geo_field': geo_field}
     new_meta = type('Meta', (object,), new_meta_attrs)
     new_attrs = {
