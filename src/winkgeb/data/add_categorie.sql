@@ -1,7 +1,5 @@
 ALTER TABLE winkgeb_new ADD COLUMN categorie VARCHAR(3);
 ALTER TABLE winkgeb_new ADD COLUMN categorie_naam VARCHAR(64);
--- For backwards compatability in mapserver. If in mapserver this has been changed to categorie color_code can be removed
-ALTER TABLE winkgeb_new ADD COLUMN color_code VARCHAR(3);
 
 WITH categorie(codewg, categorie) AS ( VALUES
 ('335','BU'),
@@ -144,8 +142,7 @@ categorie_namen(categorie, categorie_naam) AS ( VALUES
 ('PDV', 'Locatie voor perifere winkels'),
 ('TR', 'Trafficlocaties'))
 UPDATE winkgeb_new
-SET color_code = categorie.categorie
-  , categorie = categorie.categorie
+SET categorie = categorie.categorie
   , categorie_naam = categorie_namen.categorie_naam
 FROM categorie
 JOIN categorie_namen ON categorie.categorie = categorie_namen.categorie
