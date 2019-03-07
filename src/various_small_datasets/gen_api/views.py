@@ -213,25 +213,6 @@ class BaseGenericViewSet():
         self.filter_class = None
         super(BaseGenericViewSet, self).__init__(*args, **kwargs)
 
-    def _filter_geosearch(self, queryset):
-        geometry_field = self.dataset.geometry_field or None
-        geometry_type = self.dataset.geometry_type or None
-
-        if geometry_field and geometry_type:
-            point, radius = get_location_args(self.request.query_params)
-            if point:
-                if geometry_type.lower() == 'polygon':
-                    args = {'__'.join([geometry_field, 'contains']): point}
-                    queryset = queryset.filter(**args)
-                elif geometry_type.lower() == 'point' and radius is not None:
-                    args = {'__'.join([geometry_field, 'dwithin']): (point, D(m=radius))}
-                    queryset = queryset.filter(**args).annotate(distance=Distance(geometry_field, point))
-                else:
-                    err = "Radius in argument expected"
-                    raise rest_serializers.ValidationError(err)
-
-        return queryset
-
     @classmethod
     def initialize(cls):
         if time.time() - BaseGenericViewSet.initialized > cls.INITIALIZE_DELAY:
@@ -302,6 +283,25 @@ class GeoGenericViewSet(BaseGenericViewSet, ListCreateAPIView):
     serializerClasses = {}
     filterClasses = {}
     dataSetsClasses = {}
+
+    def _filter_geosearch(self, queryset):
+        geometry_field = self.dataset.geometry_field or None
+        geometry_type = self.dataset.geometry_type or None
+
+        if geometry_field and geometry_type:
+            point, radius = get_location_args(self.request.query_params)
+            if point:
+                if geometry_type.lower() == 'polygon':
+                    args = {'__'.join([geometry_field, 'contains']): point}
+                    queryset = queryset.filter(**args)
+                elif geometry_type.lower() == 'point' and radius is not None:
+                    args = {'__'.join([geometry_field, 'dwithin']): (point, D(m=radius))}
+                    queryset = queryset.filter(**args).annotate(distance=Distance(geometry_field, point))
+                else:
+                    err = "Radius in argument expected"
+                    raise rest_serializers.ValidationError(err)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.dataset_name not in type(self).serializerClasses:
