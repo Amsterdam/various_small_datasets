@@ -3,6 +3,8 @@ import logging
 from datapunt_api.serializers import HALSerializer, DisplayField
 from rest_framework import serializers
 
+from various_small_datasets.geojson import geojson_api
+
 log = logging.getLogger(__name__)
 
 
@@ -66,6 +68,9 @@ def get_fields(model):
 
 
 def serializer_factory(dataset, model):
+    if dataset in geojson_api.datasets:
+        return geojson_api.get_serializer(dataset)
+
     model_name = dataset.upper() + 'GenericSerializer'
     fields = ['_links', '_display']
     fields.extend(get_fields(model))

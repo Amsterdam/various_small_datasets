@@ -102,6 +102,7 @@ ENV/
 
 # intellij
 .idea/
+*.iml
 
 # Project specific
 .DS_Store

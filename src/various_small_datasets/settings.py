@@ -14,6 +14,7 @@ INSTALLED_APPS += [
     'various_small_datasets.catalog',
     'various_small_datasets.gen_api',
     'various_small_datasets.importer',
+    'various_small_datasets.geojson',
 ]
 
 ROOT_URLCONF = 'various_small_datasets.urls'
