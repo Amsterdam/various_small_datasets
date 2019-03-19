@@ -33,7 +33,7 @@ def import_geojson(url, dataset_name, force_import=False):
         current_count = geojson_model_factory(dataset_name, new_table=False).objects.count()
         new_count = len(geojson['features'])
 
-        if not (force_import or (1-FRACTION_OFF)*new_count < current_count < (1+FRACTION_OFF)*new_count):
+        if not (force_import or (1 - FRACTION_OFF) * new_count < current_count < (1 + FRACTION_OFF) * new_count):
             raise RuntimeError(f"Dataset '{dataset_name}' changed too much to import")
     # If current table doesn't exist:
     except DatabaseError:
