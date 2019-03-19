@@ -104,6 +104,7 @@ def validate_x_y(value):
 
 
 class GenericFilter(FilterSet):
+    format = filters.CharFilter(method="format_filter")
 
     class Meta(object):
         model = None
@@ -143,6 +144,10 @@ class GenericFilter(FilterSet):
     def name_filter(queryset, _filter_name, value):
         args = {'__'.join([_filter_name, 'icontains']): value}
         return queryset.filter(**args)
+
+    @staticmethod
+    def format_filter(queryset, _filter_name, value):
+        return queryset
 
 
 def filter_factory(ds_name, model):
@@ -187,6 +192,7 @@ class GenericViewSet(DatapuntViewSet):
         self.model = None
         self.filter_class = None
         super(GenericViewSet, self).__init__(*args, **kwargs)
+        self._saved_pagination = self.pagination_class
 
     @classmethod
     def initialize(cls):
@@ -218,6 +224,10 @@ class GenericViewSet(DatapuntViewSet):
             raise NotFound(f"dataset '{dataset}'")
 
     def get_queryset(self):
+        self.pagination_class = self._saved_pagination
+        if 'as_geojson' in self.request.query_params:
+            self.pagination_class = None
+
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
         else:
@@ -232,9 +242,15 @@ class GenericViewSet(DatapuntViewSet):
         return self.model.objects.all()
 
     def get_serializer_class(self):
-        if self.dataset not in GenericViewSet.serializerClasses:
-            GenericViewSet.serializerClasses[self.dataset] = serializers.serializer_factory(self.dataset, self.model)
-        return GenericViewSet.serializerClasses[self.dataset]
+        as_geojson = False
+        if 'as_geojson' in self.request.query_params:
+            as_geojson = True
+
+        key = f'{self.dataset}_{as_geojson}'
+
+        if key not in GenericViewSet.serializerClasses:
+            GenericViewSet.serializerClasses[key] = serializers.serializer_factory(self.dataset, self.model, as_geojson)
+        return GenericViewSet.serializerClasses[key]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

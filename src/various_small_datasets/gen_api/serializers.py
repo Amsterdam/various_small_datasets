@@ -2,7 +2,9 @@ import logging
 
 from datapunt_api.serializers import HALSerializer, DisplayField
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
+from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.geojson import geojson_api
 
 log = logging.getLogger(__name__)
@@ -67,11 +69,14 @@ def get_fields(model):
     return map(lambda x: x.name, model._meta.get_fields())
 
 
-def serializer_factory(dataset, model):
+def serializer_factory(dataset, model, as_geojson):
     if dataset in geojson_api.datasets:
-        return geojson_api.get_serializer(dataset)
+        return geojson_api.get_serializer(dataset, as_geojson)
 
-    model_name = dataset.upper() + 'GenericSerializer'
+    if as_geojson:
+        return geojson_serializer_factory(dataset, model)
+
+    serializer_name = dataset.upper() + 'GenericSerializer'
     fields = ['_links', '_display']
     fields.extend(get_fields(model))
     new_meta_attrs = {'model': model, 'fields': fields}
@@ -80,4 +85,21 @@ def serializer_factory(dataset, model):
         '__module__': 'various_small_datasets.gen_api.serializers',
         'Meta': new_meta,
     }
-    return type(model_name, (GenericSerializer,), new_attrs)
+    return type(serializer_name, (GenericSerializer,), new_attrs)
+
+
+def geojson_serializer_factory(dataset, model):
+    ds = DataSet.objects.get(name=dataset)
+    geo_field = ds.geometry_field
+    if not geo_field:
+        raise RuntimeError("no geo information in model")
+
+    serializer_name = dataset.upper() + 'GeoJSONSerializer'
+    new_meta_attrs = {'model': model, 'fields': list(get_fields(model)), 'geo_field': geo_field}
+    new_meta = type('Meta', (object,), new_meta_attrs)
+    new_attrs = {
+        '__module__': 'various_small_datasets.gen_api.serializers',
+        'Meta': new_meta,
+    }
+
+    return type(serializer_name, (GeoFeatureModelSerializer,), new_attrs)

@@ -4,6 +4,7 @@ import logging
 from django.contrib.gis.measure import D
 from django_filters.rest_framework import filters, FilterSet
 from rest_framework import serializers as rest_serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from various_small_datasets.geojson.geojson_db import geojson_model_factory
 from various_small_datasets.gen_api import serializers
@@ -44,10 +45,21 @@ def get_filter(dataset):
     return GeoJSONGenericFilter
 
 
-def get_serializer(dataset):
-    class GeoJSONGenericSerializer(serializers.GenericSerializer):
-        class Meta(object):
-            model = geojson_model_factory(dataset)
-            fields = ['_links', '_display', 'id', 'geometry', 'properties']
+def get_serializer(dataset, as_geojson):
+    if as_geojson:
+        class GeoJSONGenericSerializer(GeoFeatureModelSerializer):
+            class Meta(object):
+                model = geojson_model_factory(dataset)
+                geo_field = "geometry"
+                fields = ['id', 'geometry', 'properties']
+
+            def get_properties(self, instance, fields):
+                return instance.properties
+
+    else:
+        class GeoJSONGenericSerializer(serializers.GenericSerializer):
+            class Meta(object):
+                model = geojson_model_factory(dataset)
+                fields = ['_links', '_display', 'id', 'geometry', 'properties']
 
     return GeoJSONGenericSerializer
