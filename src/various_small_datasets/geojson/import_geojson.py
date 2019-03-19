@@ -14,7 +14,7 @@ def _get_feature_id(feature):
     if 'id' in feature and feature['id'] is not None:
         return feature['id']
 
-    possible_id_keys = [k for k, _ in feature['properties'].items()]
+    possible_id_keys = [k for k in feature['properties'].keys() if k.lower() == 'id']
     if len(possible_id_keys) > 0:
         return feature['properties'].pop(possible_id_keys[0], None)
 
