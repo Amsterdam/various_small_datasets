@@ -30,5 +30,7 @@ services:
       ./iot/import/import.sh &&
       ./hoofdroutes/import/import.sh &&
       ./milieuzones/import/import.sh &&
-      ./vezips/import/import.sh"
+      ./vezips/import/import.sh &&
+      ./evenementen/import/import.sh &&
+      python manage.py import_geojson"
 # oplaadpalen is  in a special import

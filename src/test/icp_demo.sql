@@ -35,7 +35,7 @@ DELETE  FROM cat_dataset where name = 'ijs';
 
 -- Import catalog
 INSERT INTO cat_dataset(
-	name,
+	  name,
     description,
     table_name,
     ordering,
@@ -46,4 +46,4 @@ INSERT INTO cat_dataset(
     enable_geosearch,
     enable_maplayer
 ) VALUES(
-    'ijs', 'IJs Salons rond de Weesperstraat', 'icp_data', 'id', true, 'naam', 'wkb_geometry', 'POINT', true, true);
+    'ijs', 'IJs Salons rond de Weesperstraat', 'icp_data', 'icp_id', true, 'naam', 'wkb_geometry', 'POINT', true, true);

@@ -61,6 +61,36 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
         assert result["naam"] == 'IJscuypje'
         assert result["smaken"] == 'pistache'
 
+    def test_een_geojson(self):
+        response = self.http_client.get('/vsd/ijs/1/?as_geojson')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert 'id' in result
+        assert 'geometry' in result
+        assert result['type'] == 'Feature'
+        assert result["id"] == 1
+        assert result['properties']["naam"] == 'IJscuypje'
+        assert result['properties']["smaken"] == 'pistache'
+
+    def test_all(self):
+        response = self.http_client.get('/vsd/ijs/')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert '_links' in result
+        assert 'results' in result
+        assert len(result['results']) == 3
+
+    def test_all_geojson(self):
+        response = self.http_client.get('/vsd/ijs/?as_geojson')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert '_links' not in result
+        assert 'results' not in result
+        assert 'type' in result
+        assert 'features' in result
+        assert result['type'] == 'FeatureCollection'
+        assert len(result['features']) == 3
+
     def test_naam(self):
         response = self.http_client.get('/vsd/ijs/?naam=boefje')
         assert response.status_code == 200
@@ -76,6 +106,10 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
         assert len(result['results']) == 1
         assert result['results'][0]['icp_id'] == 2
         assert result['results'][0]['naam'] == 'De ijsfiets'
+
+    def test_large_radius(self):
+        response = self.http_client.get('/vsd/ijs/?wkb_geometry=52.362762,4.907598,2000')
+        assert response.status_code == 400
 
     def test_no_icp(self):
         response = self.http_client.get('/vsd/ipc/1/')

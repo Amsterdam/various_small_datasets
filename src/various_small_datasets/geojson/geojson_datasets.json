@@ -1,0 +1,18 @@
+[
+  {
+    "dataset": "evenemente_geo",
+    "description": "Evenementen in Amsterdam",
+    "source": {
+      "type": "url",
+      "value": "https://evenementen.amsterdam.nl/?geojson=true&pager_rows=5000"
+    }
+  },
+  {
+    "dataset": "parkeergarageplaatsen",
+    "description": "Parkeergarages, plaatsen en beschikbaarheid",
+    "source": {
+      "type": "url",
+      "value": "http://opd.it-t.nl/data/amsterdam/ParkingLocation.json"
+    }
+  }
+]

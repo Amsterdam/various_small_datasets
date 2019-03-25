@@ -14,6 +14,8 @@ from django.contrib.gis.db.models.functions import Distance
 from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.gen_api import serializers
 
+from various_small_datasets.geojson import geojson_api
+
 import various_small_datasets.gen_api.dataset_config as config
 
 
@@ -87,7 +89,7 @@ def validate_x_y(value):
     x, y, radius, err = convert_input_to_float(value)
 
     if err:
-        return None, None, None, err
+        return None, None, err
 
     # Checking if the given coords are valid
 
@@ -102,6 +104,7 @@ def validate_x_y(value):
 
 
 class GenericFilter(FilterSet):
+    format = filters.CharFilter(method="format_filter")
 
     class Meta(object):
         model = None
@@ -142,8 +145,15 @@ class GenericFilter(FilterSet):
         args = {'__'.join([_filter_name, 'icontains']): value}
         return queryset.filter(**args)
 
+    @staticmethod
+    def format_filter(queryset, _filter_name, value):
+        return queryset
+
 
 def filter_factory(ds_name, model):
+    if ds_name in geojson_api.datasets:
+        return geojson_api.get_filter(ds_name)
+
     model_name = ds_name.upper() + 'GenericFilter'
     ds = DataSet.objects.get(name=ds_name)
     name_field = ds.name_field or 'UNKNOWN'
@@ -180,31 +190,50 @@ class GenericViewSet(DatapuntViewSet):
     def __init__(self, *args, **kwargs):
         self.dataset = None
         self.model = None
-        # TODO add filtering
-        # filter_class = GenericFilter
         self.filter_class = None
         super(GenericViewSet, self).__init__(*args, **kwargs)
+        self._saved_pagination = self.pagination_class
 
     @classmethod
     def initialize(cls):
-        if time.time() - GenericViewSet.initialized > cls.INITIALIZE_DELAY:
+        if time.time() - cls.initialized > cls.INITIALIZE_DELAY:
             config.read_all_datasets()
-            GenericViewSet.initialized = time.time()
+            cls.initialized = time.time()
+
+    @classmethod
+    def get_all_datasets(cls):
+        cls.initialize()
+        datasets = {}
+        for k, v in config.DATASET_CONFIG.items():
+            datasets[k] = v.__doc__
+        for k, v in geojson_api.datasets_config.items():
+            datasets[k] = v.__doc__
+        return datasets
+
+    @classmethod
+    def get_model(cls, dataset):
+        if dataset in geojson_api.datasets:
+            return geojson_api.get_model(dataset)
+
+        if dataset not in config.DATASET_CONFIG:
+            cls.initialize()
+
+        if dataset in config.DATASET_CONFIG:
+            return config.DATASET_CONFIG[dataset]
+        else:
+            raise NotFound(f"dataset '{dataset}'")
 
     def get_queryset(self):
+        self.pagination_class = self._saved_pagination
+        if 'as_geojson' in self.request.query_params:
+            self.pagination_class = None
+
         if 'dataset' in self.kwargs:
             self.dataset = self.kwargs['dataset']
         else:
             raise ParseError("missing dataset")
 
-        if self.dataset in config.DATASET_CONFIG:
-            self.model = config.DATASET_CONFIG[self.dataset]
-        else:
-            GenericViewSet.initialize()
-            if self.dataset in config.DATASET_CONFIG:
-                self.model = config.DATASET_CONFIG[self.dataset]
-            else:
-                raise NotFound("dataset" + self.dataset)
+        self.model = GenericViewSet.get_model(self.dataset)
 
         if self.action == 'list':
             if self.dataset not in GenericViewSet.filterClasses:
@@ -213,19 +242,17 @@ class GenericViewSet(DatapuntViewSet):
         return self.model.objects.all()
 
     def get_serializer_class(self):
-        if self.dataset not in GenericViewSet.serializerClasses:
-            GenericViewSet.serializerClasses[self.dataset] = serializers.serializer_factory(self.dataset, self.model)
-        return GenericViewSet.serializerClasses[self.dataset]
+        as_geojson = False
+        if 'as_geojson' in self.request.query_params:
+            as_geojson = True
+
+        key = f'{self.dataset}_{as_geojson}'
+
+        if key not in GenericViewSet.serializerClasses:
+            GenericViewSet.serializerClasses[key] = serializers.serializer_factory(self.dataset, self.model, as_geojson)
+        return GenericViewSet.serializerClasses[key]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({'dataset': self.dataset})
         return context
-
-    @classmethod
-    def get_all_datasets(cls):
-        GenericViewSet.initialize()
-        datasets = {}
-        for k, v in config.DATASET_CONFIG.items():
-            datasets[k] = v.__doc__
-        return datasets
