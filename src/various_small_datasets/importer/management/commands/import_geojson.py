@@ -21,8 +21,8 @@ class Command(BaseCommand):
                 break
 
             if dataset_to_import is None or dataset['dataset'] == dataset_to_import:
-                try:
-                    import_geojson(dataset['source']['value'], dataset['dataset'], force_import=force_refresh)
-                except RuntimeError:
-                    log.error(f"importing dataset '{dataset['dataset']}' failed: ")
+                # try:
+                import_geojson(dataset['source']['value'], dataset['dataset'], force_import=force_refresh)
+                # except RuntimeError:
+                #     log.error(f"importing dataset '{dataset['dataset']}' failed: ")
 

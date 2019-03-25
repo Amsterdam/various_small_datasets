@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from utils.check_imported_data import main, all_valid_url, assert_count_minimum, assert_count_zero
+from utils.check_imported_data import main, assert_count_minimum, assert_count_zero
 
 sql_checks = [
     ('count', "select count(*) from vezips_new", assert_count_minimum(75)),

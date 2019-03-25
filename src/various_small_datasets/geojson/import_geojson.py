@@ -4,7 +4,8 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.db import connection, DatabaseError
 from geojson import loads, FeatureCollection
 
-from various_small_datasets.geojson.geojson_db import create_new_datatable_sql, geojson_model_factory, roll_over_datatable_sql
+from various_small_datasets.geojson.geojson_db import create_new_datatable_sql, geojson_model_factory, \
+    roll_over_datatable_sql
 
 # Check if the dataset didn't change too much (> 20%)
 FRACTION_OFF = 0.2
@@ -63,4 +64,3 @@ def import_geojson(url, dataset_name, force_import=False):
 
     with connection.cursor() as cursor:
         cursor.execute(sql)
-
