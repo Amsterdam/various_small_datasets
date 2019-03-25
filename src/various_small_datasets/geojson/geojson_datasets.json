@@ -1,6 +1,6 @@
 [
   {
-    "dataset": "evenementen",
+    "dataset": "evenemente_geo",
     "description": "Evenementen in Amsterdam",
     "source": {
       "type": "url",

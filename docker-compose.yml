@@ -26,6 +26,8 @@ services:
       SECRET_KEY: insecure
       DATABASE_NAME: various_small_datasets
       DATABASE_USER: various_small_datasets
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
       DATABASE_PASSWORD: insecure
     volumes:
       - ./src:/app
