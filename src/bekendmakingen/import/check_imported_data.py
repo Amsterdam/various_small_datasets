@@ -8,7 +8,7 @@ select column_name from information_schema.columns where
 table_schema = 'public' and table_name = 'bekendmakingen_new'
     """, lambda x: x == [('ogc_fid',), ('wkb_geometry',), ('id',), ('oid_',), ('categorie',),
                          ('onderwerp',), ('titel',), ('beschrijving',), ('url',),
-                         ('postcodehuisnummer',), ('plaats,'), ('straat',), ('datum',), ('overheid',)]),
+                         ('postcodehuisnummer',), ('plaats',), ('straat',), ('datum',), ('overheid',)]),
     ('geometrie', """
 select count(*) from bekendmakingen_new where
 wkb_geometry is null or ST_IsValid(wkb_geometry) = false or ST_GeometryType(wkb_geometry) <> 'ST_Point'
