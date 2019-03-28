@@ -54,6 +54,10 @@ case $i in
     echo "Importing Evenementen"
     evenementen/import/import.sh
     ;;
+    bekendmakingen)
+    echo "Importing Bekendmakingen"
+    bekendmakingen/import/import.sh
+    ;;
     *)
     echo "Trying to import GeoJSON dataset $i"
     python ./manage.py import_geojson -d $i
