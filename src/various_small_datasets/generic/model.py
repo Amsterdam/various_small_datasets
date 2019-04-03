@@ -151,22 +151,23 @@ class Time(FieldRepresentation):
 
 
 def represent_field(field_name, field_def):
-    if field_def['type'] == "SERIAL":
-        return SERIAL(field_name, **field_def)
-    elif field_def['type'] == "String":
-        return Char(field_name, **field_def)
-    elif field_def['type'] == "URL":
-        return URL(field_name, **field_def)
-    elif field_def['type'] == "Text":
-        return Text(field_name, **field_def)
-    elif field_def['type'] == "Date":
-        return Date(field_name, **field_def)
-    elif field_def['type'] == "Time":
-        return Time(field_name, **field_def)
-    elif field_def['type'] == "Geo.Point":
-        return Point(field_name, **field_def)
-    else:
-        raise NotImplementedError
+    field_mapping = {
+        "SERIAL": SERIAL,
+        "String": Char,
+        "URL": URL,
+        "Text": Text,
+        "Date": Date,
+        "Time": Time,
+        "Geo.Point": Point
+    }
+
+    field_type = field_def['type']
+    try:
+        field_cls = field_mapping[field_type]
+    except KeyError:
+        raise NotImplementedError(f"field type {field_type} is not yet implemented")
+
+    return field_cls(field_name, **field_def)
 
 
 def get_model_repr(model_def, with_internal=True):
