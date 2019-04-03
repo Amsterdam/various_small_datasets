@@ -21,7 +21,6 @@ MarkupSafe
 numpy
 openapi-codec
 pandas
-psycopg2
 psycopg2-binary
 python-dateutil
 pytz
