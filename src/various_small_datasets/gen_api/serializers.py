@@ -5,7 +5,6 @@ from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from various_small_datasets.catalog.models import DataSet
-from various_small_datasets.geojson import geojson_api
 
 log = logging.getLogger(__name__)
 
@@ -70,9 +69,6 @@ def get_fields(model):
 
 
 def serializer_factory(dataset, model, as_geojson):
-    if dataset in geojson_api.datasets:
-        return geojson_api.get_serializer(dataset, as_geojson)
-
     if as_geojson:
         return geojson_serializer_factory(dataset, model)
 
