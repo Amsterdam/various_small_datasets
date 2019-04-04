@@ -1,5 +1,7 @@
+from django.db import connection
+
 from various_small_datasets.generic.model import get_model_repr, GeoFieldRepresentation
-from utils.check_imported_data import main, assert_count_minimum, assert_count_zero
+from utils.check_imported_data import do_checks, assert_count_minimum, assert_count_zero
 
 
 def _get_check(import_def, model_def, check_type, check_props):
@@ -36,4 +38,6 @@ def check_import(import_def, model_def):
     sql_checks = []
     for k, v in import_def['check'].items():
         sql_checks.extend(_get_check(import_def, model_def, k, v))
-    main(sql_checks)
+    all_checks_pass = do_checks(connection, sql_checks)
+    if not all_checks_pass:
+        raise RuntimeError("Import aborted, due too failing checks")
