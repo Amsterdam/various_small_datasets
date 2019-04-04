@@ -54,6 +54,10 @@ case $i in
     echo "Importing Evenementen"
     python ./manage.py import_generic -d evenementen
     ;;
+    bekendmakingen)
+    echo "Importing Bekendmakingen"
+    bekendmakingen/import/import.sh
+    ;;
     *)
     echo "Trying to import Generic dataset $i"
     python ./manage.py import_generic -d $i
