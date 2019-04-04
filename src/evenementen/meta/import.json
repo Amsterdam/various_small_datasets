@@ -25,7 +25,7 @@
       },
       {
         "target": "url",
-        "source": "properties.url]"
+        "source": "properties.url"
       },
       {
         "target": "startdatum",
