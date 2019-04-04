@@ -19,7 +19,6 @@
     "type": "Geo.Point",
     "properties": {
       "index": true,
-      "srid": 4326,
       "null": false,
       "geo_find": true
     }

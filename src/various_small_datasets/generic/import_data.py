@@ -6,7 +6,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_source_def
 from various_small_datasets.generic.check import check_import
 from various_small_datasets.generic.db import create_new_datatable, roll_over_datatable
-from various_small_datasets.generic.model import get_django_model
+from various_small_datasets.generic.model import get_django_model, represent_field
 from various_small_datasets.generic.source import get_source
 
 log = logging.getLogger(__name__)
@@ -24,7 +24,8 @@ class JSONImporter(object):
             for mapping in self.import_def['mapping']['mappings']:
                 source = self._get_source(entry, mapping['source'])
                 if 'transform' in mapping:
-                    source = self._transform(mapping['transform'], source)
+                    field_repr = represent_field(mapping['target'], self.model_def[mapping['target']])
+                    source = self._transform(mapping['transform'], source, field_repr)
                 fields[mapping['target']] = source
 
             model(**fields).save()
@@ -40,7 +41,7 @@ class JSONImporter(object):
         return _recurse_dict(entity, path.split('.'))
 
     @staticmethod
-    def _transform(transform_def, source):
+    def _transform(transform_def, source, field_repr):
         if transform_def['type'] in ["time_from_string", "date_from_string"]:
             if source is None:
                 return None
@@ -49,7 +50,14 @@ class JSONImporter(object):
                 return str(date.time())
             return date
         elif transform_def['type'] == 'geometry_from_geojson':
-            return GEOSGeometry(str(source))
+
+            source_srid = 4326  # as per GeoJSON standard
+            target_srid = field_repr.srid
+
+            geometry = GEOSGeometry(str(source), srid=source_srid)
+            geometry.transform(target_srid)
+
+            return geometry
         else:
             raise NotImplementedError
 

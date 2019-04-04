@@ -57,6 +57,7 @@ class FieldRepresentation(ABC):
 class GeoFieldRepresentation(FieldRepresentation, ABC):
     psql_type = 'ST_Geometry'
     geo_type = 'GEOMETRY'
+    default_srid = 28992
 
     def psql_index(self, table):
         if not self.with_index:
@@ -67,6 +68,10 @@ class GeoFieldRepresentation(FieldRepresentation, ABC):
     @abstractmethod
     def psql_type(self):
         pass
+
+    @property
+    def srid(self):
+        return self.field_props.get('srid', self.default_srid)
 
 
 class SERIAL(FieldRepresentation):
@@ -132,11 +137,11 @@ class Point(GeoFieldRepresentation):
 
     @property
     def django(self):
-        return geo_models.PointField(srid=self.field_props.get('srid', 28992))
+        return geo_models.PointField(srid=self.srid)
 
     @property
     def psql(self):
-        return f"{self.field_name} geometry(Point, {self.field_props.get('srid', 28992)})"
+        return f"{self.field_name} geometry(Point, {self.srid})"
 
 
 class Time(FieldRepresentation):
