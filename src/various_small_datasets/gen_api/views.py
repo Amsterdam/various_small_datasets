@@ -14,10 +14,7 @@ from django.contrib.gis.db.models.functions import Distance
 from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.gen_api import serializers
 
-from various_small_datasets.geojson import geojson_api
-
 import various_small_datasets.gen_api.dataset_config as config
-
 
 log = logging.getLogger(__name__)
 
@@ -151,9 +148,6 @@ class GenericFilter(FilterSet):
 
 
 def filter_factory(ds_name, model):
-    if ds_name in geojson_api.datasets:
-        return geojson_api.get_filter(ds_name)
-
     model_name = ds_name.upper() + 'GenericFilter'
     ds = DataSet.objects.get(name=ds_name)
     name_field = ds.name_field or 'UNKNOWN'
@@ -206,15 +200,10 @@ class GenericViewSet(DatapuntViewSet):
         datasets = {}
         for k, v in config.DATASET_CONFIG.items():
             datasets[k] = v.__doc__
-        for k, v in geojson_api.datasets_config.items():
-            datasets[k] = v.__doc__
         return datasets
 
     @classmethod
     def get_model(cls, dataset):
-        if dataset in geojson_api.datasets:
-            return geojson_api.get_model(dataset)
-
         if dataset not in config.DATASET_CONFIG:
             cls.initialize()
 

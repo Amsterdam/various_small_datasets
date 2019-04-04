@@ -31,7 +31,6 @@ services:
       ./hoofdroutes/import/import.sh &&
       ./milieuzones/import/import.sh &&
       ./vezips/import/import.sh &&
-      ./evenementen/import/import.sh &&
       ./bekendmakingen/import/import.sh &&
-      python manage.py import_geojson"
+      python manage.py import_generic"
 # oplaadpalen is  in a special import

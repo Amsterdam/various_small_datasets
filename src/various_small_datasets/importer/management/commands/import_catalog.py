@@ -3,10 +3,11 @@ import os
 import json
 
 from django.db import transaction
+from django.core.management import BaseCommand
 
 from various_small_datasets.catalog.models import DataSet,  MapLayer
-
-from django.core.management import BaseCommand
+from various_small_datasets.generic.catalog import generic_importable
+from various_small_datasets.generic.legacy import get_legacy_definition
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +32,13 @@ def import_catalog_json_file(filepath):
             import_dataset_in_db(dataset_json)
 
 
+def import_generic_metadata(dataset):
+    data_dict = get_legacy_definition(dataset)
+
+    for dataset_json in data_dict['datasets']:
+        import_dataset_in_db(dataset_json)
+
+
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
@@ -46,3 +54,8 @@ class Command(BaseCommand):
                 log.info("Import catalog file %s", file)
                 import_catalog_json_file(data_dir + '/' + file)
                 log.info("End import catalog file %s", file)
+
+        for dataset in generic_importable:
+            log.info(f"Import catalog file for {dataset}")
+            import_generic_metadata(dataset)
+            log.info(f"End import catalog file for {dataset}")

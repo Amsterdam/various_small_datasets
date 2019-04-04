@@ -1,0 +1,53 @@
+{
+  "evenement_id": {
+    "type": "SERIAL",
+    "properties": {
+      "internal": true
+    }
+  },
+  "id": {
+    "type": "String",
+    "properties": {
+      "primary_key": true,
+      "index": true,
+      "unique": true,
+      "null": false,
+      "length": 256
+    }
+  },
+  "geometry": {
+    "type": "Geo.Point",
+    "properties": {
+      "index": true,
+      "srid": 4326,
+      "null": false,
+      "geo_find": true
+    }
+  },
+  "titel": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 256,
+      "text_find": true
+    }
+  },
+  "url": {
+    "type": "URL"
+  },
+  "omschrijving": {
+    "type": "Text"
+  },
+  "startdatum": {
+    "type": "Date"
+  },
+  "starttijd": {
+    "type": "Time"
+  },
+  "einddatum": {
+    "type": "Date"
+  },
+  "eindtijd": {
+    "type": "Time"
+  }
+}

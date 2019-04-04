@@ -3,39 +3,8 @@ from django.contrib.gis.db import models
 from various_small_datasets.catalog.models import DataSet
 from django.db import connection
 
-# Use of dynamic Django model for generic rest API
-#
-# Here we define a dynamic model that is used in a generic Django Rest View en Serializer
-# The data below can obtained from a metadata catalog in a database.
-# Then the DATASET_CONFIG can be filled by reading this metadata catalog on startup,
-# and we can add new datasets and have the corresponding API on the fly without any
-# code changes.
-
-# meta_attrs = {
-#     'managed': False,
-#     'db_table': 'biz_view',
-#     'ordering': ['id'],
-# }
-#
-# BIZMeta = type('Meta', (object, ), meta_attrs)
-#
-# biz_attrs = {
-#     'id': models.IntegerField(primary_key=True),
-#     'naam': models.CharField(unique=True, max_length=128, blank=True, null=True),
-#     'biz_type': models.CharField(max_length=64, blank=True, null=True),
-#     'heffingsgrondslag': models.CharField(max_length=128, blank=True, null=True),
-#     'website': models.CharField(max_length=128, blank=True, null=True),
-#     'heffing': models.IntegerField(blank=True, null=True),
-#     'bijdrageplichtigen': models.IntegerField(blank=True, null=True),
-#     'verordening': models.CharField(max_length=128, blank=True, null=True),
-#     'geometrie': models.GeometryField(db_column='wkb_geometry', srid=28992, blank=True, null=True),
-#     '__module__': 'various_small_datasets.gen_api.models',
-#     'Meta': BIZMeta,
-#     '__str__': lambda self: getattr(self, 'naam'),
-#     '__doc__': 'Bedrijfs Investerings Zones',
-# }
-#
-# BIZModel = type("BIZModel", (models.Model,), biz_attrs)
+from various_small_datasets.generic import catalog
+from various_small_datasets.generic.model import get_django_model_by_name
 
 DATASET_CONFIG = {
     # 'biz': BIZModel,
@@ -51,6 +20,7 @@ _MAP_DS_TYPE = {
     'numeric': models.DecimalField,
     'datetime': models.DateTimeField,
     'date': models.DateField,
+    'time without time zone': models.TimeField,
     'geometry': models.GeometryField,
     'multipolygon': models.MultiPolygonField,
     'point': models.PointField,
@@ -103,49 +73,6 @@ WHERE table_schema = %s AND table_name = %s
             field['null'] = field.pop('is_nullable') == 'YES'
             d_fields[name] = field
 
-#        (real_schema, real_table) = (schema, table)
-#        # Is this a view ?
-#         query = '''
-# select table_schema, table_name
-# from information_schema.view_table_usage where
-# view_schema = %s and view_name = %s
-#         '''
-#         cursor.execute(query, [schema, table])
-#         rows = cursor.fetchall()
-#         if rows:
-#             (real_schema, real_table) = rows[0]
-#
-        # Get constraints (pk and unique).
-        # If this is a view we would like to use the underlying table
-        # But currently we do not yet know how to map the columns in the view
-        # to the columns in the table because they can be renamed using AS
-        # We would have to parse the information.schema.views.view_definition
-        # statement to find out. So this currently not work for views
-# The following query to get the constraints only works for the owner of the table, and not for the
-# XXXX_read users that are used. It is possible to rewrite this  using the underlying tables. They
-# are accessible to other users too. But for now we use the pk definition in the catalog
-#         query = '''
-# SELECT
-# ccu.column_name, constraint_type
-# FROM information_schema.table_constraints tc
-# JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name)
-# WHERE  tc.table_schema = %s AND tc.table_name = %s
-#         '''
-#         cursor.execute(query, [real_schema, real_table])
-#         rows = cursor.fetchall()
-#         if rows:
-#             for (name, constraint) in rows:
-#                 if name in d_fields:
-#                     if constraint.upper() == 'PRIMARY KEY':
-#                         d_fields[name]['primary_key'] = True
-#                         d_fields[name]['null'] = False
-#                         pk_field = name
-#                     elif constraint.upper() == 'UNIQUE':
-#                         d_fields[name]['unique'] = True
-#                         if name_field is None and d_fields[name]['data_type'] in {'character varying', 'text'}:
-#                             name_field = name
-
-        # Get srid for geometry columns
         query = '''
 SELECT f_geometry_column, srid, type
 FROM geometry_columns
@@ -177,6 +104,10 @@ def read_all_datasets():  # noqa: C901
     for ds in datasets:
         if ds.name in DATASET_CONFIG:
             continue
+        if ds.name in catalog.generic_importable:
+            DATASET_CONFIG[ds.name] = get_django_model_by_name(ds.name)
+            continue
+
         try:
             schema = 'public' if ds.schema is None else ds.schema
             postgres_metadata = read_postgres_metadata(schema, ds.table_name)

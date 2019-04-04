@@ -52,15 +52,15 @@ case $i in
     ;;
     evenementen)
     echo "Importing Evenementen"
-    evenementen/import/import.sh
+    python ./manage.py import_generic -d evenementen
     ;;
     bekendmakingen)
     echo "Importing Bekendmakingen"
     bekendmakingen/import/import.sh
     ;;
     *)
-    echo "Trying to import GeoJSON dataset $i"
-    python ./manage.py import_geojson -d $i
+    echo "Trying to import Generic dataset $i"
+    python ./manage.py import_generic -d $i
     ;;
 esac
 done
