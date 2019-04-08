@@ -20,27 +20,21 @@ TYPES_OBJECT = {v: k for k, v in OBJECT_TYPES.items()}  # inverted mapping
 
 
 def json2geojson(data):
-    skip_cnt = 0
-
     features = []
     for element in data:
         objecttype_id = element.get('objecttype')
-        if objecttype_id == OBJECT_TYPES['Klok']:
-            skip_cnt += 1
-            continue
-
         geometry = Point((element.get('lon'), element.get('lat')), srid=4326)
 
         features.append({
             "type": "Feature",
             "geometry": geometry,
             "properties": {
-                'type': TYPES_OBJECT[objecttype_id],
+                'type_id': objecttype_id,
+                'type_name': TYPES_OBJECT[objecttype_id],
                 'objectnummer': element['objectnummer'],
             },
         })
 
-    log.info(f'skipped importing {skip_cnt} objects')
     log.info(f'features count {len(features)} objects')
 
     geojson = {
