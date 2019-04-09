@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   database:
-    image: amsterdam/postgres
+    image: amsterdam/postgres11
     environment:
       POSTGRES_DB: various_small_datasets
       POSTGRES_USER: various_small_datasets

@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   database:
-    image: amsterdam/postgres
+    image: amsterdam/postgres11
     ports:
       - "5408:5432"
     environment:
@@ -12,7 +12,7 @@ services:
       - ./backups:/tmp/backups
 
   importer:
-    image: build.datapunt.amsterdam.nl:5000/datapunt/various_small_datasets:${ENVIRONMENT}
+    image: repo.data.amsterdam.nl/datapunt/various_small_datasets:${ENVIRONMENT}
 #    build: ../..
     links:
       - database
