@@ -15,7 +15,7 @@ set -x # show commands
 export PYTHONPATH=${SCRIPT_DIR}/../..
 
 echo "Fetch source data"
-wget -O ${TMPDIR}/objects-source.json https://asd2.techtek.eu/asd/services/rest_vdb.php/VdBService/objecten
+wget -O ${TMPDIR}/objects-source.json $OPENBARE_VERLICHTING_DATA_SRC
 
 
 echo "Process import data"
