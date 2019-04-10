@@ -10,7 +10,6 @@
       "name_field": "naam",
       "geometry_field": "geometrie",
       "geometry_type": "POLYGON",
-      "geometry_epsg": 28992,
       "enable_geosearch": true,
       "enable_maplayer": true,
       "map_title": "Bedrijfsinvesteringszone",

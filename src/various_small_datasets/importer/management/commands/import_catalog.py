@@ -1,3 +1,5 @@
+import copy
+
 import logging
 import os
 import json
@@ -14,8 +16,15 @@ log = logging.getLogger(__name__)
 
 def import_dataset_in_db(dataset_json):
     layers = dataset_json.pop('map_layers', None)
+
+    data = copy.deepcopy(dataset_json)
+
+    # Set default EPSG code for geometry fields
+    if data.get('geometry_field', False) and data.get('geometry_epsg') is None:
+        data['geometry_epsg'] = 28992
+
     with transaction.atomic():
-        dataset = DataSet(**dataset_json)
+        dataset = DataSet(**data)
         dataset.save()
         if dataset.enable_maplayer:
             for layer in layers:

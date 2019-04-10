@@ -10,7 +10,6 @@
       "name_field": "objectnummer",
       "geometry_field": "wkb_geometry",
       "geometry_type": "POINT",
-      "geometry_epsg": 28992,
       "enable_api": false,
       "enable_geosearch": false,
       "enable_maplayer": true,
