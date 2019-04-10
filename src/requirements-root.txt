@@ -3,6 +3,7 @@ chardet
 coreapi
 coreschema
 Django
+django-choices
 django-cors-headers
 django-debug-toolbar
 django-extensions

@@ -10,6 +10,7 @@
       "name_field": "titel",
       "geometry_field": "wkb_geometry",
       "geometry_type": "POINT",
+      "geometry_epsg": 4326,
       "enable_geosearch": true,
       "enable_maplayer": true,
       "map_title": "bekendmakingen",

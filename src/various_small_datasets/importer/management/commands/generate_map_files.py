@@ -9,7 +9,7 @@ from django.core.management import BaseCommand
 log = logging.getLogger(__name__)
 
 
-def get_map_content(env, ds):
+def get_map_content(env: Environment, ds):
     ds_dict = ds.__dict__
     # get layers
     ds_dict["layers"] = map(lambda x: x.__dict__, ds.maplayer_set.all())
@@ -46,4 +46,4 @@ class Command(BaseCommand):
             with open(mapfile_name, "w") as f:
                 f.write(map_content)
 
-        log.info("End generating mapfiles")
+        log.info(f"End generating mapfiles, results written to: {map_dir}")
