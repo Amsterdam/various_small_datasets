@@ -1,7 +1,17 @@
 from django.contrib.gis.db import models
+from djchoices import ChoiceItem, DjangoChoices
+
+
+EPSG_SUPPORT = [4326, 28992]
 
 
 class DataSet(models.Model):
+
+    class GeometryTypes(DjangoChoices):
+        POINT = ChoiceItem()
+        POLYGON = ChoiceItem()
+        LINE = ChoiceItem()
+
     id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=30, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
@@ -14,7 +24,8 @@ class DataSet(models.Model):
     enable_api = models.BooleanField()
     name_field = models.CharField(max_length=128, null=True)
     geometry_field = models.CharField(max_length=128, null=True)  # if null no geometry field
-    geometry_type = models.CharField(max_length=32)  # POINT, POLYGON, LINE
+    geometry_type = models.CharField(max_length=32, null=True, choices=GeometryTypes.choices)
+    geometry_epsg = models.IntegerField(null=True, choices=[(i, i) for i in EPSG_SUPPORT])
     enable_geosearch = models.BooleanField()
     enable_maplayer = models.BooleanField()
     map_template = models.CharField(max_length=128, null=True)  # default = 'default'

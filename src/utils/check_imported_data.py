@@ -21,7 +21,7 @@ def assert_count_zero():
 
 
 def assert_count_minimum(target):
-   return lambda x: x[0][0] >= target
+    return lambda x: x[0][0] >= target
 
 
 def all_valid_url(urls):
@@ -44,6 +44,7 @@ def do_checks(conn, sql_checks):
             result = curs.fetchall()
             if not check(result):
                 print(f"Failed : {sql}")
+                print(f"result : {result}")
                 return False
 
     return True

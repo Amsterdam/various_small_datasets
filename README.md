@@ -154,10 +154,15 @@ In the JSON file that describes the dataset the following entries should be pres
         }
       ],
  
- If these entries are specified map files are generated with the command : 
+ If these entries are specified map files are generated with the command: 
  
     cd src
     python manage.py generate_map_files 
+    
+Make sure that you have run the following:
+
+    python manage.py migrate
+    python manage.py import_catalog
     
 Then you can find the generated mapfiles in **various_small_datasets/tools/mapfiles**    
 
