@@ -17,6 +17,8 @@ services:
     links:
       - database
     environment:
+      http_proxy:
+      https_proxy:
       UWSGI_HTTP: ":8000"
       UWSGI_MODULE: "various_small_datasets.wsgi"
       UWSGI_CALLABLE: "application"
