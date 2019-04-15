@@ -21,6 +21,9 @@ MAP
       "ows_title"           "{{ ds.map_title }}"
       "ows_abstract"        "{{ ds.map_abstract|default(ds.map_title) }}"
       "wms_extent"          "100000 450000 150000 500000"
+      {% if ds.wfs_maxfeatures %}
+      "wfs_maxfeatures"     "{{ ds.wfs_maxfeatures }}"
+      {% endif %}
     END
   END
 

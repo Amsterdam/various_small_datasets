@@ -26,6 +26,7 @@ class DataSet(models.Model):
     geometry_field = models.CharField(max_length=128, null=True)  # if null no geometry field
     geometry_type = models.CharField(max_length=32, null=True, choices=GeometryTypes.choices)
     geometry_epsg = models.IntegerField(null=True, choices=[(i, i) for i in EPSG_SUPPORT])
+    wfs_maxfeatures = models.PositiveIntegerField(null=True)
     enable_geosearch = models.BooleanField()
     enable_maplayer = models.BooleanField()
     map_template = models.CharField(max_length=128, null=True)  # default = 'default'
