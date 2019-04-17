@@ -10,7 +10,7 @@ rm -f "${TMPDIR}/sensors.json"
 echo "[" > "${TMPDIR}/sensors.json"
 for S in "3D sensor" "WiFi sensor" "Telcamera"
 do
-    curl "https://maps.amsterdam.nl/_php/haal_objecten.php?TABEL=CROWDSENSOREN&SELECT=${S}&SELECTIEKOLOM=Soort&THEMA=cmsa&TAAL=en&BEHEER=0&NIEUW=niet" >> "${TMPDIR}/sensors.json"
+    curl -v "https://maps.amsterdam.nl/_php/haal_objecten.php?TABEL=CROWDSENSOREN&SELECT=${S}&SELECTIEKOLOM=Soort&THEMA=cmsa&TAAL=en&BEHEER=0&NIEUW=niet" >> "${TMPDIR}/sensors.json"
     echo "," >> "${TMPDIR}/sensors.json"
 done
 echo "[]]" >> "${TMPDIR}/sensors.json"
