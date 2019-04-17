@@ -15,6 +15,9 @@ do
 done
 echo "[]]" >> "${TMPDIR}/sensors.json"
 
+echo "Show sensors.json: "
+cat "${TMPDIR}/sensors.json"
+
 echo "Process import data"
 python ${SCRIPT_DIR}/import.py "${DATA_DIR}/cameras.xlsx" "${DATA_DIR}/beacons.csv" "${TMPDIR}/sensors.json" ${TMPDIR}
 
