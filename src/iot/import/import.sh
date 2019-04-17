@@ -8,15 +8,12 @@ source ${SHARED_DIR}/import/before.sh
 
 rm -f "${TMPDIR}/sensors.json"
 echo "[" > "${TMPDIR}/sensors.json"
-for S in "3D sensor" "WiFi sensor" "Telcamera"
+for S in "3D%20sensor" "WiFi%20sensor" "Telcamera"
 do
-    curl -v "https://maps.amsterdam.nl/_php/haal_objecten.php?TABEL=CROWDSENSOREN&SELECT=${S}&SELECTIEKOLOM=Soort&THEMA=cmsa&TAAL=en&BEHEER=0&NIEUW=niet" >> "${TMPDIR}/sensors.json"
+    curl "https://maps.amsterdam.nl/_php/haal_objecten.php?TABEL=CROWDSENSOREN&SELECT=${S}&SELECTIEKOLOM=Soort&THEMA=cmsa&TAAL=en&BEHEER=0&NIEUW=niet" >> "${TMPDIR}/sensors.json"
     echo "," >> "${TMPDIR}/sensors.json"
 done
 echo "[]]" >> "${TMPDIR}/sensors.json"
-
-echo "Show sensors.json: "
-cat "${TMPDIR}/sensors.json"
 
 echo "Process import data"
 python ${SCRIPT_DIR}/import.py "${DATA_DIR}/cameras.xlsx" "${DATA_DIR}/beacons.csv" "${TMPDIR}/sensors.json" ${TMPDIR}
