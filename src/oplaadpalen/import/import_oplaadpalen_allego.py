@@ -39,7 +39,7 @@ def get_all_oplaadpunten():
     first_point = '52.287,4.768'
     second_point = '52.425,5.014'
     url = f'{base_url}?firstPoint={first_point}&secondPoint={second_point}'
-    response = requests.get(url, verify=False)
+    response = requests.get(url)
     response.raise_for_status()
     return response.json()
 
@@ -53,7 +53,7 @@ def get_remote_oplaadpaal(id: str):
             log.warning(f"Invalid char & in ID {id} for Allego service. Skipping...")
             return None
         url = f'{base_url}/{urllib.parse.quote_plus(id).replace("+", "%20")}'
-        response = requests.get(url, verify=False)
+        response = requests.get(url)
         response.raise_for_status()
         return response.json()
     except HTTPError as e:
