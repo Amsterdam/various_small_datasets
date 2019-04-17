@@ -19,7 +19,7 @@ MAP
   WEB
     METADATA
       "ows_title"           "{{ ds.map_title }}"
-      "ows_abstract"        "{{ ds.map_abstract|default(ds.map_title) }}"
+      "ows_abstract"        "{{ ds.map_abstract|default(ds.map_title, true) }}"
       "wms_extent"          "100000 450000 150000 500000"
       {% if ds.wfs_maxfeatures %}
       "wfs_maxfeatures"     "{{ ds.wfs_maxfeatures }}"
@@ -40,10 +40,10 @@ MAP
     END
 
     INCLUDE                 "connection_various_small_datasets.inc"
-    DATA                    "{{ ds.geometry_field }} FROM public.{{ ds.table_name }} USING srid={{ ds.geometry_epsg }} USING UNIQUE {{ ds.id_field }}"
+    DATA                    "{{ ds.geometry_field }} FROM {% if layer.data_selection %} {{ layer.data_selection }} {% else %} public.{{ ds.table_name }} {% endif %} USING srid={{ ds.geometry_epsg }} USING UNIQUE {{ ds.id_field }}"
     TYPE                    {{ ds.geometry_type }}
-    MINSCALEDENOM           {{ layer.minscale|d(10) }}
-    MAXSCALEDENOM           {{ layer.maxscale|d(400000) }}
+    MINSCALEDENOM           {{ layer.minscale|default(10, true) }}
+    MAXSCALEDENOM           {{ layer.maxscale|default(400000, true) }}
 
     {% if ds.filter %}
     FILTER          {{ ds.filter }}
@@ -52,14 +52,14 @@ MAP
     METADATA
       "wfs_title"           "{{ layer.title }}"
       "wfs_srs"             "EPSG:{{ ds.geometry_epsg }}"
-      "wfs_abstract"        "{{ layer.abstract|d(layer.title) }}"
+      "wfs_abstract"        "{{ layer.abstract|default(layer.title, true) }}"
       "wfs_enable_request"  "*"
       "gml_featureid"       "{{ ds.name_field }}"
       "gml_include_items"   "all"
       "wms_title"           "{{ layer.title }}"
       "wms_enable_request"  "*"
       "wms_group_title"     "{{ ds.map_title }}"
-      "wms_abstract"        "{{ layer.abstract|d(layer.title) }}"
+      "wms_abstract"        "{{ layer.abstract|default(layer.title, true) }}"
       "wms_srs"             "EPSG:{{ ds.geometry_epsg }}"
       "wms_name"            "{{ layer.name }}"
       "wms_format"          "image/png"
@@ -98,8 +98,8 @@ MAP
       {% endif %}
 
       LABEL
-        MINSCALEDENOM  {{ layer.label_minscale|d(10) }}
-        MAXSCALEDENOM  {{ layer.label_maxscale|d(10000) }}
+        MINSCALEDENOM  {{ layer.label_minscale|default(10, true) }}
+        MAXSCALEDENOM  {{ layer.label_maxscale|default(10000, true) }}
         COLOR          0 0 0
         OUTLINECOLOR   255 255 255
         OUTLINEWIDTH   3
