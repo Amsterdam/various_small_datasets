@@ -19,15 +19,16 @@
       "map_abstract": "Openbare_verlichting Amsterdam",
       "map_layers": [
         {
-          "name": "openbare_verlichting",
-          "title": "Openbare_verlichting",
-          "abstract": "Openbare_verlichting Amsterdam",
-          "color": "0 70 153",
-          "minscale": 10,
-          "maxscale": 400000,
-          "label": "objectnummer",
-          "label_minscale": 10,
-          "label_maxscale": 10000
+          "name": "klokken",
+          "title": "Klokken",
+          "abstract": "Klokken assets Amsterdam",
+          "data_selection": "(select * from public.openbare_verlichting where type_id = '1') as subquery"
+        },
+        {
+          "name": "verlichting",
+          "title": "Verlichting",
+          "abstract": "Verlichting assets Amsterdam",
+          "data_selection": "(select * from public.openbare_verlichting where type_id != '1') as subquery"
         }
       ]
     }

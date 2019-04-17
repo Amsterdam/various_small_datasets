@@ -45,6 +45,7 @@ class DataSet(models.Model):
 class MapLayer(models.Model):
     id = models.AutoField(primary_key=True)
     dataset = models.ForeignKey(DataSet, on_delete=models.CASCADE)
+    data_selection = models.CharField(max_length=256, null=True)
     name = models.CharField(max_length=128, blank=False, null=False)
     title = models.CharField(max_length=128, blank=False, null=False)
     abstract = models.CharField(max_length=128, blank=False, null=True)
