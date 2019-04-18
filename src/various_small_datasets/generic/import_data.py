@@ -1,5 +1,7 @@
 import logging
 from datetime import datetime
+import requests
+import json
 
 from django.contrib.gis.geos import GEOSGeometry
 
@@ -22,13 +24,21 @@ class JSONImporter(object):
         for entry in source:
             fields = {}
             for mapping in self.import_def['mapping']['mappings']:
-                source = self._get_source(entry, mapping['source'])
-                if 'transform' in mapping:
-                    field_repr = represent_field(mapping['target'], self.model_def[mapping['target']])
-                    source = self._transform(mapping['transform'], source, field_repr)
-                fields[mapping['target']] = source
+                fields[mapping['target']] = self.expand_transform(entry, mapping, mapping['target'])
 
             model(**fields).save()
+
+    def expand_transform(self, entry, mapping, target):
+        if 'transform' in mapping and mapping['source'] == "transformation":
+            source = self.expand_transform(entry, mapping['transform'], target)
+        else:
+            source = self._get_source(entry, mapping['source'])
+
+        if 'transform' in mapping:
+            field_repr = represent_field(target, self.model_def[target])
+            source = self._transform(mapping['transform'], source, field_repr)
+
+        return source
 
     @staticmethod
     def _get_source(entity, path):
@@ -58,6 +68,12 @@ class JSONImporter(object):
             geometry.transform(target_srid)
 
             return geometry
+        elif transform_def['type'] == 'geometry_from_api':
+            if source is None:
+                return None
+            url = transform_def['url_pattern'].format(id=source)
+            with requests.get(url) as response:
+                return json.loads(response.content)[transform_def['field']]
         else:
             raise NotImplementedError
 
@@ -65,6 +81,12 @@ class JSONImporter(object):
 class GeoJSONImporter(JSONImporter):
     def import_data(self, source):
         super().import_data(source['features'])
+
+
+class CSVImporter(JSONImporter):
+    @staticmethod
+    def _get_source(entity, path):
+        return entity[path]
 
 
 def do_import(dataset_name):
@@ -78,8 +100,10 @@ def do_import(dataset_name):
 
     if source_def['type'] == "GeoJSON":
         importer = GeoJSONImporter(import_def, model_def)
-    elif import_def['type'] == "JSON":
+    elif source_def['type'] == "JSON":
         importer = JSONImporter(import_def, model_def)
+    elif source_def['type'] == "csv":
+        importer = CSVImporter(import_def, model_def)
     else:
         raise NotImplementedError
 

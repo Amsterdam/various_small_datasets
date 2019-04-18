@@ -1,0 +1,118 @@
+{
+  "vastgoed_id": {
+    "type": "SERIAL",
+    "properties": {
+      "internal": true
+    }
+  },
+  "vhe_id": {
+    "type": "String",
+    "properties": {
+      "primary_key": true,
+      "index": true,
+      "unique": true,
+      "null": false,
+      "length": 16
+    }
+  },
+  "object_id": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 16
+    }
+  },
+  "status": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 256
+    }
+  },
+  "portefeuille": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 256
+    }
+  },
+  "grex": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 256
+    }
+  },
+  "object_type": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 256
+    }
+  },
+  "object_naam": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 512
+    }
+  },
+  "vhe_naam": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "text_find": true,
+      "length": 512
+    }
+  },
+  "vhe_adres": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 512
+    }
+  },
+  "object_eigendomsstatus": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 128
+    }
+  },
+  "vhe_eigendomsstatus": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 128
+    }
+  },
+  "bag_pand_id": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 32
+    }
+  },
+  "bag_pand_geometrie": {
+    "type": "Geo.Polygon",
+    "properties": {
+      "index": true,
+      "null": true,
+      "geo_find": true
+    }
+  },
+  "bag_verblijfsobject_id": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 32
+    }
+  },
+  "bag_verblijfsobject_geometrie": {
+    "type": "Geo.Point",
+    "properties": {
+      "index": true,
+      "null": true
+    }
+  }
+}

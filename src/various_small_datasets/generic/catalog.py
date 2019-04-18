@@ -1,6 +1,6 @@
 import json
 
-generic_importable = ["evenementen"]
+generic_importable = ["evenementen", "vastgoed"]
 
 
 def get_model_def(dataset):
