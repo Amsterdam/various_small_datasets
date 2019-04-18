@@ -102,6 +102,20 @@ class Char(FieldRepresentation):
         return f"{self.field_name} CHARACTER VARYING{length_s}"
 
 
+class Integer(FieldRepresentation):
+
+    @property
+    def django(self):
+        dfield_props = {'null': self.allow_null}
+        if self.is_pk:
+            dfield_props['primary_key'] = True
+        return models.IntegerField(**dfield_props)
+
+    @property
+    def psql(self):
+        return f"{self.field_name} INTEGER"
+
+
 class URL(Char):
 
     @property
@@ -144,6 +158,19 @@ class Point(GeoFieldRepresentation):
         return f"{self.field_name} geometry(Point, {self.srid})"
 
 
+class Polygon(GeoFieldRepresentation):
+    psql_type = 'ST_Polygon'
+    geo_type = 'POLYGON'
+
+    @property
+    def django(self):
+        return geo_models.PolygonField(srid=self.srid)
+
+    @property
+    def psql(self):
+        return f"{self.field_name} geometry(Polygon, {self.srid})"
+
+
 class Time(FieldRepresentation):
 
     @property
@@ -161,9 +188,11 @@ def represent_field(field_name, field_def):
         "String": Char,
         "URL": URL,
         "Text": Text,
+        "Integer": Integer,
         "Date": Date,
         "Time": Time,
-        "Geo.Point": Point
+        "Geo.Point": Point,
+        "Geo.Polygon": Polygon
     }
 
     field_type = field_def['type']

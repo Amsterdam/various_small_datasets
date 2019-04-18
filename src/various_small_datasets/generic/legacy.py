@@ -1,11 +1,11 @@
-from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_source_def
+from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.model import get_serial, get_pk, get_name_field, get_geo_field
 
 
 def get_legacy_definition(dataset):
     model_def = get_model_def(dataset)
     import_def = get_import_def(dataset)
-    source_def = get_source_def(dataset)
+    source_def = get_dataset_def(dataset)
 
     return {
         "datasets": [
@@ -15,12 +15,13 @@ def get_legacy_definition(dataset):
                 "table_name": import_def['target'],
                 "ordering": get_serial(model_def).field_name,
                 "pk_field": get_pk(model_def).field_name,
-                "enable_api": True,
+                "enable_api": source_def['instance_api'],
                 "name_field": get_name_field(model_def).field_name,
                 "geometry_field": get_geo_field(model_def).field_name,
                 "geometry_type": get_geo_field(model_def).geo_type,
-                "enable_geosearch": True,
-                "enable_maplayer": True,
+                "geometry_epsg": get_geo_field(model_def).srid,
+                "enable_geosearch": source_def['geosearch'],
+                "enable_maplayer": source_def['maplayer'],
                 "map_title": source_def['dataset'],
                 "map_abstract": source_def['description'],
                 "map_layers": [

@@ -6,7 +6,6 @@
       "table_name": "openbare_verlichting",
       "ordering": "ogc_fid",
       "pk_field": "ogc_fid",
-      "enable_api": true,
       "name_field": "objectnummer",
       "geometry_field": "wkb_geometry",
       "geometry_type": "POINT",
