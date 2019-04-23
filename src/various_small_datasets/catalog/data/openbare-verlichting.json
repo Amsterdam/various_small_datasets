@@ -11,7 +11,7 @@
       "geometry_field": "wkb_geometry",
       "geometry_type": "POINT",
       "geometry_epsg": 4326,
-      "wfs_maxfeatures": 100,
+      "wfs_maxfeatures": 500,
       "enable_api": false,
       "enable_geosearch": false,
       "enable_maplayer": true,
