@@ -23,7 +23,7 @@ ID_TYPES_MAP = {
     },
     '4': {
         "external_name": "OVL Objecten",
-        "internal_name": "OVL_Object",
+        "internal_name": "Overig_lichtpunt",
     },
     '5': {
         "external_name": "Grachtmast",
