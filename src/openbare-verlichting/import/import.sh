@@ -16,10 +16,11 @@ export PYTHONPATH=${SCRIPT_DIR}/../..
 
 echo "Fetch source data"
 wget -O ${TMPDIR}/objects-source.json $OPENBARE_VERLICHTING_DATA_SRC
+wget -O ${TMPDIR}/objects-types.json $OPENBARE_VERLICHTING_DATA_TYPES_SRC
 
 
 echo "Process import data"
-python ${SCRIPT_DIR}/json2geojson.py ${TMPDIR}/objects-source.json ${TMPDIR}/objects.geo.json
+python ${SCRIPT_DIR}/json2geojson.py ${TMPDIR}/objects-source.json ${TMPDIR}/objects-types.json ${TMPDIR}/objects.geo.json
 
 
 echo "Geojson to sql"

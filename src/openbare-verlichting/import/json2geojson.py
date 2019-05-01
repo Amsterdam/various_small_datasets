@@ -8,29 +8,46 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-OBJECT_TYPES = {
-    'Klok': '1',
-    'Overspanning': '2',
-    'Gevel_Armatuur': '3',
-    'Lichtmast': '4',
-    'Grachtmast': '5',  # Old style light posts next to the "grachten"
+ID_TYPES_MAP = {
+    '1': {
+        "external_name": "Klok",
+        "internal_name": "Klok",
+    },
+    '2': {
+        "external_name": "Overspanning",
+        "internal_name": "Overspanning",
+    },
+    '3': {
+        "external_name": "Gevel Armaturen",
+        "internal_name": "Gevel_Armatuur",
+    },
+    '4': {
+        "external_name": "OVL Objecten",
+        "internal_name": "OVL_Object",
+    },
+    '5': {
+        "external_name": "Grachtmast",
+        "internal_name": "Grachtmast",
+    },
 }
 
-TYPES_OBJECT = {v: k for k, v in OBJECT_TYPES.items()}  # inverted mapping
 
-
-def json2geojson(data):
+def json2geojson(data,):
     features = []
     for element in data:
         objecttype_id = element.get('objecttype')
         geometry = Point((element.get('lon'), element.get('lat')), srid=4326)
+
+        type_mapping = ID_TYPES_MAP[objecttype_id]
+        assert type_mapping is not None
+        type_name = type_mapping['internal_name']
 
         features.append({
             "type": "Feature",
             "geometry": geometry,
             "properties": {
                 'type_id': objecttype_id,
-                'type_name': TYPES_OBJECT[objecttype_id],
+                'type_name': type_name,
                 'objectnummer': element['objectnummer'],
             },
         })
@@ -44,10 +61,31 @@ def json2geojson(data):
     return geojson
 
 
+def check_types_as_expected(types: list):
+    """
+    The transformation scripts runs under the assumption that the remote objects have a set mapping.
+    If that is not the case this function will detect that the local mapping is incorrect and will fail.
+    :param types: list, e.g. [{'code': '1', 'naam': 'Klok'}, ...]
+    :return:
+    """
+    actual_types = { type['code']: type['naam'] for type in types }  # { '1': 'Klok', ... }
+
+    for code, mapping in ID_TYPES_MAP.items():
+        actual_type = actual_types[code]
+        assert actual_type is not None
+        expected_type = mapping['external_name']
+        assert actual_type == expected_type, f'expected: {expected_type}, got: {actual_type}'
+
+
 if __name__ == '__main__':
-    script, in_file, out_file = argv
+    script, in_file, type_file, out_file = argv
+
+    types = json.load(open(type_file))
+    check_types_as_expected(types)
+
     data = json.load(open(in_file))
-    geojson = json2geojson(data)
+
+    geojson = json2geojson(data,)
     output = open(out_file, 'w')
 
     log.info(f'writing output...')
