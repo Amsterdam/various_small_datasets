@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   database:
-    image: amsterdam/postgres
+    image: amsterdam/postgres11
     environment:
       POSTGRES_DB: various_small_datasets
       POSTGRES_USER: various_small_datasets
@@ -12,6 +12,8 @@ services:
     links:
       - database
     environment:
+      http_proxy:
+      https_proxy:
       UWSGI_HTTP: ":8000"
       UWSGI_MODULE: "various_small_datasets.wsgi"
       UWSGI_CALLABLE: "application"
