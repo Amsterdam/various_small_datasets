@@ -2,6 +2,7 @@ certifi
 chardet
 coreapi
 coreschema
+datapunt-objectstore
 Django
 django-choices
 django-cors-headers
@@ -15,6 +16,8 @@ djangorestframework-gis
 drf-amsterdam
 drf-extensions
 flake8
+geomet
+geojson
 idna
 itypes
 Jinja2

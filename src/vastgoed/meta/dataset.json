@@ -1,0 +1,14 @@
+{
+  "dataset": "vastgoed",
+  "type": "csv",
+  "description": "Vastgoed van de gemeente Amsterdam",
+  "source": {
+    "type": "objectstore",
+    "location": "vastgoed/export_vastgoed.csv",
+    "encoding": "iso-8859-1",
+    "delimiter": ";"
+  },
+  "maplayer": true,
+  "instance_api": false,
+  "geosearch": false
+}

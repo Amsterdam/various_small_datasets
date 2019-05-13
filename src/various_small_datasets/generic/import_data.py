@@ -3,15 +3,41 @@ from datetime import datetime
 import requests
 import json
 
-from django.contrib.gis.geos import GEOSGeometry
+from geomet import wkt
+from django.contrib.gis.geos import GEOSGeometry, Point
 
-from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_source_def
+from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.check import check_import
 from various_small_datasets.generic.db import create_new_datatable, roll_over_datatable
 from various_small_datasets.generic.model import get_django_model, represent_field
 from various_small_datasets.generic.source import get_source
 
 log = logging.getLogger(__name__)
+
+
+def convert_coords_srid(coords, source_srid, target_srid):
+    p = Point(coords[0], coords[1], srid=source_srid)
+    p.transform(target_srid)
+    return [p.x, p.y]
+
+
+def convert_coord_arrays(coords, source_srid, target_srid):
+    if not isinstance(coords[0], list):
+        return convert_coords_srid(coords, source_srid, target_srid)
+    else:
+        return [convert_coord_arrays(c, source_srid, target_srid) for c in coords]
+
+
+def convert_geojson_srid(geojson, source_srid, target_srid):
+    if isinstance(geojson, dict):
+        if 'coordinates' in geojson:
+            geojson['coordinates'] = convert_coord_arrays(geojson['coordinates'], source_srid, target_srid)
+            return geojson
+        else:
+            return {k: convert_geojson_srid(v, source_srid, target_srid) for k, v in geojson.items()}
+    elif isinstance(geojson, list):
+        return [convert_geojson_srid(i) for i in geojson]
+    return geojson
 
 
 class JSONImporter(object):
@@ -60,6 +86,8 @@ class JSONImporter(object):
                 return str(date.time())
             return date
         elif transform_def['type'] == 'geometry_from_geojson':
+            if source is None:
+                return None
 
             source_srid = 4326  # as per GeoJSON standard
             target_srid = field_repr.srid
@@ -68,12 +96,26 @@ class JSONImporter(object):
             geometry.transform(target_srid)
 
             return geometry
+        elif transform_def['type'] == 'geometry_from_rd_geojson':
+            if source is None:
+                return None
+
+            source_srid = 28992
+            target_srid = field_repr.srid
+
+            wkt_s = wkt.dumps(source, decimals=4)
+            geometry = GEOSGeometry(wkt_s, srid=source_srid)
+            geometry.transform(target_srid)
+
+            return geometry
         elif transform_def['type'] == 'geometry_from_api':
             if source is None:
                 return None
             url = transform_def['url_pattern'].format(id=source)
             with requests.get(url) as response:
-                return json.loads(response.content)[transform_def['field']]
+                if response.status_code == 200:
+                    return json.loads(response.content)[transform_def['field']]
+                return None
         else:
             raise NotImplementedError
 
@@ -92,7 +134,7 @@ class CSVImporter(JSONImporter):
 def do_import(dataset_name):
     model_def = get_model_def(dataset_name)
     import_def = get_import_def(dataset_name)
-    source_def = get_source_def(dataset_name)
+    source_def = get_dataset_def(dataset_name)
 
     create_new_datatable(import_def['target'], model_def)
 

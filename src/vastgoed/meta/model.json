@@ -57,14 +57,6 @@
       "length": 512
     }
   },
-  "vhe_naam": {
-    "type": "String",
-    "properties": {
-      "null": false,
-      "text_find": true,
-      "length": 512
-    }
-  },
   "vhe_adres": {
     "type": "String",
     "properties": {

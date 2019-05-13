@@ -33,10 +33,6 @@
         "source": "Naam object"
       },
       {
-        "target": "vhe_naam",
-        "source": "Naam VHE"
-      },
-      {
         "target": "vhe_adres",
         "source": "Adres VHE"
       },
@@ -60,7 +56,7 @@
         "target": "bag_pand_geometrie",
         "source": "transformation",
         "transform": {
-          "type": "geometry_from_geojson",
+          "type": "geometry_from_rd_geojson",
           "source": "BAG pand id",
           "transform": {
             "type": "geometry_from_api",
@@ -73,7 +69,7 @@
         "target": "bag_verblijfsobject_geometrie",
         "source": "transformation",
         "transform": {
-          "type": "geometry_from_geojson",
+          "type": "geometry_from_rd_geojson",
           "source": "BAG identificatie verblijfsobject",
           "transform": {
             "type": "geometry_from_api",
@@ -85,7 +81,7 @@
     ]
   },
   "check": {
-    "count": {"count_minimum": 75},
+    "count": {"count_minimum": 1600},
     "geometrie": {}
   }
 }

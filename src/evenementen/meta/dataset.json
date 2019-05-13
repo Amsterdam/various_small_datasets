@@ -5,5 +5,8 @@
   "source": {
     "type": "url",
     "location": "https://evenementen.amsterdam.nl/?geojson=true&pager_rows=5000"
-  }
+  },
+  "maplayer": true,
+  "instance_api": false,
+  "geosearch": false
 }
