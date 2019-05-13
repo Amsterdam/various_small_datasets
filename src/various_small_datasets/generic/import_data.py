@@ -1,5 +1,5 @@
 import logging
-from django.contrib.gis.geos import GEOSGeometry, Point
+from django.contrib.gis.geos import Point
 
 from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.check import check_import
