@@ -1,0 +1,87 @@
+{
+  "target": "vastgoed",
+  "source_type": "csv",
+  "mapping": {
+    "type": "keys_in_header",
+    "mappings": [
+      {
+        "target": "vhe_id",
+        "source": "VHE nr."
+      },
+      {
+        "target": "object_id",
+        "source": "Object nr."
+      },
+      {
+        "target": "status",
+        "source": "Status object"
+      },
+      {
+        "target": "portefeuille",
+        "source": "Vastgoedportefeuille"
+      },
+      {
+        "target": "grex",
+        "source": "GREX nummer"
+      },
+      {
+        "target": "object_type",
+        "source": "Type object"
+      },
+      {
+        "target": "object_naam",
+        "source": "Naam object"
+      },
+      {
+        "target": "vhe_adres",
+        "source": "Adres VHE"
+      },
+      {
+        "target": "object_eigendomsstatus",
+        "source": "Eigendomsstatus object"
+      },
+      {
+        "target": "vhe_eigendomsstatus",
+        "source": "Eigendomsstatus VHE"
+      },
+      {
+        "target": "bag_pand_id",
+        "source": "BAG pand id"
+      },
+      {
+        "target": "bag_verblijfsobject_id",
+        "source": "BAG identificatie verblijfsobject"
+      },
+      {
+        "target": "bag_pand_geometrie",
+        "source": "transformation",
+        "transform": {
+          "type": "geometry_from_rd_geojson",
+          "source": "BAG pand id",
+          "transform": {
+            "type": "geometry_from_api",
+            "url_pattern": "https://api.data.amsterdam.nl/bag/pand/{id}/",
+            "field": "geometrie"
+          }
+        }
+      },
+      {
+        "target": "bag_verblijfsobject_geometrie",
+        "source": "transformation",
+        "transform": {
+          "type": "geometry_from_rd_geojson",
+          "source": "BAG identificatie verblijfsobject",
+          "transform": {
+            "type": "geometry_from_api",
+            "url_pattern": "https://api.data.amsterdam.nl/bag/verblijfsobject/{id}/",
+            "field": "geometrie"
+          }
+        }
+      }
+    ]
+  },
+  "check": {
+    "count": {"count_minimum": 1600},
+    "geometrie": {}
+  }
+}

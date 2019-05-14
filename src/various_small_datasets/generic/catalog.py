@@ -1,6 +1,6 @@
 import json
 
-generic_importable = ["evenementen"]
+generic_importable = ["evenementen", "vastgoed"]
 
 
 def get_model_def(dataset):
@@ -8,8 +8,8 @@ def get_model_def(dataset):
         return json.load(json_file)
 
 
-def get_source_def(dataset):
-    with open(f"{dataset}/meta/source.json") as json_file:
+def get_dataset_def(dataset):
+    with open(f"{dataset}/meta/dataset.json") as json_file:
         return json.load(json_file)
 
 
