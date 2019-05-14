@@ -61,7 +61,8 @@
     "type": "String",
     "properties": {
       "null": false,
-      "length": 512
+      "length": 512,
+      "text_find": true
     }
   },
   "object_eigendomsstatus": {
