@@ -1,5 +1,4 @@
 import logging
-from django.contrib.gis.geos import Point
 
 from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.check import check_import
@@ -10,31 +9,6 @@ from various_small_datasets.generic.transform import datetime_from_string, geome
     geometry_from_rd_geojson, geometry_from_api
 
 log = logging.getLogger(__name__)
-
-
-def convert_coords_srid(coords, source_srid, target_srid):
-    p = Point(coords[0], coords[1], srid=source_srid)
-    p.transform(target_srid)
-    return [p.x, p.y]
-
-
-def convert_coord_arrays(coords, source_srid, target_srid):
-    if not isinstance(coords[0], list):
-        return convert_coords_srid(coords, source_srid, target_srid)
-    else:
-        return [convert_coord_arrays(c, source_srid, target_srid) for c in coords]
-
-
-def convert_geojson_srid(geojson, source_srid, target_srid):
-    if isinstance(geojson, dict):
-        if 'coordinates' in geojson:
-            geojson['coordinates'] = convert_coord_arrays(geojson['coordinates'], source_srid, target_srid)
-            return geojson
-        else:
-            return {k: convert_geojson_srid(v, source_srid, target_srid) for k, v in geojson.items()}
-    elif isinstance(geojson, list):
-        return [convert_geojson_srid(i) for i in geojson]
-    return geojson
 
 
 class DictImporter(object):
