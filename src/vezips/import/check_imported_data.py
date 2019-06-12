@@ -8,7 +8,7 @@ select column_name from information_schema.columns where
 table_schema = 'public' and table_name = 'vezips_new'
     """, lambda x: x == [('ogc_fid',), ('wkb_geometry',), ('soortcode',), ('vezip_nummer',), ('vezip_type',),
                          ('standplaats',), ('jaar_aanleg',), ('venstertijden',), ('toegangssysteem',),
-                         ('beheerorganisatie',), ('bijzonderheden',)]),
+                         ('camera',),('beheerorganisatie',), ('bijzonderheden',)]),
     ('geometrie', """
 select count(*) from vezips_new where
 wkb_geometry is null or ST_IsValid(wkb_geometry) = false or ST_GeometryType(wkb_geometry) <> 'ST_Point'

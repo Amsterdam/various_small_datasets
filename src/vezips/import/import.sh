@@ -6,16 +6,21 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
-curl -X GET https://maps.amsterdam.nl/open_geodata/geojson.php?KAARTLAAG=VIS_VEZIPS\&THEMA=vis > ${TMPDIR}/vezips.json
+curl -X GET https://maps.amsterdam.nl/open_geodata/geojson.php?KAARTLAAG=VIS_BFA\&THEMA=vis > ${TMPDIR}/vezips.json
 
 ogr2ogr -f "PGDump" -t_srs EPSG:28992 -s_srs EPSG:4326  -nln vezips_new ${TMPDIR}/vezips.sql ${TMPDIR}/vezips.json
 
 echo "Create tables & import data for vezips"
+# Rename bfa to vezip to keep original fieldnames
 psql -X --set ON_ERROR_STOP=on <<SQL
 BEGIN;
 DROP TABLE IF EXISTS vezips_new;
 COMMIT;
 \i ${TMPDIR}/vezips.sql
+BEGIN;
+ALTER TABLE vezips_new RENAME COLUMN bfa_nummer TO vezip_nummer;
+ALTER TABLE vezips_new RENAME COLUMN bfa_type TO vezip_type;
+COMMIT;
 SQL
 
 PYTHONPATH=${SCRIPT_DIR}/../.. ${SCRIPT_DIR}/check_imported_data.py
