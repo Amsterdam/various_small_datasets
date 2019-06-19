@@ -2,10 +2,12 @@ import logging
 from datetime import datetime
 import requests
 import json
+import os
 
 from geomet import wkt
 from django.contrib.gis.geos import GEOSGeometry
 
+datapunt_api_root = os.getenv('DATAPUNT_API_ROOT', 'https://api.data.amsterdam.nl')
 log = logging.getLogger(__name__)
 
 
@@ -40,7 +42,7 @@ def geometry_from_rd_geojson(_, source, field_repr):
 def geometry_from_api(transform_def, source, _):
     if source is None:
         return None
-    url = transform_def['url_pattern'].format(id=source)
+    url = transform_def['url_pattern'].format(api_root=datapunt_api_root, id=source)
     with requests.get(url) as response:
         if response.status_code == 200:
             return json.loads(response.content)[transform_def['field']]
