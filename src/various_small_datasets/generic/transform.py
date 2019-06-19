@@ -54,3 +54,9 @@ def datetime_from_string(transform_def, source, _):
     if transform_def['type'] == "time_from_string":
         return str(date.time())
     return date
+
+
+def check_integer_or_null(transform_def, source, _):
+    if source is None or not source.isdigit():
+        return None
+    return source

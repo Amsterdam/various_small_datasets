@@ -53,6 +53,17 @@
         "source": "BAG identificatie verblijfsobject"
       },
       {
+        "target": "oppervlakte",
+        "source": "Oppervlakte (indicatie)",
+        "transform":{
+          "type" : "check_integer_or_null"
+        }
+      },
+      {
+        "target": "huurtype",
+        "source": "Huurtype/Feitelijk gebruik"
+      },
+      {
         "target": "bag_pand_geometrie",
         "source": "transformation",
         "transform": {

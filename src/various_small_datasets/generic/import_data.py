@@ -1,4 +1,5 @@
 import logging
+import time
 
 from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.check import check_import
@@ -6,7 +7,7 @@ from various_small_datasets.generic.db import create_new_datatable, roll_over_da
 from various_small_datasets.generic.model import get_django_model, represent_field
 from various_small_datasets.generic.source import get_source
 from various_small_datasets.generic.transform import datetime_from_string, geometry_from_geojson, \
-    geometry_from_rd_geojson, geometry_from_api
+    geometry_from_rd_geojson, geometry_from_api, check_integer_or_null
 
 log = logging.getLogger(__name__)
 
@@ -18,12 +19,23 @@ class DictImporter(object):
 
     def import_data(self, source):
         model = get_django_model(self.import_def['target'], self.model_def, new_table=True)
+        count = 0
+        prev_time = time.time()
+
         for entry in source:
             fields = {}
             for mapping in self.import_def['mapping']['mappings']:
                 fields[mapping['target']] = self.expand_transform(entry, mapping, mapping['target'])
 
+            if not any(fields.values()):
+                continue
+
             model(**fields).save()
+            count += 1
+            now_time = time.time()
+            if now_time - prev_time > 10.0:  # Report every 10 seconds
+                prev_time = now_time
+                log.info(f"Processed {count} entries...")
 
     def expand_transform(self, entry, mapping, target):
         if 'transform' in mapping and mapping['source'] == "transformation":
@@ -54,7 +66,8 @@ class DictImporter(object):
             'date_from_string': datetime_from_string,
             'geometry_from_geojson': geometry_from_geojson,
             'geometry_from_rd_geojson': geometry_from_rd_geojson,
-            'geometry_from_api': geometry_from_api
+            'geometry_from_api': geometry_from_api,
+            'check_integer_or_null': check_integer_or_null
         }
         transform = transform_def['type']
         if transform not in transformations:

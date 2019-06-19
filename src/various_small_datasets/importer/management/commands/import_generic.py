@@ -21,5 +21,5 @@ class Command(BaseCommand):
             if dataset_to_import is None or dataset == dataset_to_import:
                 try:
                     do_import(dataset)
-                except RuntimeError:
-                    log.error(f"importing dataset '{dataset}' failed: ")
+                except RuntimeError as e:
+                    log.error(f"importing dataset '{dataset}' failed: " + str(e))

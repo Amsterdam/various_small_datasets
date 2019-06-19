@@ -79,6 +79,19 @@
       "length": 128
     }
   },
+  "oppervlakte":{
+    "type": "Integer",
+    "properties": {
+      "null": true
+    }
+  },
+  "huurtype": {
+    "type": "String",
+    "properties": {
+      "null": false,
+      "length": 128
+    }
+  },
   "bag_pand_id": {
     "type": "String",
     "properties": {
