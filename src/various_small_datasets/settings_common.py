@@ -18,7 +18,7 @@ DEBUG = SECRET_KEY == insecure_key
 
 ALLOWED_HOSTS = ['*']
 
-DATAPUNT_API_URL = os.getenv(
+DATAPUNT_API_ROOT = os.getenv(
     'DATAPUNT_API_URL', 'https://api.data.amsterdam.nl/')
 
 

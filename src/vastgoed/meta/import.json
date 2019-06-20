@@ -71,7 +71,7 @@
           "source": "BAG pand id",
           "transform": {
             "type": "geometry_from_api",
-            "url_pattern": "https://api.data.amsterdam.nl/bag/pand/{id}/",
+            "url_pattern": "{api_root}/bag/pand/{id}/",
             "field": "geometrie"
           }
         }
@@ -84,7 +84,7 @@
           "source": "BAG identificatie verblijfsobject",
           "transform": {
             "type": "geometry_from_api",
-            "url_pattern": "https://api.data.amsterdam.nl/bag/verblijfsobject/{id}/",
+            "url_pattern": "{api_root}/bag/verblijfsobject/{id}/",
             "field": "geometrie"
           }
         }
