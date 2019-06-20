@@ -17,8 +17,6 @@ services:
     links:
       - database
     environment:
-      http_proxy:
-      https_proxy:
       DATABASE_HOST: database
       DATABASE_PORT: 5432
       DATABASE_NAME: various_small_datasets
