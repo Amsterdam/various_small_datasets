@@ -99,6 +99,13 @@
       "length": 32
     }
   },
+  "monumentstatus":{
+    "type": "String",
+    "properties": {
+      "null": true,
+      "length": 128
+    }
+  },
   "bag_pand_geometrie": {
     "type": "Geo.Polygon",
     "properties": {

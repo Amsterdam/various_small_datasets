@@ -64,6 +64,16 @@
         "source": "Huurtype/Feitelijk gebruik"
       },
       {
+        "target": "monumentstatus",
+        "source": "BAG pand id",
+        "transform": {
+          "type": "string_from_api",
+          "source": "BAG pand id",
+          "url_pattern":"{monumenten_api_root}/monumenten/monumenten/?betreft_pand={id}",
+          "field": ["results", 0, "monumentstatus"]
+        }
+      },
+      {
         "target": "bag_pand_geometrie",
         "source": "transformation",
         "transform": {
@@ -71,7 +81,7 @@
           "source": "BAG pand id",
           "transform": {
             "type": "geometry_from_api",
-            "url_pattern": "{api_root}/bag/pand/{id}/",
+            "url_pattern": "{bag_api_root}/bag/pand/{id}/",
             "field": "geometrie"
           }
         }
@@ -84,7 +94,7 @@
           "source": "BAG identificatie verblijfsobject",
           "transform": {
             "type": "geometry_from_api",
-            "url_pattern": "{api_root}/bag/verblijfsobject/{id}/",
+            "url_pattern": "{bag_api_root}/bag/verblijfsobject/{id}/",
             "field": "geometrie"
           }
         }

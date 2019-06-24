@@ -7,8 +7,25 @@ import os
 from geomet import wkt
 from django.contrib.gis.geos import GEOSGeometry
 
-datapunt_api_root = os.getenv('DATAPUNT_API_ROOT', 'https://api.data.amsterdam.nl')
+bag_api_root = os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl')
+monumenten_api_root = os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
 log = logging.getLogger(__name__)
+
+
+def _get_nested(data, args):
+    if data and args:
+        if not isinstance(args,(tuple,list)):
+            args = [ args ]
+        element = args[0]
+        if isinstance(element, int):
+            if isinstance(data, (list, tuple)) and element < len(data):
+                value = data[element]
+            else:
+                return None
+        elif element:
+            value = data.get(element)
+        return value if len(args) == 1 else _get_nested(value, args[1:])
+    return None
 
 
 def _geometry_from_string(geos_input, source_srid, target_srid):
@@ -42,10 +59,21 @@ def geometry_from_rd_geojson(_, source, field_repr):
 def geometry_from_api(transform_def, source, _):
     if source is None:
         return None
-    url = transform_def['url_pattern'].format(api_root=datapunt_api_root, id=source)
+    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, id=source)
     with requests.get(url) as response:
         if response.status_code == 200:
             return json.loads(response.content)[transform_def['field']]
+        return None
+
+
+def string_from_api(transform_def, source, _):
+    if source is None:
+        return None
+    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, monumenten_api_root=monumenten_api_root,
+                                              id=source)
+    with requests.get(url) as response:
+        if response.status_code == 200:
+            return _get_nested(json.loads(response.content), transform_def['field'])
         return None
 
 
