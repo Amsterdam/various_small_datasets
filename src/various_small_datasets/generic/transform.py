@@ -14,8 +14,8 @@ log = logging.getLogger(__name__)
 
 def _get_nested(data, args):
     if data and args:
-        if not isinstance(args,(tuple,list)):
-            args = [ args ]
+        if not isinstance(args, (tuple, list)):
+            args = [args]
         element = args[0]
         if isinstance(element, int):
             if isinstance(data, (list, tuple)) and element < len(data):
@@ -24,6 +24,8 @@ def _get_nested(data, args):
                 return None
         elif element:
             value = data.get(element)
+        else:
+            return None
         return value if len(args) == 1 else _get_nested(value, args[1:])
     return None
 
