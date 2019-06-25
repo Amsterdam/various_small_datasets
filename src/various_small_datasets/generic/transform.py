@@ -12,6 +12,8 @@ bag_api_root = os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl')
 monumenten_api_root = os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
 log = logging.getLogger(__name__)
 
+
+# Use cache to prevent calls to the same URL to get data for different targets
 _api_cache = None
 
 
@@ -33,7 +35,6 @@ def _get_cached_api(url):
     content = _api_cache.get(url)
     if not content:
         with requests.get(url) as response:
-            log.debug(f"cache get {url}")
             if response.status_code == 200:
                 content = _api_cache[url] = json.loads(response.content)
     return content
