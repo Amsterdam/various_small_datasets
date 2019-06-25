@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 import json
 import os
+import pylru
 
 from geomet import wkt
 from django.contrib.gis.geos import GEOSGeometry
@@ -10,6 +11,32 @@ from django.contrib.gis.geos import GEOSGeometry
 bag_api_root = os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl')
 monumenten_api_root = os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
 log = logging.getLogger(__name__)
+
+_api_cache = None
+
+
+def _init_api_cache():
+    global _api_cache
+    _api_cache = pylru.lrucache(100)
+
+
+def clear_cache():
+    if not _api_cache:
+        _init_api_cache()
+    _api_cache.clear()
+
+
+def _get_cached_api(url):
+    if not _api_cache:
+        _init_api_cache()
+
+    content = _api_cache.get(url)
+    if not content:
+        with requests.get(url) as response:
+            log.debug(f"cache get {url}")
+            if response.status_code == 200:
+                content = _api_cache[url] = json.loads(response.content)
+    return content
 
 
 def _get_nested(data, args):
@@ -62,10 +89,11 @@ def geometry_from_api(transform_def, source, _):
     if source is None:
         return None
     url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, id=source)
-    with requests.get(url) as response:
-        if response.status_code == 200:
-            return json.loads(response.content)[transform_def['field']]
-        return None
+
+    content = _get_cached_api(url)
+    if content:
+        return content[transform_def['field']]
+    return None
 
 
 def string_from_api(transform_def, source, _):
@@ -73,10 +101,10 @@ def string_from_api(transform_def, source, _):
         return None
     url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, monumenten_api_root=monumenten_api_root,
                                               id=source)
-    with requests.get(url) as response:
-        if response.status_code == 200:
-            return _get_nested(json.loads(response.content), transform_def['field'])
-        return None
+    content = _get_cached_api(url)
+    if content:
+        return _get_nested(content, transform_def['field'])
+    return None
 
 
 def datetime_from_string(transform_def, source, _):

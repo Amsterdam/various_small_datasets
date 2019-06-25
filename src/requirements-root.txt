@@ -26,6 +26,7 @@ numpy
 openapi-codec
 pandas
 psycopg2-binary
+pylru
 python-dateutil
 pytz
 requests

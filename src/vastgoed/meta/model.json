@@ -127,5 +127,33 @@
       "index": true,
       "null": true
     }
+  },
+  "bag_verblijfsobject_gebruiksdoel_code": {
+    "type": "String",
+    "properties": {
+      "null": true,
+      "length": 4
+    }
+  },
+  "bag_verblijfsobject_gebruiksdoel_omschrijving": {
+    "type": "String",
+    "properties": {
+      "null": true,
+      "length": 150
+    }
+  },
+  "bag_verblijfsobject_gebruiksdoel_code_plus": {
+    "type": "String",
+    "properties": {
+      "null": true,
+      "length": 4
+    }
+  },
+  "bag_verblijfsobject_gebruiksdoel_omschrijving_plus": {
+    "type": "String",
+    "properties": {
+      "null": true,
+      "length": 150
+    }
   }
 }

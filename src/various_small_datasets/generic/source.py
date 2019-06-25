@@ -70,3 +70,16 @@ def get_source(source_def):
         return CSVSourceReader(source_def).get_source()
     else:
         raise NotImplementedError
+
+
+def get_objectstore_file(location, dir):
+    connection = objectstore.get_connection(OBJECTSTORE)
+    container = location.split("/")[0]
+    path = "/".join(location.split("/")[1:])
+    new_data = objectstore.get_object(connection, {'name': path}, container)
+    output_path = dir + path
+    with open(output_path, 'wb') as file:
+        file.write(new_data)
+
+
+

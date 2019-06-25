@@ -7,7 +7,7 @@ from various_small_datasets.generic.db import create_new_datatable, roll_over_da
 from various_small_datasets.generic.model import get_django_model, represent_field
 from various_small_datasets.generic.source import get_source
 from various_small_datasets.generic.transform import datetime_from_string, geometry_from_geojson, \
-    geometry_from_rd_geojson, geometry_from_api, check_integer_or_null, string_from_api
+    geometry_from_rd_geojson, geometry_from_api, check_integer_or_null, string_from_api, clear_cache
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ class DictImporter(object):
         prev_time = time.time()
 
         for entry in source:
+            clear_cache()
             fields = {}
             for mapping in self.import_def['mapping']['mappings']:
                 fields[mapping['target']] = self.expand_transform(entry, mapping, mapping['target'])

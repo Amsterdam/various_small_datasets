@@ -87,6 +87,46 @@
         }
       },
       {
+        "target": "bag_verblijfsobject_gebruiksdoel_code",
+        "source": "BAG identificatie verblijfsobject",
+        "transform": {
+          "type": "string_from_api",
+          "source": "BAG identificatie verblijfsobject",
+          "url_pattern":"{bag_api_root}/bag/verblijfsobject/{id}/",
+          "field": ["gebruiksdoelen", 0, "code"]
+        }
+      },
+      {
+        "target": "bag_verblijfsobject_gebruiksdoel_omschrijving",
+        "source": "BAG identificatie verblijfsobject",
+        "transform": {
+          "type": "string_from_api",
+          "source": "BAG identificatie verblijfsobject",
+          "url_pattern":"{bag_api_root}/bag/verblijfsobject/{id}/",
+          "field": ["gebruiksdoelen", 0, "omschrijving"]
+        }
+      },
+      {
+        "target": "bag_verblijfsobject_gebruiksdoel_code_plus",
+        "source": "BAG identificatie verblijfsobject",
+        "transform": {
+          "type": "string_from_api",
+          "source": "BAG identificatie verblijfsobject",
+          "url_pattern":"{bag_api_root}/bag/verblijfsobject/{id}/",
+          "field": ["gebruiksdoelen", 0, "code_plus"]
+        }
+      },
+      {
+        "target": "bag_verblijfsobject_gebruiksdoel_omschrijving_plus",
+        "source": "BAG identificatie verblijfsobject",
+        "transform": {
+          "type": "string_from_api",
+          "source": "BAG identificatie verblijfsobject",
+          "url_pattern":"{bag_api_root}/bag/verblijfsobject/{id}/",
+          "field": ["gebruiksdoelen", 0, "omschrijving_plus"]
+        }
+      },
+      {
         "target": "bag_verblijfsobject_geometrie",
         "source": "transformation",
         "transform": {
