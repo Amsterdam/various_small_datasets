@@ -1,0 +1,60 @@
+{
+  "datasets": [
+    {
+      "name": "parkeerzones",
+      "description":"Parkeerzones",
+      "table_name": "parkeerzones",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "gebied_naam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "Parkeerzones",
+      "map_abstract": "Parkeerzones Amsterdam",
+      "map_layers": [
+        {
+          "name": "parkeerzones",
+          "title": "Parkeerzones",
+          "abstract": "Parkeerzones Amsterdam",
+          "color": "[color]",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "gebied_naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    },
+    {
+      "name": "parkeerzones_uitz",
+      "description":"Parkeerzones uitzonderingen",
+      "table_name": "parkeerzones_uitz",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "gebied_code",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "Parkeerzones uitzonderingen",
+      "map_abstract": "Parkeerzones uitzonderingen Amsterdam",
+      "map_layers": [
+        {
+          "name": "parkeerzones_uitz",
+          "title": "Parkeerzones uitzonderingen",
+          "abstract": "Parkeerzones uitzonderingen Amsterdam",
+          "color": "#FFE600",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "gebied_naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}

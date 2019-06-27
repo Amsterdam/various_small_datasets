@@ -33,5 +33,6 @@ services:
       ./vezips/import/import.sh &&
       ./bekendmakingen/import/import.sh &&
       ./openbare-verlichting/import/import.sh &&
+      ./parkeerzones/import/import.sh &&
       python manage.py import_generic"
 # oplaadpalen is  in a special import

@@ -22,6 +22,7 @@ _MAP_DS_TYPE = {
     'date': models.DateField,
     'time without time zone': models.TimeField,
     'geometry': models.GeometryField,
+    'polygon': models.PolygonField,
     'multipolygon': models.MultiPolygonField,
     'point': models.PointField,
     'timestamp with time zone': models.DateTimeField,
