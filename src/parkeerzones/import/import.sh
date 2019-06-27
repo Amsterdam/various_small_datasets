@@ -7,7 +7,7 @@ source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
 echo "Download file from objectstore"
-python ${SCRIPT_DIR}/../../various_small_datasets/generic/source.py "parkeerzones/20190606_Vergunninggebieden v3.zip"
+PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/../../utils/get_objectstore_file.py "parkeerzones/20190606_Vergunninggebieden v3.zip"
 unzip $TMPDIR/20190606_Vergunninggebieden\ v3.zip -d ${TMPDIR}
 
 ogr2ogr -f "PGDump" -t_srs EPSG:28992 -s_srs EPSG:4326 -nln parkeerzones_new ${TMPDIR}/parkeerzones.sql ${TMPDIR}/20190606_Vergunninggebieden/act_RDW_3EXP_VERGUNNINGGEBIED.shp
