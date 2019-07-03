@@ -10,5 +10,5 @@
   },
   "maplayer": true,
   "instance_api": true,
-  "geosearch": false
+  "geosearch": true
 }
