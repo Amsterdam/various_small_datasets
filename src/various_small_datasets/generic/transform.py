@@ -108,6 +108,18 @@ def string_from_api(transform_def, source, _):
     return None
 
 
+def integer_from_api(transform_def, source, _):
+    if source is None:
+        return None
+    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, monumenten_api_root=monumenten_api_root,
+                                              id=source)
+    content = _get_cached_api(url)
+    if content:
+        value = _get_nested(content, transform_def['field'])
+        return value if isinstance(value, int) else int(value) if isinstance(value, str) and value.isdigits() else None
+    return None
+
+
 def datetime_from_string(transform_def, source, _):
     if source is None:
         return None

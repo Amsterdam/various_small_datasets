@@ -79,6 +79,12 @@
       "length": 128
     }
   },
+  "bouwjaar": {
+    "type": "Integer",
+    "properties": {
+      "null": true
+    }
+  },
   "oppervlakte":{
     "type": "Integer",
     "properties": {
