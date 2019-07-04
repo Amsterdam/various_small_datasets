@@ -19,7 +19,7 @@ _api_cache = None
 
 def _init_api_cache():
     global _api_cache
-    _api_cache = pylru.lrucache(100)
+    _api_cache = pylru.lrucache(512)
 
 
 def clear_cache():

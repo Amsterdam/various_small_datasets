@@ -23,7 +23,6 @@ class DictImporter(object):
         prev_time = time.time()
 
         for entry in source:
-            clear_cache()
             fields = {}
             for mapping in self.import_def['mapping']['mappings']:
                 fields[mapping['target']] = self.expand_transform(entry, mapping, mapping['target'])
