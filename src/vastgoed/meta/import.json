@@ -97,6 +97,21 @@
         }
       },
       {
+        "target": "bag_verblijfsobject_gebruiksdoelen",
+        "source": "transformation",
+        "transform": {
+          "type": "concat_string",
+          "separator": ", ",
+          "source": "BAG identificatie verblijfsobject",
+          "transform": {
+            "type": "pluck_attr_from_api",
+            "url_pattern": "{bag_api_root}/bag/verblijfsobject/{id}/",
+            "field": ["gebruiksdoelen"],
+            "attr": "omschrijving"
+          }
+        }
+      },
+      {
         "target": "bag_verblijfsobject_gebruiksdoel_code",
         "source": "BAG identificatie verblijfsobject",
         "transform": {

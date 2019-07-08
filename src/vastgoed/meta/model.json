@@ -134,6 +134,12 @@
       "null": true
     }
   },
+  "bag_verblijfsobject_gebruiksdoelen": {
+    "type": "Text",
+    "properties": {
+      "null": true
+    }
+  },
   "bag_verblijfsobject_gebruiksdoel_code": {
     "type": "String",
     "properties": {

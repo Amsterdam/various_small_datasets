@@ -8,10 +8,11 @@ import pylru
 from geomet import wkt
 from django.contrib.gis.geos import GEOSGeometry
 
-bag_api_root = os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl')
-monumenten_api_root = os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
+api_config = {
+    'bag_api_root': os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl'),
+    'monumenten_api_root': os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
+}
 log = logging.getLogger(__name__)
-
 
 # Use cache to prevent calls to the same URL to get data for different targets
 _api_cache = None
@@ -89,7 +90,7 @@ def geometry_from_rd_geojson(_, source, field_repr):
 def geometry_from_api(transform_def, source, _):
     if source is None:
         return None
-    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, id=source)
+    url = transform_def['url_pattern'].format(id=source, **api_config)
 
     content = _get_cached_api(url)
     if content:
@@ -100,8 +101,7 @@ def geometry_from_api(transform_def, source, _):
 def string_from_api(transform_def, source, _):
     if source is None:
         return None
-    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, monumenten_api_root=monumenten_api_root,
-                                              id=source)
+    url = transform_def['url_pattern'].format(id=source, **api_config)
     content = _get_cached_api(url)
     if content:
         return _get_nested(content, transform_def['field'])
@@ -111,13 +111,29 @@ def string_from_api(transform_def, source, _):
 def integer_from_api(transform_def, source, _):
     if source is None:
         return None
-    url = transform_def['url_pattern'].format(bag_api_root=bag_api_root, monumenten_api_root=monumenten_api_root,
-                                              id=source)
+    url = transform_def['url_pattern'].format(id=source, **api_config)
     content = _get_cached_api(url)
     if content:
         value = _get_nested(content, transform_def['field'])
         return value if isinstance(value, int) else int(value) if isinstance(value, str) and value.isdigits() else None
     return None
+
+
+def pluck_attr_from_api(transform_def, source, _):
+    if source is None:
+        return None
+    url = transform_def['url_pattern'].format(id=source, **api_config)
+    content = _get_cached_api(url)
+    if content:
+        value = _get_nested(content, transform_def['field'])
+        return map(lambda x: x[transform_def['attr']], value)
+    return None
+
+
+def concat_string(transform_def, source, _):
+    if source is None:
+        return None
+    return transform_def['separator'].join(source)
 
 
 def datetime_from_string(transform_def, source, _):

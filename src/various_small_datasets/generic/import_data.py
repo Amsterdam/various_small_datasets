@@ -7,7 +7,8 @@ from various_small_datasets.generic.db import create_new_datatable, roll_over_da
 from various_small_datasets.generic.model import get_django_model, represent_field
 from various_small_datasets.generic.source import get_source
 from various_small_datasets.generic.transform import datetime_from_string, geometry_from_geojson, \
-    geometry_from_rd_geojson, geometry_from_api, check_integer_or_null, string_from_api
+    geometry_from_rd_geojson, geometry_from_api, check_integer_or_null, string_from_api, pluck_attr_from_api, \
+    concat_string
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +69,9 @@ class DictImporter(object):
             'geometry_from_rd_geojson': geometry_from_rd_geojson,
             'geometry_from_api': geometry_from_api,
             'check_integer_or_null': check_integer_or_null,
-            'string_from_api': string_from_api
+            'string_from_api': string_from_api,
+            'pluck_attr_from_api': pluck_attr_from_api,
+            'concat_string': concat_string
         }
         transform = transform_def['type']
         if transform not in transformations:
