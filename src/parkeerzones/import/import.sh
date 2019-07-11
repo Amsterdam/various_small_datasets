@@ -40,7 +40,9 @@ ALTER TABLE parkeerzones_uitz_new RENAME COLUMN e_dat_gebi TO eind_datum_gebied;
 ALTER TABLE parkeerzones_uitz_new RENAME COLUMN domein_cod TO domein_code;
 ALTER TABLE parkeerzones_uitz_new RENAME COLUMN gebruiks_d TO gebruiks_doel;
 ALTER TABLE parkeerzones_uitz_new RENAME COLUMN gebied_naa TO gebied_naam;
-
+-- Delete data  that is not used.
+DELETE FROM parkeerzones_uitz_new WHERE show = 'FALSE';
+DELETE FROM parkeerzones_new WHERE show = 'FALSE';
 SQL
 
 echo "Check imported data"
