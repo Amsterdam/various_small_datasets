@@ -3,7 +3,7 @@ from utils.check_imported_data import main, assert_count_zero, assert_count_mini
 
 sql_checks = [
     ('count', "select count(*) from parkeerzones_new", assert_count_minimum(100)),
-    ('count_uitz', "select count(*) from parkeerzones_uitz_new", assert_count_minimum(80)),
+    ('count_uitz', "select count(*) from parkeerzones_uitz_new", assert_count_minimum(60)),
 
     ('geometrie', """
 select count(*) from parkeerzones_new where
