@@ -1,0 +1,32 @@
+{
+  "datasets": [
+    {
+      "name": "verhardingen",
+      "description":"Verhardingen objecten",
+      "table_name": "vhg_object",
+      "ordering": "id",
+      "pk_field": "id",
+      "enable_api": true,
+      "name_field": "imbor_identificatie",
+      "geometry_field": "geometrie",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "verhardingen",
+      "map_abstract": "Verhardingen objecten",
+      "map_layers": [
+        {
+          "name": "vhg_obj",
+          "title": "Verhardingen",
+          "abstract": "Verhardingen objectem",
+          "color": "153 70 70",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "imbor_identificatie",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}
