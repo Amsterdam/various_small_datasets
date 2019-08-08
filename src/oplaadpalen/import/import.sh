@@ -64,8 +64,9 @@ ALTER TABLE IF EXISTS oplaadpalen RENAME TO oplaadpalen_old;
 ALTER TABLE oplaadpalen_new RENAME TO oplaadpalen;
 DROP VIEW IF EXISTS oplaadpunten;
 DROP TABLE IF EXISTS oplaadpalen_old;
-CREATE VIEW oplaadpunten AS SELECT *  FROM oplaadpalen
-WHERE connector_type <> 'SHUNK_PANTOGRAPH' AND status in ('Available', 'Occupied');
+CREATE VIEW oplaadpunten AS SELECT op.*, concat_ws(' ', op.provider, '-', op.street, op.housenumber) as name
+FROM oplaadpalen op
+WHERE op.connector_type <> 'SHUNK_PANTOGRAPH' AND op.status in ('Available', 'Occupied');
 COMMIT;
 SQL
 

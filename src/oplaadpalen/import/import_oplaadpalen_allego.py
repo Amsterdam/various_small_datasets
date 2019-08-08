@@ -250,9 +250,9 @@ def set_oplaadpalen_unknown(curs, table_name:str):
     """
     Set all those oplaadpalen that were not present in the last update to status 'Unknown'
     """
-    sql = '''
-UPDATE oplaadpalen set status = 'Unknown' 
-WHERE status <> 'Unknown' AND last_status_update <> (select max(last_status_update) from oplaadpalen)
+    sql = f'''
+UPDATE {table_name} set status = 'Unknown'
+WHERE status <> 'Unknown' AND last_status_update <> (select max(last_status_update) from {table_name})
 '''
     curs.execute(sql)
     return curs.rowcount
