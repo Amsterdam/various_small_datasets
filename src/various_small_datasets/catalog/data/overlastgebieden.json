@@ -1,0 +1,32 @@
+{
+  "datasets": [
+    {
+      "name": "overlastgebieden",
+      "description":"Overlastgebieden",
+      "table_name": "overlastgebieden",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "oov_naam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "overlastgebieden",
+      "map_abstract": "Overlastgebieden",
+      "map_layers": [
+        {
+          "name": "overlastgebieden",
+          "title": "Overlastgebieden",
+          "abstract": "Overlastgebieden Amsterdam",
+          "color": "153 70 70",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "oov_naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}
