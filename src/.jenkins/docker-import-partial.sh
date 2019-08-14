@@ -58,6 +58,10 @@ case $i in
     echo "Importing Bekendmakingen"
     bekendmakingen/import/import.sh
     ;;
+    overlastgebieden)
+    echo "Import Overlastgebieden"
+    overlastgebieden/import/import.sh
+    ;;
     openbare_verlichting)
     echo "Importing Openbare-verlichting"
     openbare-verlichting/import/import.sh
