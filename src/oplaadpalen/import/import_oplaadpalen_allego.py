@@ -365,7 +365,6 @@ def main():
         log.info(f"Updated {total_updates} laadpalen")
         log.info(f"Updated completely {total_complete_updates} laadpalen")
         log.info(f"Not updated, set to 'Unknown' {total_set_unknown} laadpalen")
-        log.info(f"Not updated, set to 'Unknown' {total_set_unknown} laadpalen")
         log.info(f"Deleted' {total_deletes} laadpalen")
 
     except psycopg2.Error as exc:
