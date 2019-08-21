@@ -9,6 +9,7 @@ import urllib.parse
 import random
 
 from requests import HTTPError
+from simplejson import JSONDecodeError
 
 from various_small_datasets.settings import DATABASES
 
@@ -24,6 +25,8 @@ host = database['HOST']
 port = database['PORT']
 
 LAADPAAL_MAX_AGE = 8640000  # 100 days
+
+LAADPAAL_DELETE_AGE = 864000  # 10 days
 
 oplaadpunten_providers = {
     'Allego',
@@ -56,6 +59,8 @@ def get_remote_oplaadpaal(id: str):
         response = requests.get(url)
         response.raise_for_status()
         return response.json()
+    except JSONDecodeError as e:
+        return None
     except HTTPError as e:
         log.warning(f"Failed to get oplaadpaal for {url}:", e)
         return None
@@ -115,12 +120,16 @@ def _make_oplaadpaal_args(opl:dict):
         charging_capability_list.append(str(charging_cap))
         identification_type_list.append((evse['displayName']))
 
-    if 'Available' in status_list:
-        status = 'Available'
-    elif 'Occupied' in status_list:
-        status = 'Occupied'
+    connectivityStatus = opl['connectivityStatus']
+    if connectivityStatus == 'Offline':
+        status = connectivityStatus
     else:
-        status = ';'.join(list(OrderedDict.fromkeys(status_list)))
+        if 'Available' in status_list:
+            status = 'Available'
+        elif 'Occupied' in status_list:
+            status = 'Occupied'
+        else:
+            status = ';'.join(list(OrderedDict.fromkeys(status_list)))
 
     args = {
         'cs_external_id': opl['chargePointId'],
@@ -252,10 +261,42 @@ def set_oplaadpalen_unknown(curs, table_name:str):
     """
     sql = f'''
 UPDATE {table_name} set status = 'Unknown'
-WHERE status <> 'Unknown' AND last_status_update <> (select max(last_status_update) from {table_name})
+WHERE status in ('Available', 'Occupied')  AND last_status_update <> (select max(last_status_update) from {table_name})
 '''
     curs.execute(sql)
     return curs.rowcount
+
+
+def set_oplaadpalen_deleted(curs, table_name:str, max_requests:int):
+    """
+    Set oplaadpalen to deleted if they have not been updated for 10 days and it does not return a result when
+    we get remote data for the oplaadpunt.
+
+    We only do max_requests requests to get  remote oplaadpunten
+    """
+    sql = f'''
+select id, cs_external_id, status
+from  {table_name}
+where (EXTRACT(EPOCH FROM NOW() - last_status_update))::int > {LAADPAAL_DELETE_AGE}
+and status = 'Unknown'
+    '''
+    curs.execute(sql)
+    old_laadpalen = curs.fetchall()
+    delete_count = 0
+    request_count = 0
+    for old_laadpaal in old_laadpalen:
+        id1 = old_laadpaal[1]
+        if request_count >= max_requests:
+            break
+        oplaadpaal_remote = get_remote_oplaadpaal(id1)
+        request_count += 1
+        if oplaadpaal_remote:
+            update_complete_oplaadpaal(curs, table_name, oplaadpaal_remote)
+        else:
+            update_oplaadpaal(curs, table_name, id1, 'Deleted')
+            delete_count += 1
+
+    return delete_count
 
 
 def main():
@@ -283,31 +324,32 @@ def main():
     total_inserts = 0
     total_updates = 0
     total_complete_updates = 0
-    total_set_unknown = 0
     table_name = 'oplaadpalen_new'
     try:
         dsn = f"dbname='{dbname}' user='{user}' password='{password}' host='{host}' port={port}"
         with psycopg2.connect(dsn) as conn:
             with conn.cursor() as curs:
                 for opl in all_oplaadpunten:
-                    id = opl['cpId']
+                    id1 = opl['cpId']
                     status = opl['st']
-                    log.debug(f'{id} {status}')
-                    oplaadpaal_db = get_oplaadpaal(curs, table_name, id)
+                    if status == 'Deleted':
+                        continue
+                    log.debug(f'{id1} {status}')
+                    oplaadpaal_db = get_oplaadpaal(curs, table_name, id1)
                     if oplaadpaal_db:
                         # randomize complete update
                         max_age = LAADPAAL_MAX_AGE + random.randint(-10000, 10000)
                         if oplaadpaal_db[3] > max_age and total_complete_updates < args.max_inserts:
-                            oplaadpaal_remote = get_remote_oplaadpaal(id)
+                            oplaadpaal_remote = get_remote_oplaadpaal(id1)
                             if oplaadpaal_remote:
                                 update_complete_oplaadpaal(curs, table_name, oplaadpaal_remote)
                                 total_complete_updates += 1
                         else:
-                            update_oplaadpaal(curs, table_name, id, status)
+                            update_oplaadpaal(curs, table_name, id1, status)
                             total_updates += 1
                     else:
                         if total_inserts < args.max_inserts:
-                            oplaadpaal_remote = get_remote_oplaadpaal(id)
+                            oplaadpaal_remote = get_remote_oplaadpaal(id1)
                             if oplaadpaal_remote:
                                 create_oplaadpaal(curs, table_name, oplaadpaal_remote)
                                 total_inserts += 1
@@ -316,10 +358,15 @@ def main():
             with conn.cursor() as curs:
                 total_set_unknown = set_oplaadpalen_unknown(curs, table_name)
 
+            with conn.cursor() as curs:
+                total_deletes = set_oplaadpalen_deleted(curs, table_name, args.max_inserts)
+
         log.info(f"Inserted {total_inserts} laadpalen")
         log.info(f"Updated {total_updates} laadpalen")
         log.info(f"Updated completely {total_complete_updates} laadpalen")
         log.info(f"Not updated, set to 'Unknown' {total_set_unknown} laadpalen")
+        log.info(f"Not updated, set to 'Unknown' {total_set_unknown} laadpalen")
+        log.info(f"Deleted' {total_deletes} laadpalen")
 
     except psycopg2.Error as exc:
         print("Unable to connect to the database", exc)

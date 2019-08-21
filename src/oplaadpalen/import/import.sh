@@ -62,11 +62,10 @@ psql -X --set ON_ERROR_STOP=on <<SQL
 BEGIN;
 ALTER TABLE IF EXISTS oplaadpalen RENAME TO oplaadpalen_old;
 ALTER TABLE oplaadpalen_new RENAME TO oplaadpalen;
-DROP VIEW IF EXISTS oplaadpunten;
-DROP TABLE IF EXISTS oplaadpalen_old;
-CREATE VIEW oplaadpunten AS SELECT op.*, concat_ws(' ', op.provider, '-', op.street, op.housenumber) as name
+CREATE OR REPLACE VIEW oplaadpunten AS SELECT op.*, concat_ws(' ', op.provider, '-', op.street, op.housenumber) as name
 FROM oplaadpalen op
-WHERE op.connector_type <> 'SHUNK_PANTOGRAPH' AND op.status in ('Available', 'Occupied');
+WHERE op.connector_type <> 'SHUNK_PANTOGRAPH' AND op.status not in ('Deleted');
+DROP TABLE IF EXISTS oplaadpalen_old;
 COMMIT;
 SQL
 
