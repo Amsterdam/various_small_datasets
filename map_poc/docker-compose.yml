@@ -1,0 +1,29 @@
+version: "3.0"
+services:
+  database:
+    image: mdillon/postgis
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: airports
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: insecure
+  mapserver:
+
+    build: ms/
+    ports:
+      -  "8182:80"
+    links:
+      - database
+    volumes:
+      - ./ms/map:/map
+  mapproxy:
+    build: mp/
+    ports:
+      - "8080:8080"
+    links:
+      - mapserver
+    volumes:
+      - ./mp:/mapproxy 
+    environment:
+      MAPSERVERS: http://mapserver/cgi-bin/mapserv?map=/map/generic.map 

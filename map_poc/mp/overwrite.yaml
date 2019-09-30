@@ -1,0 +1,3 @@
+sources:
+  __all__:
+    forward_req_params: [user]

@@ -1,0 +1,66 @@
+# MapProxy configuration automatically generated from:
+#   http://mapserver/cgi-bin/mapserv?map=/map/generic.map
+#
+# NOTE: The generated configuration can be highly inefficient,
+#       especially when multiple layers and caches are requested at once.
+#       Make sure you understand the generated configuration!
+#
+# Created on 2019-09-30 08:03:44.783447 with:
+# /usr/local/bin/mapproxy-util autoconfig \
+#    --capabilities=http://mapserver/cgi- \
+#    bin/mapserv?map=/map/generic.map --overwrite \
+#    /mapproxy/overwrite.yaml --output /mapproxy/mapserver.yaml \
+#    --force
+
+caches: {}
+layers:
+- layers:
+  - name: GTOPO30_SAMPLE
+    sources: [GTOPO30_SAMPLE_wms]
+    title: GTOPO30 Sample
+  - name: airports
+    sources: [airports_wms]
+    title: airports
+  md:
+    abstract: GENERIC_MAP
+  name: GENERIC_MAP
+  sources: [GENERIC_MAP_wms]
+  title: Generic Map
+services:
+  wms:
+    md:
+      title: Generic Map
+sources:
+  GENERIC_MAP_wms:
+    coverage:
+      bbox: [20.0, -10.0, 60.0, 40.0]
+      srs: EPSG:4326
+    forward_req_params: [user]
+    req:
+      layers: GENERIC_MAP
+      transparent: true
+      url: http://mapserver/cgi-bin/mapserv?map=/map/generic.map&
+    supported_srs: ['EPSG:3857', 'EPSG:4326', 'EPSG:900913']
+    type: wms
+  GTOPO30_SAMPLE_wms:
+    coverage:
+      bbox: [20.0, -10.0, 60.0, 40.0]
+      srs: EPSG:4326
+    forward_req_params: [user]
+    req:
+      layers: GTOPO30_SAMPLE
+      transparent: true
+      url: http://mapserver/cgi-bin/mapserv?map=/map/generic.map&
+    supported_srs: ['EPSG:3857', 'EPSG:4326', 'EPSG:900913']
+    type: wms
+  airports_wms:
+    coverage:
+      bbox: [-90.0, -180.0, 90.0, 180.0]
+      srs: EPSG:4326
+    forward_req_params: [user]
+    req:
+      layers: airports
+      transparent: true
+      url: http://mapserver/cgi-bin/mapserv?map=/map/generic.map&
+    supported_srs: ['EPSG:3857', 'EPSG:4326', 'EPSG:900913']
+    type: wms
