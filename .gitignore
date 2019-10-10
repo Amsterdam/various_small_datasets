@@ -104,6 +104,10 @@ ENV/
 .idea/
 *.iml
 
+# vim
+*.swp
+
 # Project specific
 .DS_Store
 src/various_small_datasets/tools/map_files
+
