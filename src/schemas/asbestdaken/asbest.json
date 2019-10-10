@@ -1,0 +1,21 @@
+{
+  "id": "asbest",
+  "type": "dataset",
+  "title": "Asbest: verdachte daken",
+  "crs": "EPSG:28992",
+  "items": [
+    {
+      "id": "daken",
+      "type": "class",
+      "items": [
+          {"$ref": "./daken.objects.json"}
+      ]
+    }
+  ],
+  "services":
+    {
+      "mapservice": {
+        "$ref": "./mapservice.json"
+    }
+  }
+}

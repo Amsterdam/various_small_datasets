@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ams-schema.glitch.me/dataset/asbest/daken",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "dataset",
+    "class"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "https://ams-schema.glitch.me/schema@v0.1#/definitions/id",
+      "description": "ID"
+    },
+    "class": {
+      "$ref": "https://ams-schema.glitch.me/schema@v0.1#/definitions/class"
+    },
+    "dataset": {
+      "$ref": "https://ams-schema.glitch.me/schema@v0.1#/definitions/dataset"
+    },
+    "bouwjaar": {
+      "type": "number",
+      "description": "Bouwjaar"
+    },
+    "woonplaats": {
+      "type": "string",
+      "description": "Woonplaats"
+    },
+    "pandidentificatie": {
+      "type": "string",
+      "description": "Pandidentificatie"
+    },
+    "sectie": {
+      "type": "string",
+      "description": "Kadastrale sectie"
+    },
+    "perceelnummer": {
+      "type": "number",
+      "description": "Perceelnummer"
+    },
+    "bestemming": {
+      "type": "string",
+      "description": "Bestemming"
+    },
+    "verdacht": {
+      "type": "boolean",
+      "description": "Asbestverdacht"
+    },
+    "kwaliteit": {
+      "type": "string",
+      "description": "Kwaliteit van verdenking"
+    },
+    "oppervlakte": {
+      "type": "number",
+      "description": "Oppervlakte"
+    },
+    "oppervlakteSchuin": {
+      "type": "number",
+      "description": "Oppervlakte (schuin)"
+    },
+    "kadaster": {
+      "type": "string",
+      "description": "Kadastraal nummer"
+    },
+    "geometry":{
+      "description": "Polygoon coordinaten van dak"
+    }
+  }
+}

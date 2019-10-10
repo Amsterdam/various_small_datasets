@@ -38,6 +38,7 @@ jsonref==0.2
 jsonschema==3.0.1
 keystoneauth1==3.14.0
 lxml==4.3.3
+mappyfile==0.8.2
 MarkupSafe==1.1.1
 mccabe==0.6.1
 msgpack==0.6.1
