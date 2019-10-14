@@ -72,7 +72,7 @@ case $i in
     ;;
     asbest)
     echo "Import Asbest"
-    asbedst/import/import.sh
+    asbest/import/import.sh
     ;;
     *)
     echo "Trying to import Generic dataset $i"
