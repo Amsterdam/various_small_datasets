@@ -1,6 +1,6 @@
 # various_small_datasets
 
-Code for various small datasets where data does not change very often 
+Code for various small datasets where data does not change very often
 
 # Requirements
 
@@ -11,7 +11,7 @@ Code for various small datasets where data does not change very often
     python3 -m venv venv
     source venv/bin/activate
     pip install -r src/requirements.txt
-    
+
     docker-compose up -d database
 
 # Migrate Django catalog model
@@ -28,7 +28,7 @@ Import data with :
 # Tram & Metro (TRM)
 
 Import data with :
- 
+
     src/trm/import/import.sh
 
 # Handboek Inrichting Openbare Ruimte (HIOR)
@@ -51,13 +51,13 @@ Import data with :
 
 # Import JSON data for catalog (description of BIZ dataset)
 
-    cd src 
+    cd src
     python manage.py import_catalog
 
 # Run the server
 
     docker-compose up
-    
+
 The server can be reached locally at:
 
     http://localhost:8000
@@ -77,23 +77,23 @@ For example :
 
     /vsd/biz/?naam=kalverstraat
     /vsd/biz/?geometrie=52.362762,4.907598
-    
+
 # Cookbook for new datasets
 
 Create a directory for the new dataset (ds)
 
     mkdir src/ds
-    
+
 Create a directory for the import data for the dataset
 
     mkdir src/ds/data
-    
+
 Put the input data in this directory
 
 Create a directory for the import scripts to process and import the data in the database
 
     mkdir src/ds/import
-    
+
 The basic process consists of:
 
     Reading the data
@@ -105,15 +105,15 @@ The basic process consists of:
         Run sql insert on new tables
         Rename existing tables, rename new tables and then remove any old tables
     Use the shared code in src/shared/import to keep the import shell script as small as possible
-    
+
 When the import is OK include the dataset in the catalog
 
     Construct a ds.json in src/various_small_datasets/catalog/data/ds.json
-    
+
     python manage.py import_catalog
-    
+
     python manage.py runserver
-    
+
 View your new dataset at localhost:8000/vsd/ds
 
 Because we now have multiple datasets in one database we want to be able to add or update only one dataset
@@ -133,9 +133,9 @@ This Jenkins import itself uses the Openstack Ansible playbook "import-various-s
 It is also possible to generate a simple MAP file for MAPSERVER from the specification.
 
 In the JSON file that describes the dataset the following entries should be present :
-        
+
       "enable_maplayer": true,
-      "map_template": "name_of_template"    # Optional default is default.map.template  
+      "map_template": "name_of_template"    # Optional default is default.map.template
       "map_title": "Title
       "map_abstract": "Oneline abstract"    # Optional
       "map_layers": [
@@ -144,8 +144,8 @@ In the JSON file that describes the dataset the following entries should be pres
           "title": "title_of_layer",
           "abstract": "abstract_for_layer",    # Optional
           "filter": "expression for filter in layer"    # Optional
-          "color": "0 70 153",                 # Optional  
-          "style": "expression for style",     # Optional, overrides color 
+          "color": "0 70 153",                 # Optional
+          "style": "expression for style",     # Optional, overrides color
           "minscale": 10,
           "maxscale": 400000,
           "label": "naam",
@@ -153,17 +153,17 @@ In the JSON file that describes the dataset the following entries should be pres
           "label_maxscale": 10000
         }
       ],
- 
- If these entries are specified map files are generated with the command: 
- 
+
+ If these entries are specified map files are generated with the command:
+
     cd src
-    python manage.py generate_map_files 
-    
+    python manage.py generate_map_files
+
 Make sure that you have run the following:
 
     python manage.py migrate
     python manage.py import_catalog
-    
-Then you can find the generated mapfiles in **various_small_datasets/tools/mapfiles**    
 
-Copy these files to the **mapserver**  and test if they work. 
+Then you can find the generated mapfiles in **various_small_datasets/tools/mapfiles**
+
+Copy these files to the **mapserver**  and test if they work.

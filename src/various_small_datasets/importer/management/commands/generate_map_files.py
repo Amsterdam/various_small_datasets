@@ -1,7 +1,6 @@
 import logging
 import os
 
-from jinja2 import Environment, FileSystemLoader
 from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.interfaces import json_, amsterdam_schema
 from various_small_datasets.generators.mapfile import (
@@ -40,17 +39,15 @@ class Command(BaseCommand):
 
         if not os.path.exists(map_dir):
             os.mkdir(map_dir)
-        """
+
         generators = [
             LegacyMapfileGenerator(
                 map_dir=map_dir,
                 serializer=JinjaSerializer(template_dir),
-                datasets=DataSet.objects.filter(  #pylint: disable=no-member
+                datasets=DataSet.objects.filter(  # pylint: disable=no-member
                     enable_maplayer=True
                 )
             ),
-            """
-        generators = [
             MapfileGenerator(
                 map_dir=map_dir,
                 serializer=MappyfileSerializer(),

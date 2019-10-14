@@ -45,13 +45,12 @@ class MapfileGenerator(Generator):
             base_style: dict = {}
             try:
                 base_style = base_styles[index]
-            except:
+            except KeyError:
                 pass
             feature_class.add_style(
                 ChainMap(style, base_style)
             )
         return feature_class
-
 
     def generate_layer(self, dataset, name, layer_dict) -> types.Layer:
         styles = layer_dict.get('base_styles', [])
@@ -77,7 +76,6 @@ class MapfileGenerator(Generator):
             )
         return layer
 
-
     def serialize(self, dataset: AmsterdamSchema) -> str:
         mapservice_data = dataset['services']['mapservice']
         mapfile = types.Mapfile(
@@ -85,7 +83,7 @@ class MapfileGenerator(Generator):
             layers=[],
             include=['header.inc'],
             projection=mapservice_data.get('projection', [])
-        )  
+        )
         try:
             mapfile.web = types.Web(
                 types.Metadata(mapservice_data['web']['metadata'])
@@ -93,18 +91,6 @@ class MapfileGenerator(Generator):
         except KeyError:
             pass
 
-        # print(dataset)
-        # 
-        connection_data: dict = {
-            'user': 'user',
-            'pw': 'user',
-            'dbname': 'user',
-            'host': 'user',
-        } # TODO: fill this in from schema
-        connection = types.Connection.for_postgres(**connection_data)
-        data = types.Data.for_postgres(
-            "geom", "table" #! TODO: change to actual col/table refs
-        )
         for name, layer_dict in mapservice_data.get('layers', {}).items():
             mapfile.layers.append(
                 self.generate_layer(
@@ -135,4 +121,3 @@ class LegacyMapfileGenerator(Generator):
         return self.serializer(template_file, context={
             'ds': ds_dict
         })
-    

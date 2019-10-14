@@ -4,8 +4,8 @@ from utils.check_imported_data import main, all_valid_url, assert_count_minimum,
 sql_checks = [
     ('count', "select count(*) from biz_view_new", assert_count_minimum(48)),
     ('columns', """
-select column_name from information_schema.columns where                                                                  
-table_schema = 'public' and table_name = 'biz_data_new'
+select column_name from information_schema.columns where
+ table_schema = 'public' and table_name = 'biz_data_new'
     """, lambda x: x == [("biz_id",), ("naam",), ("biz_type",), ("heffingsgrondslag",), ("website",), ("heffing",),
                          ("bijdrageplichtigen",), ("verordening",), ("wkb_geometry",)]),
     ('website', "select website from biz_view_new where website is not NULL", all_valid_url),

@@ -39,11 +39,11 @@ def assign_colors(conn, table_name):
         # curs.execute(f"UPDATE {table_name} SET color = NULL")
         curs.execute("DROP VIEW IF EXISTS parkeerzones_color")
         curs.execute(f"""
-CREATE VIEW parkeerzones_color AS 
+CREATE VIEW parkeerzones_color AS
 SELECT COALESCE(parent, cast(ogc_fid as varchar(80))) AS id, parent is not null as is_group,
-ST_Union(ST_SnapToGrid(wkb_geometry, 0.0001)) as wkb_geometry, color::varchar(7) 
-FROM {table_name} WHERE SHOW = 'TRUE'
-GROUP BY id, color, is_group;
+ST_Union(ST_SnapToGrid(wkb_geometry, 0.0001)) as wkb_geometry, color::varchar(7)
+ FROM {table_name} WHERE SHOW = 'TRUE'
+ GROUP BY id, color, is_group;
         """)
 
         curs.execute(f"SELECT id, is_group FROM parkeerzones_color WHERE color IS NULL")
@@ -52,8 +52,8 @@ GROUP BY id, color, is_group;
         for parkeerzone in parkeerzones:
             (id, is_group) = parkeerzone
             curs.execute(f"""
-SELECT B.color FROM parkeerzones_color A JOIN parkeerzones_color B ON ST_Touches(A.wkb_geometry, B.wkb_geometry) 
-WHERE A.id = %s AND B.color IS NOT NULL
+SELECT B.color FROM parkeerzones_color A JOIN parkeerzones_color B ON ST_Touches(A.wkb_geometry, B.wkb_geometry)
+ WHERE A.id = %s AND B.color IS NOT NULL
             """, (id,))
             color_lists = curs.fetchall()
             used_colors = set([col[0] for col in color_lists])

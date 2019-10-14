@@ -68,8 +68,8 @@ def get_remote_oplaadpaal(id: str):
 
 def update_oplaadpaal(curs, table_name:str, id1: str, status: str):
     sql = f'''
-update {table_name} set status = %(status)s, last_status_update = current_timestamp 
-where cs_external_id = %(id)s
+update {table_name} set status = %(status)s, last_status_update = current_timestamp
+ where cs_external_id = %(id)s
 '''
     curs.execute(sql, {'status': status, 'id': id1})
     if curs.rowcount != 1:
@@ -191,9 +191,9 @@ update {table_name}
 
 def get_oplaadpaal(curs, table_name:str, id1: str):
     sql = f'''
-select id, cs_external_id, status, (EXTRACT(EPOCH FROM NOW() - last_update))::int as update_age 
-from {table_name} 
-where cs_external_id = %(id)s
+select id, cs_external_id, status, (EXTRACT(EPOCH FROM NOW() - last_update))::int as update_age
+ from {table_name}
+ where cs_external_id = %(id)s
 '''
     curs.execute(sql, {'id': id1})
     result = curs.fetchall()

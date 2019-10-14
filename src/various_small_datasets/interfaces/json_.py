@@ -1,7 +1,6 @@
 import click
 import json
 import jsonref
-import jsonschema
 import pprint
 import os
 import typing
@@ -13,13 +12,14 @@ class JsonStrategicLoader(jsonref.JsonLoader):
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.strategies = strategies
-    
-    def _call_strategy(self, strategy: typing.Callable, uri: str, **load_params):
+
+    def _call_strategy(self,
+                       strategy: typing.Callable, uri: str, **load_params):
         return json.loads(strategy(uri), **load_params)
-    
+
     def _call_parent(self, uri, **load_params):
         return super().__call__(uri, **load_params)
-    
+
     def __call__(self, uri: str, **load_params):
         for strategy in self.strategies:
             try:
@@ -48,15 +48,15 @@ def load(document_file: typing.IO[str],
 @click.command()
 @click.argument("document_path", type=click.types.Path(), required=True)
 def main(document_path):
-    base_uri = (
-        "file://" +
-        os.path.dirname(os.path.realpath(document_path)) +
-        "/"
-    )
+    base_uri = "".join([
+        "file://",
+        os.path.dirname(os.path.realpath(document_path)),
+        "/",
+    ])
     with open(document_path, "r") as document:
         result = load(document, base_uri)
         pprint.pprint(result)
 
 
 if __name__ == '__main__':
-    main()
+    main()  # pylint: disable=all

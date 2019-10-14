@@ -1,5 +1,5 @@
 from various_small_datasets.generators.mapfile import (
-    MapfileGenerator, LegacyMapfileGenerator, AmsterdamSchema
+    MapfileGenerator, AmsterdamSchema
 )
 
 
@@ -15,7 +15,7 @@ def test_normal_generator():
                 "id": "test",
                 "services": {
                     "mapservice": {
-                        
+
                     }
                 }
             })

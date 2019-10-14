@@ -6,7 +6,7 @@ import typing
 class LayerType(str, enum.Enum):
     point = "POINT"
     polygon = "POLYGON"
-    #! TODO add otehr layer types here
+    # TODO add otehr layer types here
 
 
 class Metadata(dict):
@@ -23,7 +23,7 @@ class Connection:
     def __init__(self, type, s):
         self.type = type
         self.data = s
-    
+
     @classmethod
     def for_postgres(cls, user, pw, dbname, host):
         return cls(
@@ -72,13 +72,14 @@ class FeatureClass:
             **d
         })
 
+
 Filename = str
 
 
 @dataclass
 class Layer:
     name: str
-    type: str  #!TODO: get this type from schema
+    type: str  # TODO: get this type from schema
     with_connection: InitVar[Connection] = None
     projection: typing.Optional[typing.List[str]] = None
 

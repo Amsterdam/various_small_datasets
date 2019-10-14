@@ -108,7 +108,7 @@ def main():
 
         def make_insert(t):
             insert = '''insert into biz_data_new(
-          biz_id  
+          biz_id
         , naam
         , biz_type
         , heffingsgrondslag
@@ -116,7 +116,7 @@ def main():
         , heffing
         , bijdrageplichtigen
         , verordening
-        , wkb_geometry) 
+        , wkb_geometry)
         values (
           {}
         , '{}'
