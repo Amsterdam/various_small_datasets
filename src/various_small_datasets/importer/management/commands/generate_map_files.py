@@ -3,24 +3,28 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 from various_small_datasets.catalog.models import DataSet
+from various_small_datasets.interfaces import json_, amsterdam_schema
+from various_small_datasets.generators.mapfile import (
+    MapfileGenerator, LegacyMapfileGenerator
+)
+from various_small_datasets.interfaces.mapfile.serializers import (
+    MappyfileSerializer, JinjaSerializer
+)
 from django.core.management import BaseCommand
 
 
 log = logging.getLogger(__name__)
 
 
-def get_map_content(env: Environment, ds):
-    ds_dict = ds.__dict__
-    # get layers
-    ds_dict["layers"] = map(lambda x: x.__dict__, ds.maplayer_set.all())
-    ds_dict["id_field"] = ds.pk_field
-    if ds.map_template is not None:
-        template_file = ds.map_template
-    else:
-        template_file = 'default.map.template'
-
-    template = env.get_template(template_file)
-    return template.render(ds=ds_dict)
+def json_loader(file_paths: list):
+    for file_path in file_paths:
+        with open(file_path, "r") as fh:
+            base_uri = (
+                "file://" + os.path.dirname(os.path.realpath(file_path)) + "/"
+            )
+            yield amsterdam_schema.AmsterdamSchema(
+                json_.load(fh, base_uri=base_uri)
+            )
 
 
 class Command(BaseCommand):
@@ -33,17 +37,30 @@ class Command(BaseCommand):
         tools_dir = "various_small_datasets/tools"
         template_dir = tools_dir + "/map_templates"
         map_dir = tools_dir + "/map_files"
+
         if not os.path.exists(map_dir):
             os.mkdir(map_dir)
-        env = Environment(loader=FileSystemLoader(template_dir))
-        env.trim_blocks = True
-        env.lstrip_blocks = True
-        datasets = DataSet.objects.filter(enable_maplayer=True)
-        for ds in datasets:
-            log.info(f"Generate map file for {ds.name}")
-            map_content = get_map_content(env, ds)
-            mapfile_name = f"{map_dir}/{ds.name}.map"
-            with open(mapfile_name, "w") as f:
-                f.write(map_content)
+        """
+        generators = [
+            LegacyMapfileGenerator(
+                map_dir=map_dir,
+                serializer=JinjaSerializer(template_dir),
+                datasets=DataSet.objects.filter(  #pylint: disable=no-member
+                    enable_maplayer=True
+                )
+            ),
+            """
+        generators = [
+            MapfileGenerator(
+                map_dir=map_dir,
+                serializer=MappyfileSerializer(),
+                datasets=json_loader(
+                    ["./schemas/asbestdaken/asbest.json"]
+                )
+            )
+        ]
+
+        for generator in generators:
+            generator()
 
         log.info(f"End generating mapfiles, results written to: {map_dir}")

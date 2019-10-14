@@ -70,6 +70,10 @@ case $i in
     echo "Import Parkeerzones"
     parkeerzones/import/import.sh
     ;;
+    asbest)
+    echo "Import Asbest"
+    asbedst/import/import.sh
+    ;;
     *)
     echo "Trying to import Generic dataset $i"
     python ./manage.py import_generic -d $i

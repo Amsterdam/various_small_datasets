@@ -34,9 +34,11 @@ iso8601==0.1.12
 isodate==0.6.0
 itypes==1.1.0
 Jinja2==2.10.1
+jsonref==0.2
 jsonschema==3.0.1
 keystoneauth1==3.14.0
 lxml==4.3.3
+mappyfile==0.8.2
 MarkupSafe==1.1.1
 mccabe==0.6.1
 msgpack==0.6.1
@@ -57,6 +59,7 @@ pyflakes==2.1.1
 pylru==1.2.0
 pyparsing==2.4.0
 pyrsistent==0.15.2
+pytest==5.2.0
 python-dateutil==2.8.0
 python-keystoneclient==3.19.0
 python-swiftclient==3.7.0

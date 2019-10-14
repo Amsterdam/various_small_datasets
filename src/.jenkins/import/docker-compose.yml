@@ -34,5 +34,6 @@ services:
       ./bekendmakingen/import/import.sh &&
       ./openbare-verlichting/import/import.sh &&
       ./parkeerzones/import/import.sh &&
+      ./asbest/import/import.sh &&
       python manage.py import_generic"
 # oplaadpalen is  in a special import
