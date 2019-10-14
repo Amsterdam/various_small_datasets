@@ -42,9 +42,9 @@ class Data(str):
             f"{column} from {table}"
         )
         if srid:
-            result += f"USING srid={srid}"
+            result += f" USING srid={srid}"
         if UNIQUE:
-            result += f"USING UNIQUE {UNIQUE}"
+            result += f" USING UNIQUE {UNIQUE}"
         return result
 
 

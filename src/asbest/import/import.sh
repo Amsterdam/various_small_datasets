@@ -6,7 +6,8 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
-DS_FILENAME = "..."
+
+DS_FILENAME = "Amsterdam_Asbestverdachte_daken_Shape"
 ZIP_FILE = "$DS_FILENAME.zip"
 OBJECTSTORE_PATH = "asbest/$ZIP_FILE"
 
