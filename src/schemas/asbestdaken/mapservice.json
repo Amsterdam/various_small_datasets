@@ -10,7 +10,6 @@
     "layers": {
         "daken": {
             "field": "wkb_geometry",
-            "projection": ["init=epsg:28992"],
             "dataset_class": "asbest_daken",
             "metadata": {
                 "ows_title": "Asbest daken",
@@ -80,7 +79,6 @@
         "percelen": {
             "field": "wkb_geometry",
             "dataset_class": "asbest_percelen",
-            "projection": ["init=epsg:28992"],
             "metadata": {
                 "ows_title": "Asbest daken",
                 "ows_group_title": "asbest",

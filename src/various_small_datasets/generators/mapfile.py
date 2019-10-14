@@ -60,8 +60,8 @@ class MapfileGenerator(Generator):
             name=name,
             type=types.LayerType.polygon,
             classes=[],
-            projection=layer_dict.get('projection'),
-            include=["cconnection_various_small_datasets.inc"],
+            projection=layer_dict.get('projection', []),
+            include=["connection_various_small_datasets.inc"],
             data=[types.Data.for_postgres(
                 layer_dict['field'], layer_dict['dataset_class'],
                 srid=28992, UNIQUE="ogc_fid"

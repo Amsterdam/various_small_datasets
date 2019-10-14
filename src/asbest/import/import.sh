@@ -7,9 +7,9 @@ source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
 
-DS_FILENAME = "Amsterdam_Asbestverdachte_daken_Shape"
-ZIP_FILE = "$DS_FILENAME.zip"
-OBJECTSTORE_PATH = "asbest/$ZIP_FILE"
+DS_FILENAME=Amsterdam_Asbestverdachte_daken_Shape
+ZIP_FILE=$DS_FILENAME.zip
+OBJECTSTORE_PATH=asbest/$ZIP_FILE
 
 echo "Download file from objectstore"
 PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/../../utils/get_objectstore_file.py $OBJECTSTORE_PATH
