@@ -45,7 +45,7 @@ class MapfileGenerator(Generator):
             base_style: dict = {}
             try:
                 base_style = base_styles[index]
-            except KeyError:
+            except IndexError:
                 pass
             feature_class.add_style(
                 ChainMap(style, base_style)
@@ -60,7 +60,7 @@ class MapfileGenerator(Generator):
             name=name,
             type=types.LayerType.polygon,
             classes=[],
-            projection=layer_dict.get('projection', []),
+            projection=layer_dict.get('projection', None),
             include=["connection_various_small_datasets.inc"],
             data=[types.Data.for_postgres(
                 layer_dict['field'], layer_dict['dataset_class'],
@@ -82,7 +82,7 @@ class MapfileGenerator(Generator):
             name=dataset['id'],
             layers=[],
             include=['header.inc'],
-            projection=mapservice_data.get('projection', [])
+            projection=mapservice_data.get('projection', None)
         )
         try:
             mapfile.web = types.Web(

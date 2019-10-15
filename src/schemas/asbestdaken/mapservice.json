@@ -6,7 +6,6 @@
             "ows_title": "asbest"
         }
     },
-    "projection": ["init=epsg:28992"],
     "layers": {
         "daken": {
             "field": "wkb_geometry",
@@ -92,7 +91,7 @@
                     "styles": [
                         {
                             "color": [0, 0 ,0],
-                            "opacity": 70,
+                            "opacity": 10,
                             "antialias": true
                         },
                         {

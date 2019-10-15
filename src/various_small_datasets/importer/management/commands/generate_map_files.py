@@ -29,6 +29,10 @@ def json_loader(file_paths: list):
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
+        parser.add_argument(
+            '--sources', nargs="+", type=str, default=["db"],
+            choices=["db", "schema"]
+        )
         pass
 
     def handle(self, *args, **options):
@@ -39,23 +43,28 @@ class Command(BaseCommand):
 
         if not os.path.exists(map_dir):
             os.mkdir(map_dir)
+        generators = []
 
-        generators = [
-            LegacyMapfileGenerator(
-                map_dir=map_dir,
-                serializer=JinjaSerializer(template_dir),
-                datasets=DataSet.objects.filter(  # pylint: disable=no-member
-                    enable_maplayer=True
-                )
-            ),
-            MapfileGenerator(
-                map_dir=map_dir,
-                serializer=MappyfileSerializer(),
-                datasets=json_loader(
-                    ["./schemas/asbestdaken/asbest.json"]
+        if 'db' in options['sources']:
+            generators.append(
+                LegacyMapfileGenerator(
+                    map_dir=map_dir,
+                    serializer=JinjaSerializer(template_dir),
+                    datasets=DataSet.objects.filter(  # pylint: disable=no-member
+                        enable_maplayer=True
+                    )
                 )
             )
-        ]
+        if 'schema' in options['sources']:
+            generators.append(
+                MapfileGenerator(
+                    map_dir=map_dir,
+                    serializer=MappyfileSerializer(),
+                    datasets=json_loader(
+                        ["./schemas/asbestdaken/asbest.json"]
+                    )
+                )
+            )
 
         for generator in generators:
             generator()
