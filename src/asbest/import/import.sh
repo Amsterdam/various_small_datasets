@@ -16,10 +16,10 @@ PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/../../utils/get_objectstore_
 unzip $TMPDIR/$ZIP_FILE -d ${TMPDIR}
 
 echo "Extracting daken data"
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -s_srs EPSG:4326 -nln asbest_daken_new ${TMPDIR}/asbest_daken.sql ${TMPDIR}/Shape/Asbestverdachte_daken_gegevens.shp
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln asbest_daken_new ${TMPDIR}/asbest_daken.sql ${TMPDIR}/Shape/Asbestverdachte_daken_gegevens.shp
 
 echo "Extracting percelen data"
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -s_srs EPSG:4326 -nln asbest_percelen_new ${TMPDIR}/asbest_percelen.sql ${TMPDIR}/Shape/Asbestverdachte_Percelen.shp
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln asbest_percelen_new ${TMPDIR}/asbest_percelen.sql ${TMPDIR}/Shape/Asbestverdachte_Percelen.shp
 
 
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/asbest_daken.sql > ${TMPDIR}/asbest_daken.utf8.sql
