@@ -16,7 +16,7 @@ PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/../../utils/get_objectstore_
 unzip $TMPDIR/$ZIP_FILE -d ${TMPDIR}
 
 echo "Extracting reclame data"
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln reclame_new ${TMPDIR}/reclame.sql ${TMPDIR}/$DS_FILENAME/Reclame_tariefgebieden.shp
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln reclame_new ${TMPDIR}/reclame.sql ${TMPDIR}/Reclame_tariefgebieden.shp
 
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/reclame.sql > ${TMPDIR}/reclame.utf8.sql
 # TODO: fix ID rename:
