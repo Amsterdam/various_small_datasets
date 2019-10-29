@@ -1,0 +1,12 @@
+{
+  "id": "reclame",
+  "type": "reclame",
+  "title": "Reclame: belastingtarieven",
+  "crs": "EPSG:28992",
+  "services":
+    {
+      "mapservice": {
+        "$ref": "./mapservice.json"
+    }
+  }
+}

@@ -23,7 +23,6 @@ iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/reclame.sql > ${TMPDIR}/reclame.utf8.sql
 echo "Create tables & import data"
 psql -X --set ON_ERROR_STOP=on <<SQL
 \i ${TMPDIR}/reclame.utf8.sql
-ALTER TABLE reclame_new RENAME COLUMN identifica TO pandidentificatie;
 SQL
 
 echo "Rename tables"
