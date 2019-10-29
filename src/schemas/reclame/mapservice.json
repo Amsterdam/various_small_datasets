@@ -1,0 +1,80 @@
+{
+    "id": "reclame_geo",
+    "web": {
+        "metadata": {
+            "ows_abstract": "Reclame",
+            "ows_title": "reclame"
+        }
+    },
+    "layers": {
+        "reclame": {
+            "field": "wkb_geometry",
+            "dataset_class": "reclame",
+            "metadata": {
+                "ows_title": "Reclame belastingtarieven",
+                "ows_group_title": "reclame",
+                "ows_abstract": "Reclame belastingtarieven",
+                "ows_enable_request": "*",
+                "wms_extent": "100000 450000 150000 500000"
+            },
+            "base_styles": [
+                {
+                    "color": [236, 0, 0],
+                    "opacity": 50,
+                    "antialias": true
+                },
+                {
+                    "outlinecolor": [236, 0, 0],
+                    "opacity": 100,
+                    "width": 1
+                }
+            ],
+            "base_label": [
+                {
+                    "minscaledenom": 10,
+                    "maxscaledenom": 10000,
+                    "color": [0, 0, 0],
+                    "outlinecolor": [255, 255, 255],
+                    "outlinewidth": 3,
+                    "font": "Ubuntu-MI",
+                    "type": "truetype",
+                    "size": 10,
+                    "position": "AUTO",
+                    "partials": "FALSE",
+                    "offset": [-60, 10]
+                }
+            ],
+            "features": [
+                {
+                    "name": "Tariefgebied A",
+                    "expression": "('[tarief]' eq 'Tariefgebied_A')"
+                },
+                {
+                    "name": "Tariefgebied B",
+                    "expression": "('[tarief]' eq 'Tariefgebied_B')",
+                    "styles": [
+                        {
+                            "color": [255, 145, 0]
+                        },
+                        {
+                            "outlinecolor": [255, 145, 0]
+                        }
+                    ]
+                },
+                {
+                    "name": "Tariefgebied C",
+                    "expression": "('[tarief]' eq 'Tariefgebied_C')",
+                    "styles": [
+                        {
+                            "color": [255, 230, 0],
+                            "opacity": 30
+                        },
+                        {
+                            "outlinecolor": [255, 230, 0]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

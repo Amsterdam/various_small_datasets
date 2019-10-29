@@ -61,7 +61,10 @@ class Command(BaseCommand):
                     map_dir=map_dir,
                     serializer=MappyfileSerializer(),
                     datasets=json_loader(
-                        ["./schemas/asbestdaken/asbest.json"]
+                        [
+                            "./schemas/asbestdaken/asbest.json",
+                            "./schemas/reclame/reclame.json"
+                        ]
                     )
                 )
             )
