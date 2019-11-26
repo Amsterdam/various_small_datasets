@@ -1,0 +1,31 @@
+{
+  "datasets": [
+    {
+      "name": "reclame",
+      "description":"Reclame tariefgebieden",
+      "table_name": "reclame",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": true,
+      "name_field": "tarief",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "reclame",
+      "map_abstract": "Reclame tariefgebieden",
+      "map_layers": [
+        {
+          "name": "reclame",
+          "title": "Reclame tariefgebieden",
+          "abstract": "Reclame tariefgebieden Amsterdam",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "tarief",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}
