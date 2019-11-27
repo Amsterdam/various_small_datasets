@@ -34,10 +34,13 @@ def _get_cached_api(url):
         _init_api_cache()
 
     content = _api_cache.get(url)
+    from_cache = " (from cache)"
     if not content:
         with requests.get(url) as response:
             if response.status_code == 200:
                 content = _api_cache[url] = json.loads(response.content)
+                from_cache = ""
+    log.warning(f"getting {url}{from_cache}:\n{content}")
     return content
 
 
