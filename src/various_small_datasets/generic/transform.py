@@ -9,8 +9,8 @@ from geomet import wkt
 from django.contrib.gis.geos import GEOSGeometry
 
 api_config = {
-    'bag_api_root': os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl'),
-    'monumenten_api_root': os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl')
+    'bag_api_root': os.getenv('BAG_API_ROOT', 'https://api.data.amsterdam.nl/bag/v1.1'),
+    'monumenten_api_root': os.getenv('MONUMENTEN_API_ROOT', 'https://api.data.amsterdam.nl/monumenten')
 }
 log = logging.getLogger(__name__)
 
@@ -116,6 +116,17 @@ def integer_from_api(transform_def, source, _):
     if content:
         value = _get_nested(content, transform_def['field'])
         return value if isinstance(value, int) else int(value) if isinstance(value, str) and value.isdigits() else None
+    return None
+
+
+def array_from_api(transform_def, source, _):
+    if source is None:
+        return None
+    url = transform_def['url_pattern'].format(id=source, **api_config)
+    content = _get_cached_api(url)
+    if content:
+        value = _get_nested(content, transform_def['field'])
+        return value if isinstance(value, list) else list(value) if value else []
     return None
 
 
