@@ -4,7 +4,7 @@ Code for various small datasets where data does not change very often
 
 # Requirements
 
-    Python >= 3.5
+    Python >= 3.7
 
 # Preparation
 
