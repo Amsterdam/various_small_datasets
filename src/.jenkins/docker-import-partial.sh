@@ -78,6 +78,10 @@ case $i in
     echo "Import Reclametariefgebieden"
     reclame/import/import.sh
     ;;
+    vuurwerk)
+    echo "Import Vuurwerkvrije zones"
+    vuurwerk/import/import.sh
+    ;;
     *)
     echo "Trying to import Generic dataset $i"
     python ./manage.py import_generic -d $i
