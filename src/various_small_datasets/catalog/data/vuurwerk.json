@@ -21,7 +21,7 @@
           "abstract": "Vuurwerkvrije zones Amsterdam",
           "minscale": 10,
           "maxscale": 400000,
-          "label": "tarief",
+          "label": "vuurwerk",
           "label_minscale": 10,
           "label_maxscale": 10000
         }
