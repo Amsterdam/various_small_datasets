@@ -67,11 +67,11 @@ MAP
 
       STYLE
           ANTIALIAS    true
-	      COLOR        0 70 153
+          COLOR        0 70 153
           OPACITY      33
       END
       STYLE
-	      OUTLINECOLOR        0 70 153
+          OUTLINECOLOR 0 70 153
           OPACITY      70
           WIDTH        1
       END

@@ -82,16 +82,16 @@ MAP
           {% if layer.color %}
           COLOR        {{ layer.color }}
           {% else %}
-	      COLOR        0 70 153
-	      {% endif %}
+          COLOR        0 70 153
+          {% endif %}
           OPACITY      33
       END
       STYLE
           {% if layer.color %}
-          OUTLINECOLOR        {{ layer.color }}
+          OUTLINECOLOR {{ layer.color }}
           {% else %}
-	      OUTLINECOLOR        0 70 153
-	      {% endif %}
+          OUTLINECOLOR 0 70 153
+          {% endif %}
           OPACITY      70
           WIDTH        1
       END
