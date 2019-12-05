@@ -10,7 +10,7 @@
       "name_field": "combined_pk",
       "geometry_field": "geometry",
       "geometry_type": "POINT",
-      "enable_geosearch": false,
+      "enable_geosearch": true,
       "enable_maplayer": true,
       "map_title": "afvalwegingen",
       "map_abstract": "Afvalwegingen",
