@@ -76,7 +76,7 @@ case $i in
     ;;
     reclame)
     echo "Import Reclametariefgebieden"
-    reclame/import/import.sh
+    reclamebelasting/import/import.sh
     ;;
     vuurwerk)
     echo "Import Vuurwerkvrije zones"
