@@ -15,25 +15,25 @@ echo "Download file from objectstore"
 PYTHONPATH=${SCRIPT_DIR}/../.. python ${SCRIPT_DIR}/../../utils/get_objectstore_file.py $OBJECTSTORE_PATH
 unzip $TMPDIR/$ZIP_FILE -d ${TMPDIR}
 
-echo "Extracting reclame data"
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln reclame_new ${TMPDIR}/reclame.sql ${TMPDIR}/Reclame_tariefgebieden.shp
+echo "Extracting reclamebelasting data"
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln reclamebelasting_new ${TMPDIR}/reclamebelasting.sql ${TMPDIR}/Reclame_tariefgebieden.shp
 
-iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/reclame.sql > ${TMPDIR}/reclame.utf8.sql
+iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/reclamebelasting.sql > ${TMPDIR}/reclamebelasting.utf8.sql
 # TODO: fix ID rename:
 echo "Create tables & import data"
 psql -X --set ON_ERROR_STOP=on <<SQL
-\i ${TMPDIR}/reclame.utf8.sql
+\i ${TMPDIR}/reclamebelasting.utf8.sql
 SQL
 
 echo "Rename tables"
 psql -X --set ON_ERROR_STOP=on <<SQL
 BEGIN;
 
-ALTER TABLE IF EXISTS reclame RENAME TO reclame_old;
-ALTER TABLE reclame_new RENAME TO reclame;
-DROP TABLE IF EXISTS reclame_old;
-ALTER INDEX reclame_new_pk RENAME TO reclame_pk;
-ALTER INDEX reclame_new_wkb_geometry_geom_idx RENAME TO reclame_wkb_geometry_geom_idx;
+ALTER TABLE IF EXISTS reclamebelasting RENAME TO reclamebelasting_old;
+ALTER TABLE reclamebelasting_new RENAME TO reclamebelasting;
+DROP TABLE IF EXISTS reclamebelasting_old;
+ALTER INDEX reclamebelasting_new_pk RENAME TO reclamebelasting_pk;
+ALTER INDEX reclamebelasting_new_wkb_geometry_geom_idx RENAME TO reclamebelasting_wkb_geometry_geom_idx;
 
 COMMIT;
 SQL

@@ -1,9 +1,9 @@
 {
   "datasets": [
     {
-      "name": "reclame",
-      "description":"Reclame tariefgebieden",
-      "table_name": "reclame",
+      "name": "reclamebelasting",
+      "description":"Reclamebelasting tariefgebieden",
+      "table_name": "reclamebelasting",
       "ordering": "ogc_fid",
       "pk_field": "ogc_fid",
       "enable_api": true,
@@ -12,13 +12,13 @@
       "geometry_type": "POLYGON",
       "enable_geosearch": true,
       "enable_maplayer": true,
-      "map_title": "reclame",
-      "map_abstract": "Reclame tariefgebieden",
+      "map_title": "reclamebelasting",
+      "map_abstract": "Reclamebelasting tariefgebieden",
       "map_layers": [
         {
-          "name": "reclame",
-          "title": "Reclame tariefgebieden",
-          "abstract": "Reclame tariefgebieden Amsterdam",
+          "name": "reclamebelasting",
+          "title": "Reclamebelasting tariefgebieden",
+          "abstract": "Reclamebelasting tariefgebieden Amsterdam",
           "minscale": 10,
           "maxscale": 400000,
           "label": "tarief",
