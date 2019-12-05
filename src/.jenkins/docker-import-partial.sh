@@ -82,6 +82,10 @@ case $i in
     echo "Import Vuurwerkvrije zones"
     vuurwerk/import/import.sh
     ;;
+    afvalwegingen)
+    echo "Import Afvalwegingen"
+    afvalwegingen/import/import.sh
+    ;;
     *)
     echo "Trying to import Generic dataset $i"
     python ./manage.py import_generic -d $i
