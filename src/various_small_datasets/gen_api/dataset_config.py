@@ -32,6 +32,8 @@ _MAP_DS_TYPE = {
     'double precision': models.FloatField,
     'bigint': models.BigIntegerField,
     'smallint': models.SmallIntegerField,
+    'uuid': models.UUIDField,
+    'boolean': models.BooleanField,
     # TODO add missing types
 }
 
