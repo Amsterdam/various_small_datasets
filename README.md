@@ -37,7 +37,7 @@ Import data with :
 
 Import data with :
 
-    src/hior/import/import.sh
+    src/hior/importer/import.sh
 
 # Oplaadpalen
 
