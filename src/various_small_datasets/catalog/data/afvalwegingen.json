@@ -4,11 +4,11 @@
       "name": "afvalwegingen",
       "description":"Afvalwegingenen",
       "table_name": "afvalwegingen",
-      "ordering": "combined_pk",
-      "pk_field": "combined_pk",
+      "ordering": "weging_id",
+      "pk_field": "weging_id",
       "enable_api": true,
-      "name_field": "combined_pk",
-      "geometry_field": "geometry",
+      "name_field": "weging_id",
+      "geometry_field": "weging_geometrie",
       "geometry_type": "POINT",
       "enable_geosearch": true,
       "enable_maplayer": true,
@@ -22,6 +22,60 @@
           "minscale": 10,
           "maxscale": 400000,
           "label": "afvalwegingen",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    },
+    {
+      "name": "afvalcontainers",
+      "description":"Afvalcontainers",
+      "table_name": "afvalcontainers",
+      "ordering": "container_id",
+      "pk_field": "container_id",
+      "enable_api": true,
+      "name_field": "containertype_naam",
+      "geometry_field": "geometrie",
+      "geometry_type": "POINT",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "afvalcontainers",
+      "map_abstract": "Afvalcontainers",
+      "map_layers": [
+        {
+          "name": "afvalcontainers",
+          "title": "Afvalcontainers",
+          "abstract": "Afvalcontainers Amsterdam",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "afvalcontainers",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    },
+    {
+      "name": "afvalclusters",
+      "description":"Afvalclusters",
+      "table_name": "afvalclusters",
+      "ordering": "cluster_id",
+      "pk_field": "cluster_id",
+      "enable_api": true,
+      "name_field": "cluster_id",
+      "geometry_field": "geometry",
+      "geometry_type": "POINT",
+      "enable_geosearch": true,
+      "enable_maplayer": true,
+      "map_title": "afvalclusters",
+      "map_abstract": "Afvalclusters",
+      "map_layers": [
+        {
+          "name": "afvalclusters",
+          "title": "Afvalclusters",
+          "abstract": "Afvalclusters Amsterdam",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "afvalclusters",
           "label_minscale": 10,
           "label_maxscale": 10000
         }
