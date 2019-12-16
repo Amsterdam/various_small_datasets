@@ -5,9 +5,11 @@ Code for various small datasets where data does not change very often
 # Requirements
 
     Python >= 3.7
+    GDAL (OSX: brew install gdal)
 
 # Preparation
 
+    mkdir ~/.ssh/datapunt.key
     python3 -m venv venv
     source venv/bin/activate
     pip install -r src/requirements.txt
@@ -35,7 +37,7 @@ Import data with :
 
 Import data with :
 
-    src/hior/import/import.sh
+    src/hior/importer/import.sh
 
 # Oplaadpalen
 
