@@ -112,3 +112,8 @@ ENV/
 .DS_Store
 src/various_small_datasets/tools/map_files
 
+
+# Afvalwegingen
+/afval_*.zip
+/afval_*.backup
+
