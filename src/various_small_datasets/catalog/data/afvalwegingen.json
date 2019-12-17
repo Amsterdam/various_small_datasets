@@ -3,7 +3,7 @@
     {
       "name": "afvalwegingen",
       "description":"Afvalwegingenen",
-      "table_name": "afvalwegingen",
+      "table_name": "afval_weging",
       "ordering": "weging_id",
       "pk_field": "weging_id",
       "enable_api": true,
@@ -30,7 +30,7 @@
     {
       "name": "afvalcontainers",
       "description":"Afvalcontainers",
-      "table_name": "afvalcontainers",
+      "table_name": "afval_container",
       "ordering": "container_id",
       "pk_field": "container_id",
       "enable_api": true,
@@ -57,7 +57,7 @@
     {
       "name": "afvalclusters",
       "description":"Afvalclusters",
-      "table_name": "afvalclusters",
+      "table_name": "afval_cluster",
       "ordering": "cluster_id",
       "pk_field": "cluster_id",
       "enable_api": true,

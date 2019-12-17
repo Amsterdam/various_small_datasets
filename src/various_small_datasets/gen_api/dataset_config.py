@@ -1,8 +1,10 @@
 import logging
+from functools import partial
 from django.contrib.gis.db import models
-from various_small_datasets.catalog.models import DataSet
+from django.contrib.postgres.fields import ArrayField
 from django.db import connection
 
+from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.generic import catalog
 from various_small_datasets.generic.model import get_django_model_by_name
 
@@ -13,6 +15,7 @@ DATASET_CONFIG = {
 
 _MAP_DS_TYPE = {
     'character varying': models.CharField,
+    'ARRAY': partial(ArrayField, base_field=models.CharField()),
     'char': models.CharField,
     'text': models.TextField,
     'integer': models.IntegerField,
@@ -70,8 +73,8 @@ WHERE table_schema = %s AND table_name = %s
             if max_length is not None:
                 field['max_length'] = max_length
             # numeric_precision and numeric_scale should always be popped from field, but only used if numeric
-            max_digits = field.pop('numeric_precision')
-            decimal_places = field.pop('numeric_scale')
+            max_digits = field.pop('numeric_precision') or 32
+            decimal_places = field.pop('numeric_scale') or 0
             if field['data_type'] == 'numeric':
                 field['max_digits'] = max_digits
                 field['decimal_places'] = decimal_places
