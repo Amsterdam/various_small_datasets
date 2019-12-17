@@ -38,7 +38,6 @@ Import all remaining datasets:
     src/biz/import/import.sh                   # Bedrijfsinvesteringszone (BIZ)
     src/hior/importer/import.sh                # Handboek Inrichting Openbare Ruimte (HIOR)
     src/hoofdroutes/import/import.sh           # Hoofdroutes
-    src/iot/import/import.py
     src/iot/import/import.sh
     src/milieuzones/import/import.sh
     src/openbare-verlichting/import/import.sh
