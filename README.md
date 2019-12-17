@@ -20,41 +20,36 @@ Code for various small datasets where data does not change very often
 
     cd src
     python manage.py migrate
+    python manage.py import_catalog           # Processes src/various_small_datasets/catalog/data
+    python manage.py import_generic           # Processes evenementen + vastgoed
 
-# Bedrijfsinvesteringszone (BIZ)
+Get access to objectstore (see password manager):
 
-Import data with :
+    export VSD_OBJECTSTORE_PROJECTNAME=...
+    export VSD_OBJECTSTORE_PROJECTID=...
+    export VSD_OBJECTSTORE_USER=...
+    export VSD_OBJECTSTORE_PASSWORD=...
 
-    src/biz/import/import.sh
+Import all remaining datasets:
 
-# Tram & Metro (TRM)
-
-Import data with :
-
-    src/trm/import/import.sh
-
-# Handboek Inrichting Openbare Ruimte (HIOR)
-
-Import data with :
-
-    src/hior/importer/import.sh
-
-# Oplaadpalen
-
-Import data with :
-
-    src/oplaadpalen/import/import.sh
-
-# Hoofdroutes
-
-Import data with :
-
-    src/hoofdroutes/import/import.sh
-
-# Import JSON data for catalog (description of BIZ dataset)
-
-    cd src
-    python manage.py import_catalog
+    src/afvalwegingen/import/import.sh
+    src/asbest/import/import.sh
+    src/bekendmakingen/import/import.sh
+    src/biz/import/import.sh                   # Bedrijfsinvesteringszone (BIZ)
+    src/hior/importer/import.sh                # Handboek Inrichting Openbare Ruimte (HIOR)
+    src/hoofdroutes/import/import.sh           # Hoofdroutes
+    src/iot/import/import.py
+    src/iot/import/import.sh
+    src/milieuzones/import/import.sh
+    src/openbare-verlichting/import/import.sh
+    src/oplaadpalen/import/import.sh           # Oplaadpalen
+    src/overlastgebieden/import/import.sh
+    src/parkeerzones/import/import.sh
+    src/reclamebelasting/import/import.sh
+    src/trm/import/import.sh                   # Tram & Metro (TRM)
+    src/vezips/import/import.sh
+    src/vuurwerk/import/import.sh
+    src/winkgeb/import/import.sh
 
 # Run the server
 
@@ -68,6 +63,7 @@ urls to test are
 
     /status/health
     /status/data
+    /vsd/
     /vsd/biz/
     /vsd/biz/0/
     /vsd/oplaadpalen/?wkb_geometry=123291,487198,500
