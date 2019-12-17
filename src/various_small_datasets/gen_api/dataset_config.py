@@ -109,7 +109,7 @@ def read_all_datasets():  # noqa: C901
     This should called at the start of the application, for example in the toplevel urls
     """
 
-    datasets = DataSet.objects.filter(enable_api=True)
+    datasets = DataSet.objects.filter(enable_api=True).order_by('name')
     for ds in datasets:
         if ds.name in DATASET_CONFIG:
             continue

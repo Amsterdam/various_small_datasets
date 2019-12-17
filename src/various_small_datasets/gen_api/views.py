@@ -2,6 +2,8 @@ import logging
 import time
 
 from datapunt_api.rest import DatapuntViewSet
+from django.urls import reverse
+from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, ParseError
 
 from django_filters.rest_framework import FilterSet
@@ -10,6 +12,7 @@ from rest_framework import serializers as rest_serializers
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from rest_framework.views import APIView
 
 from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.gen_api import serializers
@@ -169,6 +172,18 @@ def filter_factory(ds_name, model):
         name_field: name,
     }
     return type(model_name, (GenericFilter,), new_attrs)
+
+
+class DataSetListView(APIView):
+    """
+    Give a listing of all available datasets
+    """
+    def get(self, request, *args, **kwargs):
+        GenericViewSet.initialize()
+        return Response({
+            name: request.build_absolute_uri(reverse('dataset_list', kwargs={'dataset': name}))
+            for name, _ in config.DATASET_CONFIG.items()
+        })
 
 
 class GenericViewSet(DatapuntViewSet):
