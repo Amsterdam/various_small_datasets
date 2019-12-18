@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 def _zoomlevel_for_scaledenom(scaledenom, domax=True):
-    if scaledenom == 0:
+    if not scaledenom:
         return 16  # max zoomlevel
     constant1 = 10400000  # TODO is this always correct ??
     zlf = math.log(constant1 / scaledenom, 2)
