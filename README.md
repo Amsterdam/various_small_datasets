@@ -9,7 +9,8 @@ Code for various small datasets where data does not change very often
 
 # Preparation
 
-    mkdir ~/.ssh/datapunt.key
+    cp -i ~/.ssh/id_rsa.key ~/.ssh/datapunt.key
+
     python3 -m venv venv
     source venv/bin/activate
     pip install -r src/requirements.txt
