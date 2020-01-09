@@ -74,7 +74,7 @@ WHERE table_schema = %s AND table_name = %s
                 field['max_length'] = max_length
             # numeric_precision and numeric_scale should always be popped from field, but only used if numeric
             max_digits = field.pop('numeric_precision') or 32
-            decimal_places = field.pop('numeric_scale') or 0
+            decimal_places = field.pop('numeric_scale') or 8
             if field['data_type'] == 'numeric':
                 field['max_digits'] = max_digits
                 field['decimal_places'] = decimal_places
