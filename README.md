@@ -33,23 +33,23 @@ Get access to objectstore (see password manager):
 
 Import all remaining datasets:
 
-    src/afvalwegingen/import/import.sh
-    src/asbest/import/import.sh
-    src/bekendmakingen/import/import.sh
-    src/biz/import/import.sh                   # Bedrijfsinvesteringszone (BIZ)
-    src/hior/importer/import.sh                # Handboek Inrichting Openbare Ruimte (HIOR)
-    src/hoofdroutes/import/import.sh           # Hoofdroutes
-    src/iot/import/import.sh
-    src/milieuzones/import/import.sh
-    src/openbare-verlichting/import/import.sh
-    src/oplaadpalen/import/import.sh           # Oplaadpalen
-    src/overlastgebieden/import/import.sh
-    src/parkeerzones/import/import.sh
-    src/reclamebelasting/import/import.sh
-    src/trm/import/import.sh                   # Tram & Metro (TRM)
-    src/vezips/import/import.sh
-    src/vuurwerk/import/import.sh
-    src/winkgeb/import/import.sh
+    src/datasets/afvalwegingen/import/import.sh
+    src/datasets/asbest/import/import.sh
+    src/datasets/bekendmakingen/import/import.sh
+    src/datasets/biz/import/import.sh                   # Bedrijfsinvesteringszone (BIZ)
+    src/datasets/hior/importer/import.sh                # Handboek Inrichting Openbare Ruimte (HIOR)
+    src/datasets/hoofdroutes/import/import.sh           # Hoofdroutes
+    src/datasets/iot/import/import.sh
+    src/datasets/milieuzones/import/import.sh
+    src/datasets/openbare-verlichting/import/import.sh
+    src/datasets/oplaadpalen/import/import.sh           # Oplaadpalen
+    src/datasets/overlastgebieden/import/import.sh
+    src/datasets/parkeerzones/import/import.sh
+    src/datasets/reclamebelasting/import/import.sh
+    src/datasets/trm/import/import.sh                   # Tram & Metro (TRM)
+    src/datasets/vezips/import/import.sh
+    src/datasets/vuurwerk/import/import.sh
+    src/datasets/winkgeb/import/import.sh
 
 # Run the server
 
@@ -80,17 +80,17 @@ For example :
 
 Create a directory for the new dataset (ds)
 
-    mkdir src/ds
+    mkdir src/datasets/$NAMAE
 
 Create a directory for the import data for the dataset
 
-    mkdir src/ds/data
+    mkdir src/datasets/$NAME/data
 
 Put the input data in this directory
 
 Create a directory for the import scripts to process and import the data in the database
 
-    mkdir src/ds/import
+    mkdir src/datasaets/$NAME/import
 
 The basic process consists of:
 
@@ -102,7 +102,7 @@ The basic process consists of:
         Create tables for new data
         Run sql insert on new tables
         Rename existing tables, rename new tables and then remove any old tables
-    Use the shared code in src/shared/import to keep the import shell script as small as possible
+    Use the shared code in src/datasets/shared/import to keep the import shell script as small as possible
 
 When the import is OK include the dataset in the catalog
 
@@ -112,7 +112,7 @@ When the import is OK include the dataset in the catalog
 
     python manage.py runserver
 
-View your new dataset at localhost:8000/vsd/ds
+View your new dataset at http://localhost:8000/vsd/$NAME
 
 Because we now have multiple datasets in one database we want to be able to add or update only one dataset
 without touching or impacting the other datasets. That is why we import initially all the data in "_new" tables

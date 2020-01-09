@@ -12,11 +12,11 @@ case $i in
     ;;
     biz)
     echo "Importing BIZ"
-    biz/import/import.sh
+    datasets/biz/import/import.sh
     ;;
     trm)
     echo "Importing TRM"
-    trm/import/import.sh
+    datasets/trm/import/import.sh
     ;;
     catalog)
     echo "Importing catalog"
@@ -24,31 +24,31 @@ case $i in
     ;;
     hior)
     echo "Importing HIOR"
-    hior/importer/import.sh
+    datasets/hior/importer/import.sh
     ;;
     iot)
     echo "Importing IOT"
-    iot/import/import.sh
+    datasets/iot/import/import.sh
     ;;
     oplaadpalen)
     echo "Importing Oplaadpalen"
-    oplaadpalen/import/import.sh
+    datasets/oplaadpalen/import/import.sh
     ;;
     hoofdroutes)
     echo "Importing Hoofdroutes"
-    hoofdroutes/import/import.sh
+    datasets/hoofdroutes/import/import.sh
     ;;
     milieuzones)
     echo "Importing Mileuzones"
-    milieuzones/import/import.sh
+    datasets/milieuzones/import/import.sh
     ;;
     vezips)
     echo "Importing Verzinkbare palen"
-    vezips/import/import.sh
+    datasets/vezips/import/import.sh
     ;;
     winkgeb)
     echo "Importing Winkel gebieden"
-    winkgeb/import/import.sh
+    datasets/winkgeb/import/import.sh
     ;;
     evenementen)
     echo "Importing Evenementen"
@@ -56,35 +56,35 @@ case $i in
     ;;
     bekendmakingen)
     echo "Importing Bekendmakingen"
-    bekendmakingen/import/import.sh
+    datasets/bekendmakingen/import/import.sh
     ;;
     overlastgebieden)
     echo "Import Overlastgebieden"
-    overlastgebieden/import/import.sh
+    datasets/overlastgebieden/import/import.sh
     ;;
     openbare_verlichting)
     echo "Importing Openbare-verlichting"
-    openbare-verlichting/import/import.sh
+    datasets/openbare-verlichting/import/import.sh
     ;;
     parkeerzones)
     echo "Import Parkeerzones"
-    parkeerzones/import/import.sh
+    datasets/parkeerzones/import/import.sh
     ;;
     asbest)
     echo "Import Asbest"
-    asbest/import/import.sh
+    datasets/asbest/import/import.sh
     ;;
     reclame)
     echo "Import Reclametariefgebieden"
-    reclamebelasting/import/import.sh
+    datasets/reclamebelasting/import/import.sh
     ;;
     vuurwerk)
     echo "Import Vuurwerkvrije zones"
-    vuurwerk/import/import.sh
+    datasets/vuurwerk/import/import.sh
     ;;
     afvalwegingen)
     echo "Import Afvalwegingen"
-    afvalwegingen/import/import.sh
+    datasets/afvalwegingen/import/import.sh
     ;;
     *)
     echo "Trying to import Generic dataset $i"

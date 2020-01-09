@@ -24,17 +24,17 @@ services:
       DATABASE_PASSWORD: insecure
     command: >
       bash -c "python manage.py import_catalog &&
-      ./biz/import/import.sh &&
-      ./trm/import/import.sh &&
-      ./hior/importer/import.sh &&
-      ./iot/import/import.sh &&
-      ./hoofdroutes/import/import.sh &&
-      ./milieuzones/import/import.sh &&
-      ./vezips/import/import.sh &&
-      ./bekendmakingen/import/import.sh &&
-      ./openbare-verlichting/import/import.sh &&
-      ./parkeerzones/import/import.sh &&
-      ./asbest/import/import.sh &&
-      ./reclame/import/import.sh &&
+      ./datasets/biz/import/import.sh &&
+      ./datasets/trm/import/import.sh &&
+      ./datasets/hior/importer/import.sh &&
+      ./datasets/iot/import/import.sh &&
+      ./datasets/hoofdroutes/import/import.sh &&
+      ./datasets/milieuzones/import/import.sh &&
+      ./datasets/vezips/import/import.sh &&
+      ./datasets/bekendmakingen/import/import.sh &&
+      ./datasets/openbare-verlichting/import/import.sh &&
+      ./datasets/parkeerzones/import/import.sh &&
+      ./datasets/asbest/import/import.sh &&
+      ./datasets/reclame/import/import.sh &&
       python manage.py import_generic"
 # oplaadpalen is  in a special import
