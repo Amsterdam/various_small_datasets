@@ -7,7 +7,7 @@ from geojson import Point
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-
+# These types are checked against the data of the $OPENBARE_VERLICHTING_DATA_TYPES_SRC url.
 ID_TYPES_MAP = {
     '1': {
         "external_name": "Klok",
@@ -29,6 +29,10 @@ ID_TYPES_MAP = {
         "external_name": "Grachtmast",
         "internal_name": "Grachtmast",
     },
+    '9': {
+        "external_name": "Schijnwerper",
+        "internal_name": "Schijnwerper",
+    },
 }
 
 
@@ -38,7 +42,12 @@ def json2geojson(data,):
         objecttype_id = element.get('objecttype')
         geometry = Point((element.get('lon'), element.get('lat')), srid=4326)
 
-        type_mapping = ID_TYPES_MAP[objecttype_id]
+        try:
+            type_mapping = ID_TYPES_MAP[objecttype_id]
+        except KeyError:
+            raise RuntimeError(
+                f"objecttype={objecttype_id} not found, unable to import {element!r}: "
+            ) from None
         assert type_mapping is not None
         type_name = type_mapping['internal_name']
 
