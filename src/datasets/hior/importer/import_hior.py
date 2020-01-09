@@ -69,17 +69,19 @@ def import_row(id, series):
     # Post process
     for property in item_properties:
         value = property["value"]
-        # Levels are stored as "1. <Level name>", convert to "<Level name>"
-        if property["name"] == "Level":
-            value = re.sub(r'^\d\. ', '', value)
-        # Uniform values, transform string like "aap noot " to "Aap Noot"
-        value = value.title().strip()
-        property["value"] = value
+        if isinstance(value, str):
+            # Levels are stored as "1. <Level name>", convert to "<Level name>"
+            if property["name"] == "Level":
+                value = re.sub(r'^\d\. ', '', value)
+            # Uniform values, transform string like "aap noot " to "Aap Noot"
+            value = value.title().strip()
+            property["value"] = value
 
     for attribute in item_attributes:
         value = attribute["value"]
-        value = re.sub(r'\\', '/', value) # Correction for Windows path names
-        attribute["value"] = value.strip()
+        if isinstance(value, str):
+            value = re.sub(r'\\', '/', value) # Correction for Windows path names
+            attribute["value"] = value.strip()
 
     # Check validity
     isValid = True
