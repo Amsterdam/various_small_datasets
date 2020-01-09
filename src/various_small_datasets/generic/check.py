@@ -1,7 +1,7 @@
 from django.db import connection
 
 from various_small_datasets.generic.model import get_model_repr, GeoFieldRepresentation
-from various_small_datasets.utils.check_imported_data import do_checks, assert_count_minimum, assert_count_zero
+from datasets.shared.utils.check_imported_data import do_checks, assert_count_minimum, assert_count_zero
 
 
 def _get_check(import_def, model_def, check_type, check_props):
