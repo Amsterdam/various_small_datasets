@@ -103,7 +103,7 @@ WHERE f_table_schema = %s AND f_table_name = %s
                 }
 
 
-def read_all_datasets():  # noqa: C901
+def read_all_datasets():
     """
     Read all dataset configurations from the catalog and set the result DATASET_CONFIG
     This should called at the start of the application, for example in the toplevel urls
@@ -117,37 +117,45 @@ def read_all_datasets():  # noqa: C901
             DATASET_CONFIG[ds.name] = get_django_model_by_name(ds.name)
             continue
 
-        try:
-            schema = 'public' if ds.schema is None else ds.schema
-            postgres_metadata = read_postgres_metadata(schema, ds.table_name)
-            ds.pk_field = ds.pk_field or ds.ordering or postgres_metadata['pk_field']
-            ds.ordering = ds.ordering or ds.pk_field or postgres_metadata['pk_field']
-            ds.name_field = ds.name_field or postgres_metadata['name_field']
-            ds.geometry_field = ds.geometry_field or postgres_metadata['geometry_field']
+        new_model = dataset_model_factory(ds)
+        if new_model is not None:
+            DATASET_CONFIG[ds.name] = new_model
 
-            new_meta_attrs = {'managed': False, 'db_table': ds.table_name, 'ordering': [ds.ordering]}
-            new_meta = type('Meta', (object, ), new_meta_attrs)
-            new_attrs = {
-                '__module__': 'various_small_datasets.gen_api.models',
-                '__str__': lambda self, name_field=ds.name_field: getattr(self, name_field),
-                'get_id': lambda self, pk_field=ds.pk_field: getattr(self, pk_field),
-                'Meta': new_meta,
-                '__doc__': ds.description,
-            }
 
-            dataset_fields = postgres_metadata['fields']
-            for field_name, dsf in dataset_fields.items():
-                data_type = dsf.pop('data_type')
-                # Use pk definition in catalog to set primary_key
-                # If this can be retrieved from Postgres this is not required
-                if field_name == ds.pk_field:
-                    dsf['primary_key'] = True
-                    dsf['null'] = False
-                new_attrs[field_name] = _MAP_DS_TYPE[data_type](**dsf)
-        except KeyError as err:
-            log.error(f'Error: Skip dataset for {ds.table_name} : {err}')
-            continue
+def dataset_model_factory(ds: DataSet):  # noqa: C901
+    """Generate the model for a specific dataset"""
+    schema = 'public' if ds.schema is None else ds.schema
+    postgres_metadata = read_postgres_metadata(schema, ds.table_name)
 
-        model_name = ds.name.upper() + 'Model'
-        new_model = type(model_name, (models.Model,), new_attrs)
-        DATASET_CONFIG[ds.name] = new_model
+    try:
+        ds.pk_field = ds.pk_field or ds.ordering or postgres_metadata['pk_field']
+        ds.ordering = ds.ordering or ds.pk_field or postgres_metadata['pk_field']
+        ds.name_field = ds.name_field or postgres_metadata['name_field']
+        ds.geometry_field = ds.geometry_field or postgres_metadata['geometry_field']
+    except KeyError as err:
+        log.error(f'Error: Skip dataset for {ds.table_name} : {err}')
+        return None
+
+    new_meta_attrs = {'managed': False, 'db_table': ds.table_name, 'ordering': [ds.ordering]}
+    new_meta = type('Meta', (object,), new_meta_attrs)
+    new_attrs = {
+        '__module__': 'various_small_datasets.gen_api.models',
+        '__str__': lambda self, name_field=ds.name_field: getattr(self, name_field),
+        'get_id': lambda self, pk_field=ds.pk_field: getattr(self, pk_field),
+        'get_dataset': lambda self: ds,
+        'Meta': new_meta,
+        '__doc__': ds.description,
+    }
+
+    dataset_fields = postgres_metadata['fields']
+    for field_name, dsf in dataset_fields.items():
+        data_type = dsf.pop('data_type')
+        # Use pk definition in catalog to set primary_key
+        # If this can be retrieved from Postgres this is not required
+        if field_name == ds.pk_field:
+            dsf['primary_key'] = True
+            dsf['null'] = False
+        new_attrs[field_name] = _MAP_DS_TYPE[data_type](**dsf)
+
+    model_name = ds.name.upper() + 'Model'
+    return type(model_name, (models.Model,), new_attrs)

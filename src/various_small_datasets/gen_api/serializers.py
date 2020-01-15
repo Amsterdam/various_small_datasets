@@ -9,44 +9,11 @@ from various_small_datasets.catalog.models import DataSet
 log = logging.getLogger(__name__)
 
 
-class BaseSerializer(object):
-
-    def href_url(self, path):
-        """Prepend scheme and hostname"""
-        base_url = '{}://{}'.format(
-            self.context['request'].scheme,
-            self.context['request'].get_host())
-        return base_url + path
-
-    def dict_with_self_href(self, path):
-        return {
-            "self": {
-                "href": self.href_url(path)
-            }
-        }
-
-    def dict_with__links_self_href_id(self, path, id, id_name):
-        return {
-            "_links": {
-                "self": {
-                    "href": self.href_url(path.format(id))
-                }
-            },
-            id_name: id
-        }
-
-    def dict_with_count_href(self, count, path):
-        return {
-            "count": count,
-            "href": self.href_url(path)
-        }
-
-
-class GenericSerializer(BaseSerializer, HALSerializer):
+class GenericSerializer(HALSerializer):
     _links = serializers.SerializerMethodField()
-    _display = DisplayField()
+    _display = DisplayField()  # note: this field is not part of the HAL/DSO spec.
 
-    class Meta(object):
+    class Meta:
         model = None
         fields = [
             '_links',
@@ -54,11 +21,22 @@ class GenericSerializer(BaseSerializer, HALSerializer):
         ]
 
     def get__links(self, obj):
-        links = self.dict_with_self_href(
-            '/vsd/{}/{}/'.format(
-                self.context['dataset'],
-                obj.get_id()))
-        return links
+        """Generate the HAL-style '_links' section.
+
+        This overrides a generic ``serializer_url_field``, which is needed because
+        the datasets are not registered in urls.py.
+        """
+        request = self.context['request']
+        # These methods are generated in dataset_model_factory():
+        dataset = obj.get_dataset().name
+        pk = obj.get_id()
+
+        return {
+            "self": {
+                "href": request.build_absolute_uri(f'/vsd/{dataset}/{pk}/'),
+                "title": str(obj),
+            },
+        }
 
 
 def get_fields(model):
