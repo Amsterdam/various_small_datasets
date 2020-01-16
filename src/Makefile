@@ -2,8 +2,8 @@
 install:
 	pip install -r requirements_dev.txt
 
-.PHONY: install-sync
-install-sync:
+.PHONY: sync
+sync:
 	pip-sync requirements.txt requirements_dev.txt
 
 .PHONY: requirements
@@ -18,4 +18,13 @@ upgrade:
 
 .PHONY: test
 test:
-	./manage.py test -v1
+	pytest --reuse-db --nomigrations -vs .
+
+.PHONY: test
+retest:
+	pytest --reuse-db --nomigrations -vs --lf .
+
+
+.PHONY: coverage
+coverage:
+	py.test --reuse-db --nomigrations --cov --cov-report=term-missing
