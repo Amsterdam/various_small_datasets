@@ -62,7 +62,7 @@ urlpatterns = [path('vsd/docs/api-info/', MetaAPIViewSet.as_view({'get': 'list'}
                     for url in pattern_list]
 
 
-if settings.DEBUG:
+if 'debug_toolbar' in settings.INSTALLED_APPS:
     import debug_toolbar
 
     urlpatterns.extend([

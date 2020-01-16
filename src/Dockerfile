@@ -19,7 +19,7 @@ COPY . ./
 
 USER datapunt
 
-RUN export DJANGO_SETTINGS_MODULE=various_small_datasets.settings
+ENV DJANGO_SETTINGS_MODULE=various_small_datasets.settings DJANGO_DEBUG=false
 RUN python manage.py collectstatic --noinput
 
 CMD uwsgi
