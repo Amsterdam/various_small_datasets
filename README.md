@@ -13,7 +13,8 @@ Code for various small datasets where data does not change very often
 
     python3 -m venv venv
     source venv/bin/activate
-    pip install -r src/requirements.txt
+    cd src
+    make install  # installs src/requirements_dev.txt
 
     docker-compose up -d database
 
@@ -75,6 +76,29 @@ For example :
 
     /vsd/biz/?naam=kalverstraat
     /vsd/biz/?geometrie=52.362762,4.907598
+
+
+# Managing requirements.txt
+
+This project uses [pip-tools](https://pypi.org/project/pip-tools/)
+and [pur](https://pypi.org/project/pur/) to manage the `requirements.txt` file.
+
+To add a Python dependency to the project:
+
+* Add the dependency to `requirements.in`
+* Run `make requirements`
+
+To upgrade the project, run:
+
+    make upgrade
+    make install
+    make test
+
+Or in a single call: `make upgrade install test`
+
+Django will only be upgraded with patch-level versions.
+To change from e.g. Django 3.0 to 3.1, update the version in `requirements.in` yourself.
+
 
 # Cookbook for new datasets
 

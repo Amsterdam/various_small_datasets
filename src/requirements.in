@@ -1,0 +1,28 @@
+datapunt-objectstore == 2019.4.8
+Django == 2.2.8
+django-choices == 1.7.0
+django-cors-headers == 2.5.3
+django-filter == 2.1.0
+django-rest-swagger == 2.2.0
+djangorestframework == 3.9.3
+djangorestframework-gis == 0.14
+drf-amsterdam == 0.3.2
+geomet == 0.2.0.post2
+geojson == 2.4.1
+Jinja2 == 2.10.1
+mappyfile == 0.8.4
+numpy == 1.16.3
+pandas == 0.24.2
+psycopg2-binary == 2.8.2
+pylru == 1.2.0
+python-dateutil == 2.8.0
+pytz == 2019.1
+requests == 2.20.1
+requests-toolbelt == 0.8.0
+sentry-sdk == 0.7.14
+simplejson == 3.16.0
+zeep == 3.1.0
+xlrd == 1.1.0
+
+# Testing
+flake8 == 3.7.7
