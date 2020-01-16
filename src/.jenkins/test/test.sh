@@ -11,4 +11,4 @@ echo "Running style checks"
 flake8 --config=./flake.cfg ./various_small_datasets
 
 echo "Running unit tests"
-./manage.py test
+DJANGO_DEBUG=false ./manage.py test

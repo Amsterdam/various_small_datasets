@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 insecure_key = 'insecure'
 SECRET_KEY = os.getenv('SECRET_KEY', insecure_key)
 
-DEBUG = SECRET_KEY == insecure_key
+DEBUG = os.getenv('DJANGO_DEBUG', str(SECRET_KEY == insecure_key)).lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 
@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_filters',
-    'django_extensions',
 
     'corsheaders',
 
@@ -41,8 +40,6 @@ INSTALLED_APPS = [
     'rest_framework_gis',
     'rest_framework_swagger',
 ]
-if DEBUG:
-    INSTALLED_APPS += ('debug_toolbar',)
 
 
 MIDDLEWARE = [
@@ -51,8 +48,14 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+        'django_extensions',
+    ]
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
