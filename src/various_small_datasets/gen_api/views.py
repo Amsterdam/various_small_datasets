@@ -178,8 +178,9 @@ class DataSetListView(APIView):
     """
     Give a listing of all available datasets
     """
+
     def get(self, request, *args, **kwargs):
-        GenericViewSet.initialize()
+        GenericViewSet.initialize()  # Make sure models are scanned.
         return Response({
             name: request.build_absolute_uri(reverse('dataset_list', kwargs={'dataset': name}))
             for name, _ in config.DATASET_CONFIG.items()

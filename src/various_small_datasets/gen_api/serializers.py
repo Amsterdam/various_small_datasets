@@ -65,33 +65,36 @@ def get_fields(model):
     """
     This gets the fields for a model
     """
-    return map(lambda x: x.name, model._meta.get_fields())
+    return [x.name for x in model._meta.get_fields()]
 
 
 def serializer_factory(dataset, model, as_geojson):
+    """Generate the DRF serializer class for a specific dataset model."""
     if as_geojson:
         return geojson_serializer_factory(dataset, model)
 
-    serializer_name = dataset.upper() + 'GenericSerializer'
+    # Generate "Meta" attribute
     fields = ['_links', '_display']
     fields.extend(get_fields(model))
     new_meta_attrs = {'model': model, 'fields': fields}
-    new_meta = type('Meta', (object,), new_meta_attrs)
+
+    # Generate serializer class
+    serializer_name = dataset.upper() + 'GenericSerializer'
     new_attrs = {
         '__module__': 'various_small_datasets.gen_api.serializers',
-        'Meta': new_meta,
+        'Meta': type('Meta', (object,), new_meta_attrs),
     }
     return type(serializer_name, (GenericSerializer,), new_attrs)
 
 
-def geojson_serializer_factory(dataset, model):
+def geojson_serializer_factory(dataset: str, model):
     ds = DataSet.objects.get(name=dataset)
     geo_field = ds.geometry_field
     if not geo_field:
         raise RuntimeError("no geo information in model")
 
     serializer_name = dataset.upper() + 'GeoJSONSerializer'
-    new_meta_attrs = {'model': model, 'fields': list(get_fields(model)), 'geo_field': geo_field}
+    new_meta_attrs = {'model': model, 'fields': get_fields(model), 'geo_field': geo_field}
     new_meta = type('Meta', (object,), new_meta_attrs)
     new_attrs = {
         '__module__': 'various_small_datasets.gen_api.serializers',
