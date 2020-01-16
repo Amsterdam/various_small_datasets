@@ -197,6 +197,13 @@ LOGGING = {
             'propagate': False,
         },
 
+        'parso': {
+            # For manage.py shell with ptpython
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+
         # Log all unhandled exceptions
         'django.request': {
             'handlers': ['console'],
