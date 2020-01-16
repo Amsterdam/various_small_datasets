@@ -5,83 +5,86 @@
 #    pip-compile --output-file=requirements.txt requirements.in
 #
 appdirs==1.4.3            # via zeep
-attrs==19.1.0             # via jsonschema, zeep
-babel==2.6.0              # via oslo.i18n
+attrs==19.3.0             # via jsonschema, zeep
+babel==2.8.0              # via oslo.i18n
 cached-property==1.5.1    # via zeep
-certifi==2019.3.9         # via requests, sentry-sdk
+certifi==2019.11.28       # via requests, sentry-sdk
 chardet==3.0.4            # via requests
 click==7.0                # via geomet, mappyfile
 coreapi==2.3.3            # via django-rest-swagger, openapi-codec
 coreschema==0.0.4         # via coreapi
-datapunt-config-loader==1.1.0  # via datapunt-objectstore
+datapunt-config-loader==1.1.2  # via datapunt-objectstore
 datapunt-objectstore==2019.4.8
-debtcollector==1.21.0     # via oslo.config, oslo.utils, python-keystoneclient
+debtcollector==1.22.0     # via oslo.config, oslo.utils, python-keystoneclient
 defusedxml==0.6.0         # via djangorestframework-xml, zeep
-django-choices==1.7.0
-django-cors-headers==2.5.3
-django-filter==2.1.0
+django-choices==1.7.1
+django-cors-headers==3.2.1
+django-filter==2.2.0
 django-rest-swagger==2.2.0
-django==2.2.8
+django==2.2.9
 djangorestframework-csv==2.1.0  # via drf-amsterdam
-djangorestframework-gis==0.14
+djangorestframework-gis==0.15
 djangorestframework-xml==1.4.0  # via drf-amsterdam
-djangorestframework==3.9.3
+djangorestframework==3.11.0
 drf-amsterdam==0.3.2
-drf-extensions==0.4.0     # via drf-amsterdam
+drf-extensions==0.5.0     # via drf-amsterdam
 entrypoints==0.3          # via flake8
-flake8==3.7.7
-geojson==2.4.1
-geomet==0.2.0.post2
-idna==2.7                 # via requests
+flake8==3.7.9
+geojson==2.5.0
+geomet==0.2.1.post1
+idna==2.8                 # via requests
+importlib-metadata==1.4.0  # via jsonschema
 iso8601==0.1.12           # via keystoneauth1, oslo.utils
 isodate==0.6.0            # via zeep
 itypes==1.1.0             # via coreapi
-jinja2==2.10.1
+jinja2==2.10.3
 jsonref==0.2              # via mappyfile
-jsonschema==3.0.1         # via datapunt-config-loader, mappyfile
-keystoneauth1==3.14.0     # via python-keystoneclient
+jsonschema==3.2.0         # via datapunt-config-loader, mappyfile
+keystoneauth1==3.18.0     # via python-keystoneclient
 lark-parser==0.7.8        # via mappyfile
-lxml==4.3.3               # via zeep
+lxml==4.4.2               # via zeep
 mappyfile==0.8.4
 markupsafe==1.1.1         # via jinja2
 mccabe==0.6.1             # via flake8
-msgpack==0.6.1            # via oslo.serialization
+more-itertools==8.1.0     # via zipp
+msgpack==0.6.2            # via oslo.serialization
 netaddr==0.7.19           # via oslo.config, oslo.utils
 netifaces==0.10.9         # via oslo.utils
-numpy==1.16.3
+numpy==1.18.1
 openapi-codec==1.3.2      # via django-rest-swagger
 os-service-types==1.7.0   # via keystoneauth1
-oslo.config==6.9.0        # via python-keystoneclient
-oslo.i18n==3.23.1         # via oslo.config, oslo.utils, python-keystoneclient
-oslo.serialization==2.29.0  # via python-keystoneclient
-oslo.utils==3.41.0        # via oslo.serialization, python-keystoneclient
-pandas==0.24.2
-pbr==5.2.0                # via debtcollector, keystoneauth1, os-service-types, oslo.i18n, oslo.serialization, oslo.utils, python-keystoneclient, stevedore
-psycopg2-binary==2.8.2
+oslo.config==7.0.0        # via python-keystoneclient
+oslo.i18n==3.25.1         # via oslo.config, oslo.utils, python-keystoneclient
+oslo.serialization==2.29.2  # via python-keystoneclient
+oslo.utils==3.42.1        # via oslo.serialization, python-keystoneclient
+pandas==0.25.3
+pbr==5.4.4                # via debtcollector, keystoneauth1, os-service-types, oslo.i18n, oslo.serialization, oslo.utils, python-keystoneclient, stevedore
+psycopg2-binary==2.8.4
 pycodestyle==2.5.0        # via flake8
 pyflakes==2.1.1           # via flake8
 pylru==1.2.0
-pyparsing==2.4.0          # via oslo.utils
-pyrsistent==0.15.2        # via jsonschema
-python-dateutil==2.8.0
-python-keystoneclient==3.19.0  # via datapunt-objectstore
-python-swiftclient==3.7.0  # via datapunt-objectstore
-pytz==2019.1
-pyyaml==5.1               # via datapunt-config-loader, oslo.config, oslo.serialization
-requests-toolbelt==0.8.0
-requests==2.20.1
-rfc3986==1.3.1            # via oslo.config
-sentry-sdk==0.7.14
-simplejson==3.16.0
-six==1.12.0               # via debtcollector, djangorestframework-csv, geomet, isodate, jsonschema, keystoneauth1, oslo.config, oslo.i18n, oslo.serialization, oslo.utils, pyrsistent, python-dateutil, python-keystoneclient, python-swiftclient, stevedore, zeep
+pyparsing==2.4.6          # via oslo.utils
+pyrsistent==0.15.7        # via jsonschema
+python-dateutil==2.8.1
+python-keystoneclient==3.22.0  # via datapunt-objectstore
+python-swiftclient==3.8.1  # via datapunt-objectstore
+pytz==2019.3
+pyyaml==5.3               # via datapunt-config-loader, oslo.config, oslo.serialization
+requests-toolbelt==0.9.1
+requests==2.22.0
+rfc3986==1.3.2            # via oslo.config
+sentry-sdk==0.14.0
+simplejson==3.17.0
+six==1.14.0               # via debtcollector, django-choices, djangorestframework-csv, geomet, isodate, jsonschema, keystoneauth1, oslo.config, oslo.i18n, oslo.serialization, oslo.utils, pyrsistent, python-dateutil, python-keystoneclient, python-swiftclient, stevedore, zeep
 sqlparse==0.3.0           # via django
-stevedore==1.30.1         # via keystoneauth1, oslo.config, python-keystoneclient
+stevedore==1.31.0         # via keystoneauth1, oslo.config, python-keystoneclient
 unicodecsv==0.14.1        # via djangorestframework-csv
-uritemplate==3.0.0        # via coreapi
-urllib3==1.24.2           # via requests, sentry-sdk
-wrapt==1.11.1             # via debtcollector
-xlrd==1.1.0
-zeep==3.1.0
+uritemplate==3.0.1        # via coreapi
+urllib3==1.25.7           # via requests, sentry-sdk
+wrapt==1.11.2             # via debtcollector
+xlrd==1.2.0
+zeep==3.4.0
+zipp==1.0.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
