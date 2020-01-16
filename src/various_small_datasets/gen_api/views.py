@@ -200,7 +200,7 @@ class GenericViewSet(DatapuntViewSet):
     def __init__(self, *args, **kwargs):
         self.dataset = None
         self.model = None
-        self.filter_class = None
+        self.filterset_class = None
         super(GenericViewSet, self).__init__(*args, **kwargs)
         self._saved_pagination = self.pagination_class
 
@@ -243,7 +243,7 @@ class GenericViewSet(DatapuntViewSet):
         if self.action == 'list':
             if self.dataset not in GenericViewSet.filterClasses:
                 GenericViewSet.filterClasses[self.dataset] = filter_factory(self.dataset, self.model)
-            self.filter_class = GenericViewSet.filterClasses[self.dataset]
+            self.filterset_class = GenericViewSet.filterClasses[self.dataset]
         return self.model.objects.all()
 
     def get_serializer_class(self):
