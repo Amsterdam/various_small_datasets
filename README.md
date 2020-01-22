@@ -34,23 +34,23 @@ Get access to objectstore (see password manager):
 
 Import all remaining datasets:
 
-    src/datasets/afvalwegingen/import/import.sh
-    src/datasets/asbest/import/import.sh
-    src/datasets/bekendmakingen/import/import.sh
+    src/datasets/afvalwegingen/import/import.sh         # Afvalwegingen
+    src/datasets/asbest/import/import.sh                # Asbestverdachte gebieden/daken
+    src/datasets/bekendmakingen/import/import.sh        # Gemeentelijke bekendmakingen (van vergunningen)
     src/datasets/biz/import/import.sh                   # Bedrijfsinvesteringszone (BIZ)
     src/datasets/hior/importer/import.sh                # Handboek Inrichting Openbare Ruimte (HIOR)
     src/datasets/hoofdroutes/import/import.sh           # Hoofdroutes
-    src/datasets/iot/import/import.sh
-    src/datasets/milieuzones/import/import.sh
-    src/datasets/openbare-verlichting/import/import.sh
-    src/datasets/oplaadpalen/import/import.sh           # Oplaadpalen
-    src/datasets/overlastgebieden/import/import.sh
-    src/datasets/parkeerzones/import/import.sh
-    src/datasets/reclamebelasting/import/import.sh
+    src/datasets/iot/import/import.sh                   # Telcamera's
+    src/datasets/milieuzones/import/import.sh           # Milieuzones (voor vrachtwagens/dieselauto's/...)
+    src/datasets/openbare-verlichting/import/import.sh  # Openbare verlichting (import only)
+    src/datasets/oplaadpalen/import/import.sh           # Oplaadpalen electrische auto's
+    src/datasets/overlastgebieden/import/import.sh      # Overlastgebieden
+    src/datasets/parkeerzones/import/import.sh          # Parkeerzones
+    src/datasets/reclamebelasting/import/import.sh      # Reclamebelasting voor belettering op de geven
     src/datasets/trm/import/import.sh                   # Tram & Metro (TRM)
-    src/datasets/vezips/import/import.sh
-    src/datasets/vuurwerk/import/import.sh
-    src/datasets/winkgeb/import/import.sh
+    src/datasets/vezips/import/import.sh                # Verzinkbare palen
+    src/datasets/vuurwerk/import/import.sh              # Vuurwerkvrije zones
+    src/datasets/winkgeb/import/import.sh               # Winkelgebieden
 
 # Run the server
 
