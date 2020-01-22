@@ -119,7 +119,7 @@ def read_all_datasets():
         if ds.name in DATASET_CONFIG:
             continue
         if ds.name in catalog.generic_importable:
-            DATASET_CONFIG[ds.name] = get_django_model_by_name(ds.name)
+            DATASET_CONFIG[ds.name] = get_django_model_by_name(ds.name, ds)
             continue
 
         new_model = dataset_model_factory(ds)

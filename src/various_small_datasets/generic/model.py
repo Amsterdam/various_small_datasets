@@ -213,7 +213,7 @@ def get_model_repr(model_def, with_internal=True):
     return [represent_field(k, v) for k, v in model_def.items() if with_internal or not _is_internal_field(v)]
 
 
-def get_django_model(model_name, model_def, new_table=False):
+def get_django_model(model_name, model_def, dataset, new_table=False):
     model_repr = get_model_repr(model_def, with_internal=False)
     django_model_attrs = {f.field_name: f.django for f in model_repr}
     django_model_attrs['Meta'] = type('Meta', (object,), {
@@ -224,6 +224,7 @@ def get_django_model(model_name, model_def, new_table=False):
     django_model_attrs['__str__'] = lambda self: getattr(self, get_name_field(model_def).field_name)
     django_model_attrs['get_id'] = lambda self: getattr(self, get_pk(model_def).field_name)
     django_model_attrs['__module__'] = 'various_small_datasets.gen_api.models'
+    django_model_attrs['get_dataset'] = lambda self: dataset
     return type(model_name.upper() + 'Model', (models.Model,), django_model_attrs)
 
 
@@ -243,6 +244,6 @@ def get_geo_field(model_def):
     return [field for field in (get_model_repr(model_def)) if field.is_geo_field][0]
 
 
-def get_django_model_by_name(dataset_name):
+def get_django_model_by_name(dataset_name, dataset):
     model_def = get_model_def(dataset_name)
-    return get_django_model(dataset_name, model_def)
+    return get_django_model(dataset_name, model_def, dataset)
