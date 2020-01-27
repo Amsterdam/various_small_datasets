@@ -1,6 +1,7 @@
 import logging
 import time
 
+from various_small_datasets.catalog.models import DataSet
 from various_small_datasets.generic.catalog import get_model_def, get_import_def, get_dataset_def
 from various_small_datasets.generic.check import check_import
 from various_small_datasets.generic.db import create_new_datatable, roll_over_datatable
@@ -19,7 +20,8 @@ class DictImporter(object):
         self.model_def = model_def
 
     def import_data(self, source):
-        model = get_django_model(self.import_def['target'], self.model_def, new_table=True)
+        dataset = DataSet.objects.get(name=self.import_def['target'])
+        model = get_django_model(self.import_def['target'], self.model_def, dataset, new_table=True)
         count = 0
         prev_time = time.time()
 
