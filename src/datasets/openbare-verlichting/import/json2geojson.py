@@ -29,7 +29,7 @@ ID_TYPES_MAP = {
         "external_name": "Grachtmast",
         "internal_name": "Grachtmast",
     },
-    '9': {
+    '10': {
         "external_name": "Schijnwerper",
         "internal_name": "Schijnwerper",
     },
@@ -80,8 +80,8 @@ def check_types_as_expected(types: list):
     actual_types = { type['code']: type['naam'] for type in types }  # { '1': 'Klok', ... }
 
     for code, mapping in ID_TYPES_MAP.items():
-        actual_type = actual_types[code]
-        assert actual_type is not None
+        actual_type = actual_types.get(code)
+        assert actual_type is not None, f'new type definition does not have type {code}'
         expected_type = mapping['external_name']
         assert actual_type == expected_type, f'expected: {expected_type}, got: {actual_type}'
 
