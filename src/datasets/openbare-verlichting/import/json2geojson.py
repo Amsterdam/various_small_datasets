@@ -30,8 +30,8 @@ ID_TYPES_MAP = {
         "internal_name": "Grachtmast",
     },
     '10': {
-        "external_name": "Schijnwerper",
-        "internal_name": "Schijnwerper",
+        "external_name": "Schijnwerpers",
+        "internal_name": "Schijnwerpers",
     },
 }
 
