@@ -18,6 +18,9 @@ def get_objectstore_file(location, dir1):
     connection = objectstore.get_connection(OBJECTSTORE)
     container = location.split("/")[0]
     new_data = objectstore.get_object(connection, {'name': path}, container)
+    output_dir = "/".join(output_path.split("/")[:-1])
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
     with open(output_path, 'wb') as file:
         file.write(new_data)
 
