@@ -21,7 +21,7 @@ egrep -v "^ALTER TABLE.*OWNER TO" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME} > ${TM
 # Temporarily till Westland gracht is fixed
 egrep -v "Westlandgracht" ${TMPDIR}/bb_quotum_new1.sql > ${TMPDIR}/bb_quotum_new.sql
 
-perl -pi -e "s/bb_quotem/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
+perl -pi -e "s/bb_quotum/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
 
 psql -X --set ON_ERROR_STOP=on << SQL
 BEGIN;
