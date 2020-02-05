@@ -16,11 +16,7 @@ OBJECTSTORE_PATH=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME}
 echo "Download file from objectstore"
 python $SHARED_DIR/utils/get_objectstore_file.py "$OBJECTSTORE_PATH"
 
-egrep -v "^ALTER TABLE.*OWNER TO" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME} > ${TMPDIR}/bb_quotum_new1.sql
-
-# Temporarily till Westland gracht is fixed
-egrep -v "Westlandgracht" ${TMPDIR}/bb_quotum_new1.sql > ${TMPDIR}/bb_quotum_new.sql
-
+egrep -v "^ALTER TABLE.*OWNER TO" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME} > ${TMPDIR}/bb_quotum_new.sql
 perl -pi -e "s/bb_quotum/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
 
 psql -X --set ON_ERROR_STOP=on << SQL
@@ -29,10 +25,6 @@ DROP TABLE IF EXISTS bb_quotum_new;
 \i ${TMPDIR}/bb_quotum_new.sql;
 CREATE INDEX ON public.bb_quotum_new USING gist (geo);
 ALTER TABLE public.bb_quotum_new ADD PRIMARY KEY(wijk);
-ALTER TABLE public.bb_quotum_new ADD COLUMN color VARCHAR(7);
-UPDATE public.bb_quotum_new SET color =
-'#' || lpad(to_hex(((1.0 - availability_percentage) * 255)::int), 2, '0') ||
-lpad(to_hex((availability_percentage * 255)::int), 2, '0') || '00';
 COMMIT;
 SQL
 
