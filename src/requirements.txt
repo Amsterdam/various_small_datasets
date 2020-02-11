@@ -22,7 +22,7 @@ django-choices==1.7.1
 django-cors-headers==3.2.1
 django-filter==2.2.0
 django-rest-swagger==2.2.0
-django==2.2.9
+django==2.2.10
 djangorestframework-csv==2.1.0  # via drf-amsterdam
 djangorestframework-gis==0.15
 djangorestframework-xml==1.4.0  # via drf-amsterdam
@@ -34,7 +34,6 @@ flake8==3.7.9
 geojson==2.5.0
 geomet==0.2.1.post1
 idna==2.8                 # via requests
-importlib-metadata==1.4.0  # via jsonschema, pluggy, pytest
 iso8601==0.1.12           # via keystoneauth1, oslo.utils
 isodate==0.6.0            # via zeep
 itypes==1.1.0             # via coreapi
@@ -47,7 +46,7 @@ lxml==4.4.2               # via zeep
 mappyfile==0.8.4
 markupsafe==1.1.1         # via jinja2
 mccabe==0.6.1             # via flake8
-more-itertools==8.1.0     # via pytest, zipp
+more-itertools==8.1.0     # via pytest
 msgpack==0.6.2            # via oslo.serialization
 netaddr==0.7.19           # via oslo.config, oslo.utils
 netifaces==0.10.9         # via oslo.utils
@@ -94,7 +93,6 @@ wcwidth==0.1.8            # via pytest
 wrapt==1.11.2             # via debtcollector
 xlrd==1.2.0
 zeep==3.4.0
-zipp==1.0.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
