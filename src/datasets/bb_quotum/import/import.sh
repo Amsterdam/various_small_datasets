@@ -28,6 +28,8 @@ ALTER TABLE public.bb_quotum_new ADD PRIMARY KEY(wijk);
 COMMIT;
 SQL
 
+${SCRIPT_DIR}/check_imported_data.py
+
 echo "Rename tables"
 psql -X --set ON_ERROR_STOP=on <<SQL
 BEGIN;
