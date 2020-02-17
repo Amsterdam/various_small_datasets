@@ -7,6 +7,7 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
+ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
 echo "Drop and create schema"
 
@@ -21,7 +22,7 @@ echo "Download and import pgsql dumps"
 
 for ds_filename in afval_weging afval_container afval_cluster
 do
-    ZIP_FILE=$ds_filename.zip
+    ZIP_FILE=$ENVIRONMENT/$ds_filename.zip
     OBJECTSTORE_PATH=afval/$ZIP_FILE
 
     echo "Download file from objectstore and unzipping"
