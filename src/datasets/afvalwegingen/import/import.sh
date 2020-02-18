@@ -9,13 +9,6 @@ source ${SHARED_DIR}/import/before.sh
 
 ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
-# Temporary workaround, to use old location (root) for prod
-if [ $ENVIRONMENT = "production" ]
-then
-    export ENVIRONMENT=""
-fi
-
-
 echo "Drop and create schema"
 
 psql -X --set ON_ERROR_STOP=on <<SQL
@@ -29,7 +22,13 @@ echo "Download and import pgsql dumps"
 
 for ds_filename in afval_weging afval_container afval_cluster
 do
-    ZIP_FILE=$ENVIRONMENT/$ds_filename.zip
+    # Temporary workaround, to use old location (root) for prod
+    if [ $ENVIRONMENT = "production" ]
+    then
+        ZIP_FILE=$ds_filename.zip
+    else
+        ZIP_FILE=$ENVIRONMENT/$ds_filename.zip
+    fi
     OBJECTSTORE_PATH=afval/$ZIP_FILE
 
     echo "Download file from objectstore and unzipping"
