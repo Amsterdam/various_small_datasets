@@ -20,8 +20,10 @@ def main():
         sql = sql_file.readlines()
         shape_map = dict()
         for line in sql:
-            m = re.search('INSERT INTO "public"\."bizzones" \("wkb_geometry" , "id1", "naam", "aktief", "ddingang".*\) '
-                          'VALUES \(\'([^\']+)\', (\d+), \'([^\']+)\', \'([^\']+)\', \'([^\']+)\'', line)
+            m = re.search(
+                r'INSERT INTO "public"\."bizzones" \("wkb_geometry" , "id1", "naam", "aktief", "ddingang".*\) '
+                r'VALUES \(\'([^\']+)\', (\d+), \'([^\']+)\', \'([^\']+)\', \'([^\']+)\''
+                , line)
             if m:
                 geometry, id1, naam, aktief, ddingang = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
                 if aktief == 'Ja':
@@ -36,47 +38,40 @@ def main():
         name_mapping = {
             'A.J. Ernststraat': 'AJ Ernststraat',
             'Albert Cuyp': 'AlbertCuypstraat',
-            'Albert Cuyp West': 'Albert Cuypstraat_2018',
+            'Albert Cuyp west': 'Albert Cuypstraat West',
             'Bedrijvencentrum Osdorp': 'BC Osdorp',
-            'Beukenweg-Beukenplein': 'Beukenplein',
-            'Caleido (Pieter Calandlaan)': 'Pieter Callandlaan',
-            'Cornelis Schuytstraat': 'Cor Schuijtstraat',
-            'Damrak': 'Damrak_2017',
-            'De Clercqstraat': 'De clercqstraat',
-            'Eerste van der Helststraat': '1evdhelsttstraat',
-            'Eerste van Swindenstraat': '1evSwindenstraat',
-            'Ferdinand Bolstraat': 'Ferdinandbol_2017',
-            'Frans Halsbuurt': 'Frans Halsstraat',
-            'Gerard Doustraat': 'Gerard Dou',
-            'Haarlemmerbuurt 2e termijn': 'Haarlemmerstraat_2017',
+            'Centrum Nieuw West': 'Osdorp Centrum',
+            'Eerste van der Helststraat': '1e vd Helststraat',
+            'Eerste van Swindenstraat': '1e van Swindenstraat',
+            'Frans Hals Buurt': 'Frans Halsstraat',
+            'Gerard Doustraat en -plein': 'Gerard Doustraat',
+            'Haarlemmerbuurt 2e termijn': 'Haarlemmerstraat',
+            'Haven IJburg': 'IJburg haven',
             'Hoofddorpplein e.o.': 'Hoofddorppleinbuurt',
-            'Jan Evertsenstraat ': 'J_Evertsen_2018',
-            'Jan Pieter Heijestraat': 'JP Heijerstraat',
-            'Jodenbreestraat-Antoniesbreestraat': 'Jodebreestraat',
-            'Kalverstraat-Heiligeweg eigenaren': 'KalverstraatOndernemers',
-            'Kalverstraat-Heiligeweg gebruikers': 'KalverstraatOndernemers',
+            'Jan Evertsenstraat e.o': 'Jan Evertsenstraat',
+            'Jodenbreestraat-Antoniesbreestraat': 'Jodenbreestraat',
+            'Kalverstraat-Heiligeweg eigenaren': 'Kalverstraat',
+            'Kalverstraat-Heiligeweg Gebruikers': 'Kalverstraat',
             'Knowledge Mile': 'Wibautstraat',
-            'Nieuwezijds Voorburgwal': 'NZVoorburgwal_2018',
+            'Middenweg e.o.': 'Middenweg',
+            'Molsteeg / Leliegracht e.o.': 'Molsteeg EO',
+            'Nieuwezijds Voorburgwal': 'NZ Voorburgwal',
             'Olympiapleinbuurt': 'Olympiaplein',
-            'Oostelijke Eilanden & Czaar Peterbuurt': 'CzaarPeter',
+            'Oostelijke Eilanden & Czaar Peterbuurt': 'Czaar Peterstraat',
             'Osdorp Centrum': 'OsdorpCentrum',
             'Osdorper Ban eigenaren': 'OsdorperbanEigenaar',
-            'Oud West': 'Eerste C Huygensstraat',
-            'Plein 40-45': 'Plein 40 45',
-            'Prinsheerlijk': 'PrinsHeerlijk_2017',
-            'Raadhuisstraat-Westermarkt': 'RaadhuisstraatWestermarkt',
+            'Plein \'40-\'45, Slotermeerlaan en Burgemeester de Vlugtlaan': 'Plein 40 45',
+            'Prinsheerlijk': 'PrinsHeerlijk',
             'Rembrandtplein/Thorbeckeplein': 'Rembrandtplein',
-            'Rieker Business Park': 'Riekerpolder',
-            'Rokin eigenaren': 'RokinOndernemers',
-            'Rokin gebruikers': 'RokinOndernemers',
-            'Rozengracht': 'Rozengracht_2017',
-            'Spuistraat': 'SpuistraatEO',
-            'The Olympic (Stadionplein)': 'Stadionplein',
+            'Rieker Businesspark': 'Rieker Business Park',
+            'Rokin eigenaren': 'Rokin',
+            'Rokin Gebruikers': 'Rokin',
+            'Rozengracht': 'Rozengracht',
+            'Spuibuurt': 'Spuistraat',
+            'The Olympic': 'Stadionplein',
             'Uitgaansgebied Leidsebuurt': 'Leidseplein',
-            'Utrechtsestraat': 'Utrechtsestraat_2017',
-            'Van Dam tot Stopera': 'Van Dam tot Stopera_2017',
-            'Van Woustraat': 'V Woustraat',
-            'Van der Helstplein': 'Vdhelstplein',
+            'Van Dam tot Westertoren': 'Raadhuisstraat',
+            'Vijzelstraat en Vijzelgracht ': 'Vijzelstraat',
             'Warmoesstraat en omgeving': 'Warmoesstraat',
         }
 
@@ -129,7 +124,7 @@ def main():
         , {}
         );
         '''.format(t[0]
-                   , t[1]
+                   , t[1].replace("'","''")
                    , t[2]
                    , t[3]
                    , 'NULL' if isinstance(t[4], float) and math.isnan(t[4]) else makequotedlink(t[4])
