@@ -9,6 +9,12 @@ source ${SHARED_DIR}/import/before.sh
 
 ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
+# Temporary workaround, to use old location (root) for prod
+if [ $ENVIRONMENT = "production" ]
+then
+    export ENVIRONMENT=""
+fi
+
 
 DS_FILENAME=bb_quotum.sql
 OBJECTSTORE_PATH=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME}
