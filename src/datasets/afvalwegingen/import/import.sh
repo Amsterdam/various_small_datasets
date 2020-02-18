@@ -9,6 +9,13 @@ source ${SHARED_DIR}/import/before.sh
 
 ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
+# Temporary workaround, to use old location (root) for prod
+if [ $ENVIRONMENT = "production" ]
+then
+    export ENVIRONMENT=""
+fi
+
+
 echo "Drop and create schema"
 
 psql -X --set ON_ERROR_STOP=on <<SQL
