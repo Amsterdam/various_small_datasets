@@ -3,6 +3,7 @@ import time
 
 from datapunt_api.rest import DatapuntViewSet
 from django.urls import reverse
+from django.db import models
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, ParseError
 
@@ -149,6 +150,14 @@ class GenericFilter(FilterSet):
     def format_filter(queryset, _filter_name, value):
         return queryset
 
+    @staticmethod
+    def date__lte(queryset, field_name, value):
+        return queryset.filter(**{f'{field_name}__lte': value})
+
+    @staticmethod
+    def date__gte(queryset, field_name, value):
+        return queryset.filter(**{f'{field_name}__gte': value})
+
 
 def filter_factory(ds_name, model):
     model_name = ds_name.upper() + 'GenericFilter'
@@ -161,6 +170,18 @@ def filter_factory(ds_name, model):
     location = filters.CharFilter(field_name=location_filter_name, method="location_filter")
     name = filters.CharFilter(field_name=name_field, method="name_filter")
 
+    # Create datetime filters
+    date_filters = dict()
+    for field in model._meta.fields:
+        if isinstance(field, models.DateField):
+            date_filters[field.name] = filters.DateTimeFilter()
+            date_filters[f'{field.name}__lte'] = filters.DateTimeFilter(
+                field_name=field.name, method='date__lte')
+            date_filters[f'{field.name}__gte'] = filters.DateTimeFilter(
+                field_name=field.name, method='date__gte')
+
+    fields += date_filters.keys()
+
     new_meta_attrs = {'model': model,
                       'fields': fields,
                       }
@@ -170,6 +191,7 @@ def filter_factory(ds_name, model):
         'Meta': new_meta,
         geometry_field: location,
         name_field: name,
+        **date_filters
     }
     return type(model_name, (GenericFilter,), new_attrs)
 

@@ -30,7 +30,8 @@ naam character varying(128),
 prijs integer,
 sterren integer,
 smaken character varying(256),
-wkb_geometry geometry(Geometry,28992)
+wkb_geometry geometry(Geometry,28992),
+datum date
             )'''
 
         add_constraint = '''
@@ -42,10 +43,10 @@ CREATE INDEX icp_data_wkb_geometry_geom_idx
 ON icp_data USING gist(wkb_geometry);
         '''
         insert_data = '''
-INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
-(1, 'IJscuypje', 3, 4, 'pistache', ST_Transform(ST_GeomFromText('POINT(4.911880 52.367379)', 4326), 28992) ),
-(2, 'De ijsfiets', 2, 3, 'sinaasappel', ST_Transform(ST_GeomFromText('POINT(4.906130 52.365912)', 4326), 28992) ),
-(3, 'Het ijsboefje', 1, 4, 'straciatelli', ST_Transform(ST_GeomFromText('POINT(4.918146 52.358312)', 4326), 28992) );
+INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry, datum) VALUES
+(1, 'IJscuypje', 3, 4, 'pistache', ST_Transform(ST_GeomFromText('POINT(4.911880 52.367379)', 4326), 28992), null ),
+(2, 'De ijsfiets', 2, 3, 'sinaasappel', ST_Transform(ST_GeomFromText('POINT(4.906130 52.365912)', 4326), 28992), '2020-01-01'),
+(3, 'Het ijsboefje', 1, 4, 'straciatelli', ST_Transform(ST_GeomFromText('POINT(4.918146 52.358312)', 4326), 28992),  '2020-02-01');
         '''
         with connection.cursor() as cursor:
             cursor.execute(create_table)
@@ -118,3 +119,31 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry) VALUES
     def test_not_exist2(self):
         response = self.http_client.get('/vsd/ijs/100/')
         assert response.status_code == 404
+
+    def test_date_field_exact_match(self):
+        response = self.http_client.get('/vsd/ijs/?datum=2020-01-01')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']) == 1
+        assert result['results'][0]['naam'] == 'De ijsfiets'
+
+    def test_date_field_lte(self):
+        response = self.http_client.get('/vsd/ijs/?datum__lte=2020-01-02')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']) == 1
+        assert result['results'][0]['naam'] == 'De ijsfiets'
+
+    def test_date_field_gte(self):
+        response = self.http_client.get('/vsd/ijs/?datum__gte=2020-01-01')
+        assert response.status_code == 200
+        result = json.loads(response.content)
+        assert len(result['results']) == 2
+        assert result['results'][0]['naam'] == 'De ijsfiets'
+        assert result['results'][1]['naam'] == 'Het ijsboefje'
+
+    def test_date_field_incorrect_date_results_in_error(self):
+        response = self.http_client.get('/vsd/ijs/?datum__gte=vandaag')
+        assert response.status_code == 400
+        result = json.loads(response.content)
+        assert result == {'datum__gte': ['Enter a valid date/time.']}
