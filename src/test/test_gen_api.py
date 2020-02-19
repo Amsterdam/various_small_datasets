@@ -146,4 +146,4 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry, datum)
         response = self.http_client.get('/vsd/ijs/?datum__gte=vandaag')
         assert response.status_code == 400
         result = json.loads(response.content)
-        assert result == {'datum__gte': ['Enter a valid date.']}
+        assert result == {'datum__gte': ['Enter a valid date/time.']}

@@ -174,10 +174,10 @@ def filter_factory(ds_name, model):
     date_filters = dict()
     for field in model._meta.fields:
         if isinstance(field, models.DateField):
-            date_filters[field.name] = filters.DateFilter()
-            date_filters[f'{field.name}__lte'] = filters.DateFilter(
+            date_filters[field.name] = filters.DateTimeFilter()
+            date_filters[f'{field.name}__lte'] = filters.DateTimeFilter(
                 field_name=field.name, method='date__lte')
-            date_filters[f'{field.name}__gte'] = filters.DateFilter(
+            date_filters[f'{field.name}__gte'] = filters.DateTimeFilter(
                 field_name=field.name, method='date__gte')
 
     fields += date_filters.keys()
