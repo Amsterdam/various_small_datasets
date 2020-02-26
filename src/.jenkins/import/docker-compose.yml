@@ -12,7 +12,7 @@ services:
       - ./backups:/tmp/backups
 
   importer:
-    image: repo.data.amsterdam.nl/datapunt/various_small_datasets:${ENVIRONMENT}
+    image: ${DOCKER_REGISTRY_HOST}/datapunt/various_small_datasets:${ENVIRONMENT}
 #    build: ../..
     links:
       - database
