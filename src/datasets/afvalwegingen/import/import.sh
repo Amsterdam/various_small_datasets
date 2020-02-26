@@ -22,13 +22,7 @@ echo "Download and import pgsql dumps"
 
 for ds_filename in afval_weging afval_container afval_cluster
 do
-    # Temporary workaround, to use old location (root) for prod
-    if [ $ENVIRONMENT = "production" ]
-    then
-        ZIP_FILE=$ds_filename.zip
-    else
-        ZIP_FILE=$ENVIRONMENT/$ds_filename.zip
-    fi
+    ZIP_FILE=$ENVIRONMENT/$ds_filename.zip
     OBJECTSTORE_PATH=afval/$ZIP_FILE
 
     echo "Download file from objectstore and unzipping"
