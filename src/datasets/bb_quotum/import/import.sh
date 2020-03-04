@@ -23,6 +23,7 @@ psql -X --set ON_ERROR_STOP=on << SQL
 BEGIN;
 DROP TABLE IF EXISTS bb_quotum_new CASCADE;
 DROP SEQUENCE IF EXISTS bb_quotum_new_id_seq CASCADE;
+DROP INDEX IF EXISTS bb_quotum_new_geo_id;
 \i ${TMPDIR}/bb_quotum_new.sql;
 COMMIT;
 SQL
