@@ -16,7 +16,7 @@ echo "Download file from objectstore"
 python $SHARED_DIR/utils/get_objectstore_file.py "$OBJECTSTORE_PATH"
 
 egrep -v "^ALTER TABLE.*OWNER TO" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME} > ${TMPDIR}/bb_quotum_new.sql
-perl -pi -e "s/bb_quotum/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
+perl -pi -e "s/quota_bbkaartlaagexport/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
 
 psql -X --set ON_ERROR_STOP=on << SQL
 BEGIN;
