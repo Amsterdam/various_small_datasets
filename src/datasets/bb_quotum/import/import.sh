@@ -7,7 +7,8 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
-ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
+# ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
+ENVIRONMENT=acceptance
 
 DS_FILENAME=bb_quotum.sql
 OBJECTSTORE_PATH=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME}
@@ -23,7 +24,6 @@ BEGIN;
 DROP TABLE IF EXISTS bb_quotum_new;
 \i ${TMPDIR}/bb_quotum_new.sql;
 CREATE INDEX ON public.bb_quotum_new USING gist (geo);
-ALTER TABLE public.bb_quotum_new ADD PRIMARY KEY(wijk);
 COMMIT;
 SQL
 
