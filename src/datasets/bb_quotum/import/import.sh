@@ -7,8 +7,7 @@ export SHARED_DIR=${SCRIPT_DIR}/../../shared
 source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
-# ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
-ENVIRONMENT=acceptance
+ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
 DS_FILENAME=bb_quotum.sql
 OBJECTSTORE_PATH=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME}
