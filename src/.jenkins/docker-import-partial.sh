@@ -90,6 +90,10 @@ case $i in
     echo "Import Bed and Breakfast Quotum"
     datasets/bb_quotum/import/import.sh
     ;;
+    aardgasvrij)
+    echo "Import Aardgasvrij data"
+    datasets/aardgasvrij/import/import.sh
+    ;;
     *)
     echo "Trying to import Generic dataset $i"
     python ./manage.py import_generic -d $i

@@ -1,0 +1,58 @@
+{
+  "datasets": [
+    {
+      "name": "buurten",
+      "description":"Aardgasvrij status per buurt",
+      "table_name": "buurten",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": false,
+      "name_field": "bu_naam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POLYGON",
+      "enable_geosearch": false,
+      "enable_maplayer": true,
+      "map_title": "Buurten",
+      "map_abstract": "Aardgasvrij status per buurt",
+      "map_layers": [
+        {
+          "name": "buurten",
+          "title": "Buurten",
+          "abstract": "Aardgasvrij status per buurt",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "bu_naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    } ,
+    {
+      "name": "buurtinitiatieven",
+      "description":"Aardgasvrij buurtinitiatieven",
+      "table_name": "buurtinitiatieven",
+      "ordering": "ogc_fid",
+      "pk_field": "ogc_fid",
+      "enable_api": false,
+      "name_field": "bu_naam",
+      "geometry_field": "wkb_geometry",
+      "geometry_type": "POINT",
+      "enable_geosearch": false,
+      "enable_maplayer": true,
+      "map_title": "Buurtinitiatieven",
+      "map_abstract": "Aardgasvrij buurtinitiatieven",
+      "map_layers": [
+        {
+          "name": "buurtinitiatieven",
+          "title": "Buurtinitiatieven",
+          "abstract": "Aardgasvrij buurtinitiatieven",
+          "minscale": 10,
+          "maxscale": 400000,
+          "label": "bu_naam",
+          "label_minscale": 10,
+          "label_maxscale": 10000
+        }
+      ]
+    }
+  ]
+}
