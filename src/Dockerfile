@@ -1,6 +1,9 @@
 FROM amsterdam/python
 MAINTAINER datapunt@amsterdam.nl
 
+RUN sed -i '/^mozilla\/AddTrust_External_Root.crt/c\!mozilla\/AddTrust_External_Root.crt' /etc/ca-certificates.conf
+RUN update-ca-certificates
+
 ENV PYTHONUNBUFFERED 1
 
 EXPOSE 8000
