@@ -6,7 +6,7 @@ sql_checks = [
     ('kolom1', """
 select count(column_name) from information_schema.columns where
  table_schema = 'public' and table_name = 'buurten_new' 
- and column_name in ('bu_naam', 'fasering3', 'kookgasopg', 'wkb_geometry')
+ and column_name in ('bu_naam', 'legenda', 'kookgas', 'wkb_geometry')
     """, assert_count_minimum(4)),
     ('geometrie1', """
 select count(*) from buurten_new where

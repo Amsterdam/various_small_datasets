@@ -9,15 +9,14 @@ source ${SHARED_DIR}/import/before.sh
 
 ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
 
-DS_FILENAME=Files.zip
+DS_FILENAME=Export_cartograaf_20200604.zip
 OBJECTSTORE_PATH=aardgasvrij/${DS_FILENAME}
 
 echo "Download file from objectstore"
 python $SHARED_DIR/utils/get_objectstore_file.py "$OBJECTSTORE_PATH"
-unzip -d ${TMPDIR}  ${TMPDIR}/Files.zip
+unzip -j -d ${TMPDIR}  ${TMPDIR}/${DS_FILENAME}
 
-# ogr2ogr -f "PGDump" -t_srs EPSG:28992 -skipfailures -nln buurten_new ${TMPDIR}/buurten.sql ${TMPDIR}/buurten.shp
-ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nlt PROMOTE_TO_MULTI -nln buurten_new ${TMPDIR}/buurten.sql ${TMPDIR}/buurten.shp
+ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nlt PROMOTE_TO_MULTI -nln buurten_new ${TMPDIR}/buurten.sql ${TMPDIR}/buurten_na_inspraak.shp
 iconv -f iso-8859-1 -t utf-8  ${TMPDIR}/buurten.sql > ${TMPDIR}/buurten.utf8.sql
 
 ogr2ogr -f "PGDump" -t_srs EPSG:28992 -nln buurtinitiatieven_new ${TMPDIR}/buurtinitiatieven.sql ${TMPDIR}/buurtinitiatieven.shp
