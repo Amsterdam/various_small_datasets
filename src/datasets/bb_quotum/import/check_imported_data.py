@@ -3,13 +3,24 @@ from shared.utils.check_imported_data import run_sql_checks, all_valid_url, asse
 
 sql_checks = [
     ('count', "select count(*) from bb_quotum_new", assert_count_minimum(90)),
-    ('count', """
+    ('count_col', """
 select count(column_name) from information_schema.columns where
  table_schema = 'public' and table_name = 'bb_quotum_new' 
  and column_name in ('wijk', 'availability_color', 'geo')
     """, assert_count_minimum(3)),
     ('geometrie', """
 select count(*) from bb_quotum_new where
+geo is null or ST_IsValid(geo) = false or ST_GeometryType(geo) <> 'ST_MultiPolygon'
+    """,
+     assert_count_zero()),
+    ('count1', "select count(*) from omzettingen_quotum_new", assert_count_minimum(90)),
+    ('count_col1', """
+select count(column_name) from information_schema.columns where
+ table_schema = 'public' and table_name = 'omzettingen_quotum_new' 
+ and column_name in ('wijk', 'availability_color', 'geo')
+    """, assert_count_minimum(3)),
+    ('geometrie1', """
+select count(*) from omzettingen_quotum_new where
 geo is null or ST_IsValid(geo) = false or ST_GeometryType(geo) <> 'ST_MultiPolygon'
     """,
      assert_count_zero()),
