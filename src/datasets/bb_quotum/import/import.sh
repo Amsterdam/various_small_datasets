@@ -8,19 +8,18 @@ source ${SHARED_DIR}/import/config.sh
 source ${SHARED_DIR}/import/before.sh
 
 ENVIRONMENT=${DATAPUNT_ENVIRONMENT:-acceptance}
-ENVIRONMENT1=acceptance
 
 DS_FILENAME=bb_quotum.sql
 DS_FILENAME1=omzettingen_quotum.sql
 OBJECTSTORE_PATH=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME}
-OBJECTSTORE_PATH1=bed_and_breakfast/${ENVIRONMENT1}/${DS_FILENAME1}
+OBJECTSTORE_PATH1=bed_and_breakfast/${ENVIRONMENT}/${DS_FILENAME1}
 
 echo "Download files from objectstore"
 python $SHARED_DIR/utils/get_objectstore_file.py "$OBJECTSTORE_PATH"
 python $SHARED_DIR/utils/get_objectstore_file.py "$OBJECTSTORE_PATH1"
 
 egrep -v "^ALTER TABLE.*OWNER TO|^GRANT SELECT ON" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME} > ${TMPDIR}/bb_quotum_new.sql
-egrep -v "^ALTER TABLE.*OWNER TO|^GRANT SELECT ON" ${TMPDIR}/${ENVIRONMENT1}/${DS_FILENAME1} > ${TMPDIR}/omzettingen_quotum_new.sql
+egrep -v "^ALTER TABLE.*OWNER TO|^GRANT SELECT ON" ${TMPDIR}/${ENVIRONMENT}/${DS_FILENAME1} > ${TMPDIR}/omzettingen_quotum_new.sql
 
 perl -pi -e "s/quota_bbkaartlaagexport/bb_quotum_new/g" ${TMPDIR}/bb_quotum_new.sql
 perl -pi -e "s/quota_omzettingenkaartlaagexport/omzettingen_quotum_new/g" ${TMPDIR}/omzettingen_quotum_new.sql
