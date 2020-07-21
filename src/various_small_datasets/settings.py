@@ -65,7 +65,7 @@ DATA_DIR = os.getenv('VARIOUS_SMALL_DATASETS_DATA_DIR', 'data/')
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'nl'
 
 TIME_ZONE = 'UTC'
 
