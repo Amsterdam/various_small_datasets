@@ -96,20 +96,26 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry, datum)
         response = self.http_client.get('/vsd/ijs/?naam=boefje')
         assert response.status_code == 200
         result = json.loads(response.content)
+        print("*******ijsfiets*******************")
+        print(result)
+        print("**************************")        
         assert len(result['results']) ==  1
         assert result['results'][0]['icp_id'] == 3
         assert result['results'][0]['naam'] == 'Het ijsboefje'
-
+ 
     def test_locatie(self):
-        response = self.http_client.get('/vsd/ijs/?wkb_geometry=52.362762,4.907598,500')
+        response = self.http_client.get('/vsd/ijs/?wkb_geometry=122233.8155281068, 486556.12919505127,100')
         assert response.status_code == 200
         result = json.loads(response.content)
+        print("**************************")
+        print(result)
+        print("**************************")
         assert len(result['results']) == 1
         assert result['results'][0]['icp_id'] == 2
         assert result['results'][0]['naam'] == 'De ijsfiets'
 
     def test_large_radius(self):
-        response = self.http_client.get('/vsd/ijs/?wkb_geometry=52.362762,4.907598,2000')
+        response = self.http_client.get('/vsd/ijs/?wkb_geometry=52.365912,4.907598,2000')
         assert response.status_code == 400
 
     def test_no_icp(self):
