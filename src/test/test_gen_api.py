@@ -95,10 +95,7 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry, datum)
     def test_naam(self):
         response = self.http_client.get('/vsd/ijs/?naam=boefje')
         assert response.status_code == 200
-        result = json.loads(response.content)
-        print("*******ijsfiets*******************")
-        print(result)
-        print("**************************")        
+        result = json.loads(response.content)          
         assert len(result['results']) ==  1
         assert result['results'][0]['icp_id'] == 3
         assert result['results'][0]['naam'] == 'Het ijsboefje'
@@ -106,10 +103,7 @@ INSERT INTO icp_data (icp_id, naam, prijs, sterren, smaken, wkb_geometry, datum)
     def test_locatie(self):
         response = self.http_client.get('/vsd/ijs/?wkb_geometry=122233.8155281068, 486556.12919505127,100')
         assert response.status_code == 200
-        result = json.loads(response.content)
-        print("**************************")
-        print(result)
-        print("**************************")
+        result = json.loads(response.content) 
         assert len(result['results']) == 1
         assert result['results'][0]['icp_id'] == 2
         assert result['results'][0]['naam'] == 'De ijsfiets'
