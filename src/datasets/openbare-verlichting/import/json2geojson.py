@@ -22,7 +22,7 @@ ID_TYPES_MAP = {
         "internal_name": "Gevel_Armatuur",
     },
     '4': {
-        "external_name": "OVL Objecten",
+        "external_name": "LSD Objecten",
         "internal_name": "Overig_lichtpunt",
     },
     '5': {
