@@ -44,7 +44,6 @@ Import all remaining datasets:
     src/datasets/milieuzones/import/import.sh           # Milieuzones (voor vrachtwagens/dieselauto's/...)
     src/datasets/openbare-verlichting/import/import.sh  # Openbare verlichting (import only)
     src/datasets/oplaadpalen/import/import.sh           # Oplaadpalen electrische auto's
-    src/datasets/overlastgebieden/import/import.sh      # Overlastgebieden
     src/datasets/parkeerzones/import/import.sh          # Parkeerzones
     src/datasets/reclamebelasting/import/import.sh      # Reclamebelasting voor belettering op de geven
     src/datasets/trm/import/import.sh                   # Tram & Metro (TRM)

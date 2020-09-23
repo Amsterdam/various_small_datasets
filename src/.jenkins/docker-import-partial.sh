@@ -57,11 +57,7 @@ case $i in
     bekendmakingen)
     echo "Importing Bekendmakingen"
     datasets/bekendmakingen/import/import.sh
-    ;;
-    overlastgebieden)
-    echo "Import Overlastgebieden"
-    datasets/overlastgebieden/import/import.sh
-    ;;
+    ;;    
     openbare_verlichting)
     echo "Importing Openbare-verlichting"
     datasets/openbare-verlichting/import/import.sh
