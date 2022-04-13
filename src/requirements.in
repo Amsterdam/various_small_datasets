@@ -1,5 +1,5 @@
 datapunt-objectstore == 2019.4.8
-Django == 2.2.13
+Django == 2.2.28
 django-choices == 1.7.1
 django-cors-headers == 3.2.1
 django-filter == 2.2.0
