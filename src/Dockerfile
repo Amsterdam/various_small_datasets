@@ -1,5 +1,5 @@
-FROM amsterdam/python
-MAINTAINER datapunt@amsterdam.nl
+FROM amsterdam/python:3.8.7-buster
+LABEL maintainer=datapunt@amsterdam.nl
 
 RUN sed -i '/^mozilla\/AddTrust_External_Root.crt/c\!mozilla\/AddTrust_External_Root.crt' /etc/ca-certificates.conf
 RUN update-ca-certificates

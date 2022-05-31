@@ -22,7 +22,7 @@ services:
       UWSGI_MODULE: "various_small_datasets.wsgi"
       UWSGI_CALLABLE: "application"
       UWSGI_MASTER: 1
-      UWSGI_STATIC_MAP: "/various_small_datasets/static=/static"
+      UWSGI_STATIC_MAP: "/vsd/static=/static"
       DATAPUNT_API_URL: ${DATAPUNT_API_URL:-https://api.data.amsterdam.nl/}
       SECRET_KEY: insecure
       DATABASE_NAME: various_small_datasets
