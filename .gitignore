@@ -117,3 +117,5 @@ src/various_small_datasets/tools/map_files
 /afval_*.zip
 /afval_*.backup
 
+# Docker
+docker-compose.override.yml
