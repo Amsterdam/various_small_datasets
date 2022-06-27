@@ -23,6 +23,7 @@ services:
       UWSGI_CALLABLE: "application"
       UWSGI_MASTER: 1
       UWSGI_STATIC_MAP: "/vsd/static=/static"
+      UWSGI_PY_AUTORELOAD: 1
       DATAPUNT_API_URL: ${DATAPUNT_API_URL:-https://api.data.amsterdam.nl/}
       SECRET_KEY: insecure
       DATABASE_NAME: various_small_datasets
@@ -32,4 +33,3 @@ services:
       DATABASE_PASSWORD: insecure
     volumes:
       - ./src:/app
-    command: uwsgi --py-auto-reload=1
